@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coach Zinssner — Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      background: #f0f1f3;
+      min-height: 100vh;
+    }
+
+    .demo-banner {
+      background: #c0392b;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .demo-banner strong { font-weight: 700; }
+
+    .app-layout {
+      display: flex;
+      max-width: 1200px;
+      margin: 24px auto;
+      gap: 20px;
+      padding: 0 20px;
+    }
+
+    /* Left: simulated editor */
+    .editor-panel {
+      flex: 1;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .editor-toolbar {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .editor-toolbar .tab {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: #666;
+    }
+
+    .editor-toolbar .tab.active {
+      background: #fff;
+      color: #1a1a1a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .editor-label {
+      font-size: 11px;
+      color: #999;
+      padding: 8px 16px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    #editor {
+      padding: 16px;
+      min-height: 400px;
+      font-size: 15px;
+      line-height: 1.7;
+      outline: none;
+      white-space: pre-wrap;
+    }
+
+    #editor:focus {
+      background: #fefefe;
+    }
+
+    /* Right: Coach Zinssner panel */
+    .coach-panel {
+      width: 380px;
+      flex-shrink: 0;
+    }
+
+    .coach-inner {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      position: sticky;
+      top: 20px;
+    }
+
+    .coach-header {
+      padding: 16px;
+      border-bottom: 2px solid #c0392b;
+    }
+
+    .coach-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #c0392b;
+      letter-spacing: -0.3px;
+    }
+
+    .coach-header .subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .coach-body {
+      padding: 16px;
+    }
+
+    /* Status */
+    .status-bar {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #856404;
+    }
+
+    .status-bar.success {
+      background: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+    }
+
+    /* Diagnosis */
+    .diagnosis {
+      background: #f0f4ff;
+      border-left: 3px solid #c0392b;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #333;
+      border-radius: 0 6px 6px 0;
+      font-style: italic;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .diagnosis.visible { display: block; }
+
+    /* Word count */
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .word-count {
+      font-size: 11px;
+      color: #999;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: #c0392b;
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #a93226;
+    }
+
+    .btn-small {
+      padding: 4px 10px;
+      font-size: 12px;
+      background: #e9ecef;
+      color: #495057;
+    }
+
+    .btn-small:hover:not(:disabled) {
+      background: #dee2e6;
+    }
+
+    .btn-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .btn-success:hover { background: #c3e6cb; }
+
+    .btn-danger {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .btn-danger:hover { background: #f1b0b7; }
+
+    .actions-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    /* Suggestions */
+    .suggestions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      display: none;
+    }
+
+    .suggestions-header.visible { display: flex; }
+
+    .suggestions-header h2 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .badge {
+      background: #c0392b;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .suggestion-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .suggestion-card.accepted {
+      border-color: #28a745;
+      background: #f0faf2;
+    }
+
+    .suggestion-card.rejected {
+      border-color: #dc3545;
+      background: #fdf0f0;
+      opacity: 0.5;
+    }
+
+    .suggestion-type {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #c0392b;
+      margin-bottom: 4px;
+    }
+
+    .suggestion-original {
+      background: #fff5f5;
+      border-left: 3px solid #dc3545;
+      padding: 6px 10px;
+      margin: 6px 0;
+      font-size: 13px;
+      border-radius: 0 4px 4px 0;
+      text-decoration: line-through;
+      color: #666;
+    }
+
+    .suggestion-replacement {
+      background: #f0fff4;
+      border-left: 3px solid #28a745;
+      padding: 6px 10px;
+      margin: 6px 0;
+      font-size: 13px;
+      border-radius: 0 4px 4px 0;
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    .suggestion-delete {
+      background: #fff0f0;
+      border-left: 3px solid #dc3545;
+      padding: 6px 10px;
+      margin: 6px 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #dc3545;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .suggestion-explanation {
+      font-size: 12px;
+      color: #666;
+      margin: 6px 0;
+      font-style: italic;
+    }
+
+    .suggestion-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .btn-accept,
+    .btn-reject {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 2px solid;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: #fff;
+    }
+
+    .btn-accept {
+      border-color: #28a745;
+      color: #28a745;
+    }
+
+    .btn-accept:hover {
+      background: #28a745;
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .btn-reject {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+
+    .btn-reject:hover {
+      background: #dc3545;
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .btn-accept:disabled,
+    .btn-reject:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Loading spinner */
+    .loading {
+      text-align: center;
+      padding: 24px;
+      color: #666;
+      display: none;
+    }
+
+    .loading.visible { display: block; }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #c0392b;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Highlight in editor */
+    .czn-applied {
+      background: rgba(40, 167, 69, 0.15);
+      transition: background 1.5s ease;
+    }
+
+    .czn-applied.fade {
+      background: transparent;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      .app-layout {
+        flex-direction: column;
+      }
+      .coach-panel {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-banner">
+    <strong>DEMO</strong> — Dit simuleert hoe Coach Zinssner werkt. De suggesties hieronder zijn voorbeelden.
+  </div>
+
+  <div class="app-layout">
+
+    <!-- Left: Article Editor (simulated) -->
+    <div class="editor-panel">
+      <div class="editor-toolbar">
+        <button class="tab active">Artikel</button>
+        <button class="tab">Metadata</button>
+        <button class="tab">SEO</button>
+      </div>
+      <div class="editor-label">Broodtekst</div>
+      <div id="editor" contenteditable="true">Gisteren werd er door de burgemeester een heel belangrijke beslissing genomen over het nieuwe voetbalstadion. De beslissing werd uiteindelijk genomen na een zeer lange vergadering die maar liefst vijf uur duurde. Het was eigenlijk al langer geweten dat er een probleem was.
+
+"We hebben in eerste instantie geprobeerd om tot een compromis te komen, maar dat bleek uiteindelijk toch niet te werken", verklaarde de burgemeester. "Na verloop van tijd werd het duidelijk dat we een andere richting moesten inslaan", vulde hij nog aan.
+
+Het stadion, dat beter gekend is als het Kiel, zal na de renovatiewerken plaats bieden aan maar liefst 40.000 toeschouwers. De huidige capaciteit van het oude stadion is momenteel eigenlijk vrij beperkt.</div>
+    </div>
+
+    <!-- Right: Coach Zinssner Panel -->
+    <div class="coach-panel">
+      <div class="coach-inner">
+        <div class="coach-header">
+          <h1>Coach Zinssner</h1>
+          <p class="subtitle">AI-schrijfcoach voor heldere teksten</p>
+        </div>
+
+        <div class="coach-body">
+          <div id="status" class="status-bar">
+            Klik op "Nalezen" om de tekst links te laten analyseren.
+          </div>
+
+          <div id="diagnosis" class="diagnosis"></div>
+
+          <div class="meta-row">
+            <span id="word-count" class="word-count"></span>
+            <button id="btn-review" class="btn btn-primary">Nalezen</button>
+          </div>
+
+          <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <span>Coach Zinssner leest na...</span>
+          </div>
+
+          <div id="suggestions-header" class="suggestions-header">
+            <h2>Suggesties</h2>
+            <span id="badge" class="badge">0</span>
+          </div>
+
+          <div id="suggestions-list"></div>
+
+          <div id="bulk-actions" class="actions-row" style="display:none;">
+            <button id="btn-accept-all" class="btn btn-small btn-success">Alles aanvaarden</button>
+            <button id="btn-reject-all" class="btn btn-small btn-danger">Alles verwerpen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== DEMO DATA =====
+    // These are pre-built suggestions that simulate what Claude would return
+    const DEMO_RESPONSE = {
+      diagnosis: "Een kort nieuwsbericht over een stadionbeslissing. De tekst bevat veel opvulwoorden, passieve constructies en omslachtige formuleringen. Hier is flink ruimte om scherper te schrijven.",
+      suggestions: [
+        {
+          id: 0,
+          type: "passief",
+          original: "werd er door de burgemeester een heel belangrijke beslissing genomen",
+          replacement: "nam de burgemeester een belangrijke beslissing",
+          explanation: "Actief is krachtiger. En 'heel' voor 'belangrijke' is een verzwakker — het voegt niets toe."
+        },
+        {
+          id: 1,
+          type: "redundantie",
+          original: "De beslissing werd uiteindelijk genomen na een zeer lange vergadering die maar liefst vijf uur duurde.",
+          replacement: "De vergadering duurde vijf uur.",
+          explanation: "De vorige zin zei al dat er een beslissing genomen werd. 'Zeer lange' en 'maar liefst' zeggen hetzelfde als 'vijf uur'."
+        },
+        {
+          id: 2,
+          type: "opvulwoord",
+          original: "Het was eigenlijk al langer geweten dat er een probleem was.",
+          replacement: "Het probleem was al langer bekend.",
+          explanation: "'Eigenlijk' is een opvulwoord. 'Er' + 'was' is omslachtig."
+        },
+        {
+          id: 3,
+          type: "constructie",
+          original: "in eerste instantie",
+          replacement: "",
+          explanation: "Voegt niets toe. Schrappen."
+        },
+        {
+          id: 4,
+          type: "constructie",
+          original: "bleek uiteindelijk toch niet te werken",
+          replacement: "werkte niet",
+          explanation: "'Uiteindelijk' en 'toch' zijn allebei overbodig. Kort en krachtig."
+        },
+        {
+          id: 5,
+          type: "werkwoord",
+          original: "verklaarde de burgemeester",
+          replacement: "zegt de burgemeester",
+          explanation: "'Zegt' is bijna altijd beter dan 'verklaarde'."
+        },
+        {
+          id: 6,
+          type: "constructie",
+          original: "Na verloop van tijd werd het duidelijk dat",
+          replacement: "Gaandeweg bleek dat",
+          explanation: "Korter en directer."
+        },
+        {
+          id: 7,
+          type: "redundantie",
+          original: ", vulde hij nog aan",
+          replacement: "",
+          explanation: "De lezer weet al wie spreekt. Dit is overbodig."
+        },
+        {
+          id: 8,
+          type: "constructie",
+          original: "dat beter gekend is als",
+          replacement: "of",
+          explanation: "Eén woordje volstaat."
+        },
+        {
+          id: 9,
+          type: "verzwakker",
+          original: "De huidige capaciteit van het oude stadion is momenteel eigenlijk vrij beperkt.",
+          replacement: "Het oude stadion is te klein.",
+          explanation: "'Huidige', 'momenteel', 'eigenlijk' en 'vrij' zijn vier verzwakkers in één zin."
+        }
+      ]
+    };
+
+    // ===== STATE =====
+    const editor = document.getElementById('editor');
+    const statusBar = document.getElementById('status');
+    const diagnosisEl = document.getElementById('diagnosis');
+    const wordCountEl = document.getElementById('word-count');
+    const btnReview = document.getElementById('btn-review');
+    const loadingEl = document.getElementById('loading');
+    const suggestionsHeader = document.getElementById('suggestions-header');
+    const badgeEl = document.getElementById('badge');
+    const suggestionsList = document.getElementById('suggestions-list');
+    const bulkActions = document.getElementById('bulk-actions');
+    const btnAcceptAll = document.getElementById('btn-accept-all');
+    const btnRejectAll = document.getElementById('btn-reject-all');
+
+    let suggestions = [];
+
+    // Init
+    updateWordCount();
+    editor.addEventListener('input', updateWordCount);
+    btnReview.addEventListener('click', startReview);
+    btnAcceptAll.addEventListener('click', acceptAll);
+    btnRejectAll.addEventListener('click', rejectAll);
+
+    function updateWordCount() {
+      const text = editor.innerText.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      wordCountEl.textContent = words + ' woorden';
+    }
+
+    // Simulate the review process
+    function startReview() {
+      // Reset
+      suggestionsList.innerHTML = '';
+      suggestionsHeader.classList.remove('visible');
+      diagnosisEl.classList.remove('visible');
+      bulkActions.style.display = 'none';
+      suggestions = [];
+
+      // Show loading
+      loadingEl.classList.add('visible');
+      btnReview.disabled = true;
+      statusBar.textContent = 'Coach Zinssner leest je tekst na...';
+      statusBar.className = 'status-bar';
+
+      // Simulate API delay
+      setTimeout(() => {
+        loadingEl.classList.remove('visible');
+
+        // Show diagnosis
+        diagnosisEl.textContent = DEMO_RESPONSE.diagnosis;
+        diagnosisEl.classList.add('visible');
+
+        // Load suggestions
+        suggestions = DEMO_RESPONSE.suggestions.map(s => ({ ...s, status: 'pending' }));
+
+        // Render them one by one with stagger
+        suggestionsHeader.classList.add('visible');
+        badgeEl.textContent = suggestions.length;
+        bulkActions.style.display = 'flex';
+
+        suggestions.forEach((s, i) => {
+          setTimeout(() => renderSuggestion(s), i * 150);
+        });
+
+        statusBar.textContent = suggestions.length + ' suggestie(s) gevonden. Klik \u2713 om te aanvaarden of \u2717 om te verwerpen.';
+        statusBar.className = 'status-bar success';
+        btnReview.disabled = false;
+      }, 2000);
+    }
+
+    function renderSuggestion(suggestion) {
+      const card = document.createElement('div');
+      card.className = 'suggestion-card';
+      card.id = 'sug-' + suggestion.id;
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(10px)';
+
+      const typeLabels = {
+        'opvulwoord': 'Opvulwoord', 'constructie': 'Constructie', 'bijwoord': 'Bijwoord',
+        'bijvoeglijk': 'Bijvoeglijk nw.', 'verzwakker': 'Verzwakker', 'passief': 'Passief',
+        'redundantie': 'Redundantie', 'interpunctie': 'Interpunctie', 'werkwoord': 'Werkwoord',
+        'quote': 'Quote', 'overstatement': 'Overstatement', 'spelling': 'Spelling',
+        'grammatica': 'Grammatica'
+      };
+
+      const isDelete = !suggestion.replacement;
+      const replacementHtml = isDelete
+        ? '<div class="suggestion-delete">SCHRAPPEN</div>'
+        : '<div class="suggestion-replacement">' + escapeHtml(suggestion.replacement) + '</div>';
+
+      const explanationHtml = suggestion.explanation
+        ? '<div class="suggestion-explanation">' + escapeHtml(suggestion.explanation) + '</div>'
+        : '';
+
+      card.innerHTML =
+        '<div class="suggestion-type">' + (typeLabels[suggestion.type] || suggestion.type) + '</div>' +
+        '<div class="suggestion-original">' + escapeHtml(suggestion.original) + '</div>' +
+        replacementHtml +
+        explanationHtml +
+        '<div class="suggestion-actions">' +
+          '<button class="btn-accept" title="Aanvaarden">\u2713</button>' +
+          '<button class="btn-reject" title="Verwerpen">\u2717</button>' +
+        '</div>';
+
+      card.querySelector('.btn-accept').addEventListener('click', () => acceptSuggestion(suggestion.id));
+      card.querySelector('.btn-reject').addEventListener('click', () => rejectSuggestion(suggestion.id));
+
+      suggestionsList.appendChild(card);
+
+      // Animate in
+      requestAnimationFrame(() => {
+        card.style.transition = 'all 0.3s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      });
+    }
+
+    function acceptSuggestion(id) {
+      const s = suggestions.find(x => x.id === id);
+      if (!s || s.status !== 'pending') return;
+      s.status = 'accepted';
+
+      const card = document.getElementById('sug-' + id);
+      card.classList.add('accepted');
+      card.querySelector('.btn-accept').disabled = true;
+      card.querySelector('.btn-reject').disabled = true;
+
+      // Apply the change in the editor
+      applyToEditor(s.original, s.replacement || '');
+      updateProgress();
+    }
+
+    function rejectSuggestion(id) {
+      const s = suggestions.find(x => x.id === id);
+      if (!s || s.status !== 'pending') return;
+      s.status = 'rejected';
+
+      const card = document.getElementById('sug-' + id);
+      card.classList.add('rejected');
+      card.querySelector('.btn-accept').disabled = true;
+      card.querySelector('.btn-reject').disabled = true;
+
+      updateProgress();
+    }
+
+    function acceptAll() {
+      suggestions.filter(s => s.status === 'pending').forEach(s => acceptSuggestion(s.id));
+    }
+
+    function rejectAll() {
+      suggestions.filter(s => s.status === 'pending').forEach(s => rejectSuggestion(s.id));
+    }
+
+    function updateProgress() {
+      const total = suggestions.length;
+      const handled = suggestions.filter(s => s.status !== 'pending').length;
+      const accepted = suggestions.filter(s => s.status === 'accepted').length;
+      const rejected = suggestions.filter(s => s.status === 'rejected').length;
+      badgeEl.textContent = handled + '/' + total;
+
+      if (handled === total) {
+        statusBar.textContent = 'Klaar! ' + accepted + ' aanvaard, ' + rejected + ' verworpen.';
+        statusBar.className = 'status-bar success';
+      }
+    }
+
+    // Apply replacement in the contenteditable editor
+    function applyToEditor(original, replacement) {
+      const html = editor.innerHTML;
+      const textContent = editor.innerText;
+
+      // Find and replace in text nodes
+      const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+      let node;
+      let found = false;
+
+      while (node = walker.nextNode()) {
+        const idx = node.textContent.indexOf(original);
+        if (idx !== -1) {
+          const before = node.textContent.substring(0, idx);
+          const after = node.textContent.substring(idx + original.length);
+
+          if (replacement) {
+            // Create a highlighted span for the replacement
+            const span = document.createElement('span');
+            span.className = 'czn-applied';
+            span.textContent = replacement;
+
+            const afterNode = document.createTextNode(after);
+            node.textContent = before;
+            node.parentNode.insertBefore(span, node.nextSibling);
+            node.parentNode.insertBefore(afterNode, span.nextSibling);
+
+            // Fade out highlight
+            setTimeout(() => span.classList.add('fade'), 1500);
+          } else {
+            // Delete: just remove the original text
+            node.textContent = before + after;
+          }
+
+          found = true;
+          break;
+        }
+      }
+
+      // Fallback: simple innerHTML replace
+      if (!found) {
+        if (replacement) {
+          editor.innerHTML = editor.innerHTML.replace(
+            escapeHtml(original),
+            '<span class="czn-applied">' + escapeHtml(replacement) + '</span>'
+          );
+          setTimeout(() => {
+            const el = editor.querySelector('.czn-applied:not(.fade)');
+            if (el) el.classList.add('fade');
+          }, 1500);
+        } else {
+          editor.innerHTML = editor.innerHTML.replace(escapeHtml(original), '');
+        }
+      }
+
+      updateWordCount();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
