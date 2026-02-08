@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coach Zinssner</title>
+  <link rel="stylesheet" href="styles/sidepanel.css">
+</head>
+<body>
+  <header>
+    <h1>Coach Zinssner</h1>
+    <p class="subtitle">AI-schrijfcoach voor heldere teksten</p>
+  </header>
+
+  <div id="status-bar" class="status-bar">
+    <span id="status-text">Selecteer tekst op de pagina en klik op "Nalezen"</span>
+  </div>
+
+  <div id="source-section" class="section">
+    <div class="section-header">
+      <h2>Brontekst</h2>
+      <button id="btn-detect" class="btn btn-small" title="Detecteer tekst van de pagina">Detecteer</button>
+    </div>
+    <div id="source-text" class="text-area" contenteditable="false"></div>
+    <div class="actions">
+      <button id="btn-review" class="btn btn-primary" disabled>Nalezen</button>
+      <span id="word-count" class="meta">0 woorden</span>
+    </div>
+  </div>
+
+  <div id="suggestions-section" class="section hidden">
+    <div class="section-header">
+      <h2>Suggesties</h2>
+      <span id="suggestion-count" class="badge">0</span>
+    </div>
+    <div id="suggestions-list" class="suggestions-list"></div>
+    <div class="actions">
+      <button id="btn-accept-all" class="btn btn-small btn-success">Alles aanvaarden</button>
+      <button id="btn-reject-all" class="btn btn-small btn-danger">Alles verwerpen</button>
+    </div>
+  </div>
+
+  <div id="result-section" class="section hidden">
+    <div class="section-header">
+      <h2>Resultaat</h2>
+    </div>
+    <div id="result-text" class="text-area"></div>
+    <div class="actions">
+      <button id="btn-apply" class="btn btn-primary">Toepassen op pagina</button>
+      <button id="btn-copy" class="btn btn-small">Kopieer</button>
+    </div>
+  </div>
+
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <span>Coach Zinssner leest na...</span>
+  </div>
+
+  <footer>
+    <button id="btn-settings" class="btn-link">Instellingen</button>
+  </footer>
+
+  <script src="scripts/sidepanel.js"></script>
+</body>
+</html>
