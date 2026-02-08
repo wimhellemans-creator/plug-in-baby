@@ -118,6 +118,16 @@
         return;
       }
 
+      // Show diagnosis if available
+      const diagnosisSection = document.getElementById('diagnosis-section');
+      const diagnosisText = document.getElementById('diagnosis-text');
+      if (response.diagnosis) {
+        diagnosisText.textContent = response.diagnosis;
+        diagnosisSection.classList.remove('hidden');
+      } else {
+        diagnosisSection.classList.add('hidden');
+      }
+
       suggestions = response.suggestions.map((s, i) => ({
         ...s,
         id: i,
@@ -157,20 +167,39 @@
       }
 
       const typeLabels = {
+        'opvulwoord': 'Opvulwoord',
+        'constructie': 'Constructie',
+        'bijwoord': 'Bijwoord',
+        'bijvoeglijk': 'Bijvoeglijk nw.',
+        'verzwakker': 'Verzwakker',
+        'passief': 'Passief',
+        'redundantie': 'Redundantie',
+        'interpunctie': 'Interpunctie',
+        'werkwoord': 'Werkwoord',
+        'quote': 'Quote',
+        'overstatement': 'Overstatement',
         'spelling': 'Spelling',
         'grammatica': 'Grammatica',
         'stijl': 'Stijl',
         'beknoptheid': 'Beknoptheid',
         'helderheid': 'Helderheid',
-        'werkwoord': 'Werkwoord',
         'structuur': 'Structuur'
       };
+
+      const isDelete = !suggestion.replacement || suggestion.replacement.trim() === '';
+      const replacementHtml = isDelete
+        ? '<div class="suggestion-delete">SCHRAPPEN</div>'
+        : `<div class="suggestion-replacement">${escapeHtml(suggestion.replacement)}</div>`;
+
+      const explanationHtml = suggestion.explanation
+        ? `<div class="suggestion-explanation">${escapeHtml(suggestion.explanation)}</div>`
+        : '';
 
       card.innerHTML = `
         <div class="suggestion-type">${typeLabels[suggestion.type] || suggestion.type}</div>
         <div class="suggestion-original">${escapeHtml(suggestion.original)}</div>
-        <div class="suggestion-replacement">${escapeHtml(suggestion.replacement)}</div>
-        <div class="suggestion-explanation">${escapeHtml(suggestion.explanation)}</div>
+        ${replacementHtml}
+        ${explanationHtml}
         <div class="suggestion-actions">
           <button class="btn-accept" title="Aanvaarden" data-id="${suggestion.id}" ${suggestion.status !== 'pending' ? 'disabled' : ''}>✓</button>
           <button class="btn-reject" title="Verwerpen" data-id="${suggestion.id}" ${suggestion.status !== 'pending' ? 'disabled' : ''}>✗</button>
