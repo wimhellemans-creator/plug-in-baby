@@ -171,8 +171,21 @@
       color: #bbb;
     }
 
+    #editor .czn-highlight {
+      background: rgba(192, 57, 43, 0.12);
+      border-bottom: 2px solid rgba(192, 57, 43, 0.4);
+      border-radius: 2px;
+      transition: all 0.25s ease;
+      cursor: default;
+    }
+
+    #editor .czn-highlight.active {
+      background: rgba(192, 57, 43, 0.25);
+      border-bottom-color: #c0392b;
+    }
+
     #editor .czn-applied {
-      background: rgba(40, 167, 69, 0.2);
+      background: rgba(40, 167, 69, 0.25);
       border-radius: 2px;
       transition: background 2s ease;
     }
@@ -306,11 +319,23 @@
       margin-bottom: 4px;
     }
 
+    .suggestion-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+      margin-bottom: 2px;
+    }
+
+    .suggestion-label.was { color: #999; }
+    .suggestion-label.wordt { color: #28a745; }
+
     .suggestion-original {
       background: #fff5f5;
       border-left: 3px solid #dc3545;
       padding: 6px 10px;
-      margin: 6px 0;
+      margin: 0 0 4px;
       font-size: 13px;
       border-radius: 0 4px 4px 0;
       text-decoration: line-through;
@@ -321,7 +346,7 @@
       background: #f0fff4;
       border-left: 3px solid #28a745;
       padding: 6px 10px;
-      margin: 6px 0;
+      margin: 0 0 4px;
       font-size: 13px;
       border-radius: 0 4px 4px 0;
       color: #1a1a1a;
@@ -332,13 +357,17 @@
       background: #fff0f0;
       border-left: 3px solid #dc3545;
       padding: 6px 10px;
-      margin: 6px 0;
+      margin: 0 0 4px;
       font-size: 12px;
       font-weight: 700;
       color: #dc3545;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       border-radius: 0 4px 4px 0;
+    }
+
+    .suggestion-card:hover {
+      border-color: #c0392b;
     }
 
     .suggestion-explanation {
@@ -793,6 +822,13 @@ Regels voor de JSON:
         return;
       }
 
+      // Clear old highlights from editor
+      editor.querySelectorAll('.czn-highlight').forEach(el => {
+        const textNode = document.createTextNode(el.textContent);
+        el.parentNode.replaceChild(textNode, el);
+      });
+      editor.normalize();
+
       // Reset suggestions panel
       suggestionsList.innerHTML = '';
       suggestions = [];
@@ -925,6 +961,7 @@ Regels voor de JSON:
       card.style.transform = 'translateY(8px)';
 
       const isDelete = !s.replacement || s.replacement.trim() === '';
+      const wordtLabel = isDelete ? 'Schrappen' : 'Wordt:';
       const replHtml = isDelete
         ? '<div class="suggestion-delete">SCHRAPPEN</div>'
         : '<div class="suggestion-replacement">' + esc(s.replacement) + '</div>';
@@ -934,7 +971,9 @@ Regels voor de JSON:
 
       card.innerHTML =
         '<div class="suggestion-type">' + (TYPE_LABELS[s.type] || s.type) + '</div>' +
+        '<div class="suggestion-label was">Was:</div>' +
         '<div class="suggestion-original">' + esc(s.original) + '</div>' +
+        '<div class="suggestion-label wordt">' + wordtLabel + '</div>' +
         replHtml + explHtml +
         '<div class="suggestion-actions">' +
           '<button class="btn-accept" title="Aanvaarden">\u2713</button>' +
@@ -944,13 +983,75 @@ Regels voor de JSON:
       card.querySelector('.btn-accept').addEventListener('click', () => acceptCard(s.id));
       card.querySelector('.btn-reject').addEventListener('click', () => rejectCard(s.id));
 
+      // Hover: highlight corresponding text in editor
+      card.addEventListener('mouseenter', () => activateHighlight(s.id));
+      card.addEventListener('mouseleave', () => deactivateHighlight(s.id));
+
       suggestionsList.appendChild(card);
+
+      // Highlight the original text in the editor
+      highlightInEditor(s.id, s.original);
 
       requestAnimationFrame(() => {
         card.style.transition = 'all 0.3s ease';
         card.style.opacity = '1';
         card.style.transform = 'translateY(0)';
       });
+    }
+
+    // ════════════════════════════════════════
+    //  HIGHLIGHTING IN EDITOR
+    // ════════════════════════════════════════
+    function highlightInEditor(id, original) {
+      const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+      let node;
+
+      while (node = walker.nextNode()) {
+        const idx = node.textContent.indexOf(original);
+        if (idx === -1) continue;
+
+        const before = node.textContent.substring(0, idx);
+        const match = node.textContent.substring(idx, idx + original.length);
+        const after = node.textContent.substring(idx + original.length);
+
+        const span = document.createElement('span');
+        span.className = 'czn-highlight';
+        span.dataset.suggestionId = id;
+        span.textContent = match;
+
+        const beforeNode = document.createTextNode(before);
+        const afterNode = document.createTextNode(after);
+
+        const parent = node.parentNode;
+        parent.insertBefore(beforeNode, node);
+        parent.insertBefore(span, node);
+        parent.insertBefore(afterNode, node);
+        parent.removeChild(node);
+        return;
+      }
+    }
+
+    function activateHighlight(id) {
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (el) {
+        el.classList.add('active');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function deactivateHighlight(id) {
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (el) el.classList.remove('active');
+    }
+
+    function removeHighlight(id) {
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (!el) return;
+      // Replace the highlight span with plain text
+      const textNode = document.createTextNode(el.textContent);
+      el.parentNode.replaceChild(textNode, el);
+      // Normalize to merge adjacent text nodes
+      editor.normalize();
     }
 
     // ════════════════════════════════════════
@@ -961,8 +1062,24 @@ Regels voor de JSON:
       if (!s || s.status !== 'pending') return;
       s.status = 'accepted';
 
-      // Apply replacement in editor
-      applyToEditor(s.original, s.replacement || '');
+      // Replace the highlighted span with the new text
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (el) {
+        if (s.replacement) {
+          const span = document.createElement('span');
+          span.className = 'czn-applied';
+          span.textContent = s.replacement;
+          el.parentNode.replaceChild(span, el);
+          setTimeout(() => span.classList.add('fade'), 2000);
+        } else {
+          // Delete
+          el.parentNode.removeChild(el);
+        }
+        editor.normalize();
+      } else {
+        // Fallback: text-based replacement
+        applyToEditor(s.original, s.replacement || '');
+      }
       updateStats();
 
       // Remove card with animation
@@ -974,6 +1091,9 @@ Regels voor de JSON:
       const s = suggestions.find(x => x.id === id);
       if (!s || s.status !== 'pending') return;
       s.status = 'rejected';
+
+      // Remove highlight, restore plain text
+      removeHighlight(id);
 
       removeCard(id);
       advanceProgress();
