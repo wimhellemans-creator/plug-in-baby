@@ -144,14 +144,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === 'GET_API_KEY') {
-    chrome.storage.sync.get(['apiKey'], (result) => {
+    chrome.storage.local.get(['apiKey'], (result) => {
       sendResponse({ apiKey: result.apiKey || '' });
     });
     return true;
   }
 
   if (message.type === 'SAVE_API_KEY') {
-    chrome.storage.sync.set({ apiKey: message.apiKey }, () => {
+    chrome.storage.local.set({ apiKey: message.apiKey }, () => {
       sendResponse({ success: true });
     });
     return true;
@@ -159,7 +159,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function reviewText(text) {
-  const { apiKey } = await chrome.storage.sync.get(['apiKey']);
+  const { apiKey } = await chrome.storage.local.get(['apiKey']);
 
   if (!apiKey) {
     throw new Error('Geen API-sleutel geconfigureerd. Ga naar Instellingen.');

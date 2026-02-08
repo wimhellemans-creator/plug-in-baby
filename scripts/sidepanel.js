@@ -40,11 +40,15 @@
     btnSettings.addEventListener('click', openSettings);
 
     // Check if API key is configured
-    chrome.runtime.sendMessage({ type: 'GET_API_KEY' }, (response) => {
-      if (!response || !response.apiKey) {
-        setStatus('Configureer eerst je API-sleutel in Instellingen.', 'error');
-      }
-    });
+    try {
+      chrome.storage.local.get(['apiKey'], (result) => {
+        if (!result || !result.apiKey) {
+          setStatus('Configureer eerst je API-sleutel in Instellingen.', 'error');
+        }
+      });
+    } catch (e) {
+      setStatus('Configureer eerst je API-sleutel in Instellingen.', 'error');
+    }
   }
 
   function setStatus(message, type = '') {
