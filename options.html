@@ -133,7 +133,7 @@
       Je hebt een API-sleutel nodig van Anthropic om Coach Zinssner te gebruiken.
       Deze wordt veilig opgeslagen in je browser.
     </p>
-    <input type="password" id="api-key" placeholder="sk-ant-..." />
+    <input type="password" id="api-key" placeholder="sk-..." />
   </div>
 
   <button id="btn-save" class="btn btn-primary">Opslaan</button>
@@ -154,9 +154,9 @@
     const messageEl = document.getElementById('message');
 
     // Load existing key
-    chrome.runtime.sendMessage({ type: 'GET_API_KEY' }, (response) => {
-      if (response && response.apiKey) {
-        apiKeyInput.value = response.apiKey;
+    chrome.storage.sync.get(['apiKey'], (result) => {
+      if (result && result.apiKey) {
+        apiKeyInput.value = result.apiKey;
       }
     });
 
@@ -168,16 +168,16 @@
         return;
       }
 
-      if (!key.startsWith('sk-ant-')) {
-        showMessage('Dit lijkt geen geldige Anthropic API-sleutel. Die begint met "sk-ant-".', 'error');
+      if (!key.startsWith('sk-')) {
+        showMessage('Dit lijkt geen geldige Anthropic API-sleutel. Die begint met "sk-".', 'error');
         return;
       }
 
-      chrome.runtime.sendMessage({ type: 'SAVE_API_KEY', apiKey: key }, (response) => {
-        if (response && response.success) {
-          showMessage('API-sleutel opgeslagen! Je kunt Coach Zinssner nu gebruiken.', 'success');
+      chrome.storage.sync.set({ apiKey: key }, () => {
+        if (chrome.runtime.lastError) {
+          showMessage('Er ging iets mis bij het opslaan: ' + chrome.runtime.lastError.message, 'error');
         } else {
-          showMessage('Er ging iets mis bij het opslaan.', 'error');
+          showMessage('API-sleutel opgeslagen! Je kunt Coach Zinssner nu gebruiken.', 'success');
         }
       });
     });
