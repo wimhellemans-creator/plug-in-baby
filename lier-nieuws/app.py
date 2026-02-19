@@ -6,6 +6,14 @@ import logging
 from flask import Flask, render_template, request, jsonify, Response, stream_with_context
 from dotenv import load_dotenv
 
+# Fix SSL certificate path for Windows Python installations
+try:
+    import certifi
+    os.environ.setdefault("SSL_CERT_FILE", certifi.where())
+    os.environ.setdefault("REQUESTS_CA_BUNDLE", certifi.where())
+except ImportError:
+    pass
+
 from database import init_db, get_all_sources, add_source, update_source, delete_source as db_delete_source
 from database import get_articles, add_article, delete_article as db_delete_article, get_existing_urls
 from scraper import scrape_all_sources

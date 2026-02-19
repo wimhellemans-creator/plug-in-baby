@@ -6,6 +6,14 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+# Fix SSL certificate path for Windows Python installations
+try:
+    import certifi
+    os.environ.setdefault("SSL_CERT_FILE", certifi.where())
+    os.environ.setdefault("REQUESTS_CA_BUNDLE", certifi.where())
+except ImportError:
+    pass
+
 
 def get_client():
     api_key = os.environ.get("ANTHROPIC_API_KEY")
