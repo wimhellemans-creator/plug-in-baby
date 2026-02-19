@@ -1,25 +1,28 @@
 import json
 import os
+import ssl
 import logging
+import httpx
 from anthropic import Anthropic
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-# Fix SSL certificate path for Windows Python installations
+# Build a proper SSL context using certifi (fixes Windows Python SSL issues)
 try:
     import certifi
-    os.environ.setdefault("SSL_CERT_FILE", certifi.where())
-    os.environ.setdefault("REQUESTS_CA_BUNDLE", certifi.where())
+    _ssl_context = ssl.create_default_context(cafile=certifi.where())
 except ImportError:
-    pass
+    _ssl_context = ssl.create_default_context()
 
 
 def get_client():
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY is niet ingesteld in .env")
-    return Anthropic(api_key=api_key)
+    # Pass certifi SSL context directly to httpx so the Anthropic SDK can connect
+    http_client = httpx.Client(verify=_ssl_context)
+    return Anthropic(api_key=api_key, http_client=http_client)
 
 
 FILTER_PROMPT = """Je bent een ervaren regiojournalist die werkt voor HLN, de populairste nieuwssite van Vlaanderen.

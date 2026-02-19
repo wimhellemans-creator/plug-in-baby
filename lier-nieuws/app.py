@@ -40,80 +40,38 @@ def _seed_sources():
 
     logger.info("Seeding default sources...")
     default_sources = [
+        # --- Stad & Bestuur ---
         ("Stad & Bestuur", "Stad Lier Algemeen Nieuws", "https://www.lier.be/"),
         ("Stad & Bestuur", "Agenda Gemeente- en OCMW-raad", "https://lier.be/agenda-gemeente-en-ocmw-raad"),
         ("Stad & Bestuur", "Zittingen & Verslagen", "https://www.lier.be/zittingen"),
-        ("Stad & Bestuur", "Register van Bekendmakingen", "https://www.lier.be/stadsbestuur/beleid-en-wetgeving/register-van-bekendmakingen"),
-        ("Stad & Bestuur", "Reglementen Stad Lier", "https://www.lier.be/stadsbestuur/beleid-en-wetgeving/reglementen-stad-lier"),
-        ("Stad & Bestuur", "Perscontacten Stad Lier", "https://lier.be/perscontacten"),
+        # --- Veiligheid ---
         ("Veiligheid", "Lokale Politie Lier Nieuws", "https://www.politie.be/5360/nieuws"),
         ("Veiligheid", "Brandweerzone Rivierenland", "https://rivierenland.hulpverleningszone.be/"),
-        ("Veiligheid", "Brandweerpost Lier", "https://rivierenland.brandweerzone.be/pagina/post-lier"),
-        ("Veiligheid", "Vriendenkring Brandweer Lier", "https://brandweervrienden.com/"),
+        # --- Economie ---
         ("Economie", "Made in Mechelen (regio Lier)", "https://www.made-in.be/mechelen/"),
-        ("Economie", "Made in Falingen", "https://www.made-in.be/falingen/"),
-        ("Economie", "Info voor Ondernemers (Stad)", "https://lier.be/ondernemen/info-voor-ondernemers"),
-        ("Economie", "Lierse Verenigingen Ondernemers", "https://www.lier.be/ondernemen/lierse-verenigingen-voor-ondernemers"),
-        ("Economie", "Lierse Club van Bedrijven", "https://lierseclubvanbedrijven.nl/"),
-        ("Economie", "Lier Shopping", "https://www.lier.be/ondernemen/hoe-start-ik-als-zelfstandige/lierse-verenigingen-voor-ondernemers/lier-shopping"),
+        # --- Zorg ---
         ("Zorg & Welzijn", "Heilig Hartziekenhuis Nieuws", "https://www.heilighartlier.be/nieuws/"),
-        ("Zorg & Welzijn", "Inmemoriam Lier", "https://www.inmemoriam.be/nl/"),
-        ("Zorg & Welzijn", "Uitvaartzorg Van den Bogaert", "https://www.begrafenissenvandenbogaert.be/overlijdens.html"),
-        ("Zorg & Welzijn", "Funerarium Bosmans", "https://www.funerarium-bosmans.be/online-condoleren/"),
-        ("Zorg & Welzijn", "Van der Heyden & Hellemans", "https://www.inmemoriam.be/nl/begrafenisondernemer/van-der-heyden-hellemans-lier-6473"),
-        ("Senioren & Zorg", "OKRA Lier Lisp", "https://okra.be/antwerpen/lier-lisp/"),
-        ("Senioren & Zorg", "Neos Lier", "https://neosvzw.be/lier/agenda-activiteiten/"),
-        ("Sociale Zorg", "Sociale Kruidenier 't Hofke", "https://thofke.mivas.be/sociale-kruidenier"),
+        # --- Sport (hoofdclubs) ---
         ("Sport", "Lierse SK (Kempenzonen)", "https://www.lierse.com/"),
-        ("Sport", "Lierse Academy", "https://lierseacademy.be/"),
         ("Sport", "K. Lyra-Lierse", "https://lyralierse.be/"),
-        ("Sport", "AV Lyra-Lierse (AVLL)", "https://avll.be/"),
-        ("Sport", "BC Guco Lier", "https://guco.sportadministratie.be/"),
-        ("Sport", "SV Zevenbergen (Tennis & Padel)", "https://www.zevenbergensport.be/"),
         ("Sport", "Royal Herakles HC (Hockey)", "https://herakles.be/"),
-        ("Sport", "BC Mister 100 (Biljart)", "https://mister100-salledeau.be/biljartzaal-mister-100-lier/"),
-        ("Sport", "ChessLooks Lier (Schaken)", "https://www.chesslooks-lier.be/"),
-        ("Sport", "Pallieterjogging", "https://www.pallieterjogging.be/"),
-        ("Jeugdverenigingen", "Chiro Lips", "https://www.chirolips.be/"),
-        ("Jeugdverenigingen", "Chiro Lier (HH & Sint-Gummarus)", "https://www.chirolier.be/"),
-        ("Jeugdverenigingen", "Chiro Jut (Koningshooikt)", "https://www.chirojut.be/"),
-        ("Jeugdverenigingen", "Scouts Sint-Gummarus Lier", "https://scoutinglier.be/"),
-        ("Jeugdverenigingen", "Scouts Durendael", "https://scoutslier.be/"),
-        ("Jeugdverenigingen", "KSA Sint-Gummarus Lier", "https://ksalier.weebly.com/"),
-        ("Jeugdverenigingen", "KLJ Lier Noord", "https://www.kljliernoord.be/"),
-        ("Jeugdverenigingen", "KLJ Lier Zuid", "https://www.kljlierzuid.be/"),
+        # --- Cultuur ---
         ("Cultuur & Vrije Tijd", "CC De Mol Programmatie", "https://www.lierscultuurcentrum.be/nl/programma"),
         ("Cultuur & Vrije Tijd", "UiT in Lier (Kalender)", "https://ikorganiseerinlier.uitinlier.be/kalender"),
-        ("Cultuur & Vrije Tijd", "Verenigingen in Lier (Stad)", "https://www.lier.be/vrije-tijd/verenigingen-in-lier"),
-        ("Cultuur & Vrije Tijd", "UiT in Lier Sportdatabank", "https://sporten.uitinlier.be/"),
         ("Cultuur & Theater", "Teater Lier (Den Bril)", "https://denbril.be/"),
-        ("Cultuur & Theater", "Toneellabo Arlecchino", "https://www.arlecchinolier.be/"),
-        ("Cultuur & Theater", "Theatergezelschap De Seine", "http://www.deseine.be"),
-        ("Cultuur & Muziek", "Koninklijke Stadsharmonie Leo XIII", "https://www.leoxiii-lier.be/"),
-        ("Sociaal Weefsel", "Hoplr Lier", "https://www.hoplr.com/stad/lier"),
-        ("Sociaal Weefsel", "Kerknet Parochies Lier", "https://www.kerknet.be/pastorale-eenheid-h-gummarus-z-beatrijs-lier/artikel/parochieblad"),
-        ("Sociaal Weefsel", "Vrijwilligers Stad Lier", "https://www.lier.be/stadsbestuur/vacatures/word-vrijwilliger"),
-        ("Erfgoed & Traditie", "Orde van het Liers Vlaaike", "https://www.visitlier.be/nl/eten-en-drinken/streekproducten/liers-vlaaike"),
-        ("Erfgoed & Traditie", "Liers Genootschap voor Geschiedenis", "https://www.liersgenootschap.be/"),
-        ("Erfgoed & Traditie", "Gilde der Heren van Lier", "https://www.herenvanlier.be/"),
+        # --- Erfgoed ---
         ("Erfgoed & Traditie", "Zimmertoren & Zimmermuseum", "https://zimmertoren.be/"),
-        ("Natuur & Milieu", "Natuurpunt De Wielewaal", "https://www.natuurpunt.be/afdelingen/natuurpunt-de-wielewaal"),
+        # --- Lokale Politiek ---
         ("Lokale Politiek", "N-VA Lier (Nieuws)", "https://lier.n-va.be/nieuws"),
         ("Lokale Politiek", "Missie2500 (CD&V Lier)", "https://afdeling.cdenv.be/lier"),
         ("Lokale Politiek", "Vooruit Lier", "https://nieuws.vooruit.org/lier"),
-        ("Lokale Politiek", "Groen Lier&Ko", "https://www.kiesjetoekomst.be/"),
-        ("Lokale Politiek", "Vlaams Belang Lier (Activiteiten)", "https://www.vlaamsbelang.org/activiteiten/vlaams-belang-lier-koningshooikt"),
-        ("Serviceclubs", "Lions Club Lier Twee Neten", "https://lionslier.be/onze-evenementen/"),
-        ("Serviceclubs", "Kiwanis Lier Twee Neten", "https://kiwanisliertweeneten.be/acties-en-nieuws/"),
-        ("Serviceclubs", "Rotary Lier", "https://www.rotarylier.be/"),
+        # --- Media & Concurrentie ---
         ("Media & Concurrentie", "RTV Lier", "https://www.rtv.be/regio/lier"),
         ("Media & Concurrentie", "Lier Belicht", "https://www.lierbelicht.be/"),
         ("Media & Concurrentie", "Nnieuws Brandweer Rivierenland", "https://nnieuws.be/tags/brandweer-rivierenland"),
         ("Media & Concurrentie", "Radio Pallieter", "https://radiopallieter.be/"),
         ("Media & Concurrentie", "Het Nieuwsblad Lier", "https://www.nieuwsblad.be/regio/lier"),
         ("Media & Concurrentie", "Gazet van Antwerpen Lier", "https://www.gva.be/regio/lier"),
-        ("Studenten & Jobs", "Student.be Jobs Lier", "https://www.student.be/en/lier/student-jobs/"),
-        ("Studenten & Jobs", "Jobat Regio Lier", "https://www.jobat.be/nl/jobs/lier"),
     ]
 
     for cat, desc, url in default_sources:
@@ -122,8 +80,90 @@ def _seed_sources():
     logger.info(f"Seeded {len(default_sources)} default sources.")
 
 
-# Seed default sources if empty
+# URLs to deactivate in existing databases — static pages, funeral homes, job boards, etc.
+_URLS_TO_DEACTIVATE = [
+    # Statische stadspagina's (geen nieuwswaarde)
+    "https://www.lier.be/stadsbestuur/beleid-en-wetgeving/register-van-bekendmakingen",
+    "https://www.lier.be/stadsbestuur/beleid-en-wetgeving/reglementen-stad-lier",
+    "https://lier.be/perscontacten",
+    "https://lier.be/ondernemen/info-voor-ondernemers",
+    "https://www.lier.be/ondernemen/lierse-verenigingen-voor-ondernemers",
+    "https://www.lier.be/ondernemen/hoe-start-ik-als-zelfstandige/lierse-verenigingen-voor-ondernemers/lier-shopping",
+    "https://www.lier.be/vrije-tijd/verenigingen-in-lier",
+    "https://www.lier.be/stadsbestuur/vacatures/word-vrijwilliger",
+    "https://www.visitlier.be/nl/eten-en-drinken/streekproducten/liers-vlaaike",
+    # Uitvaart / overlijdens
+    "https://www.inmemoriam.be/nl/",
+    "https://www.begrafenissenvandenbogaert.be/overlijdens.html",
+    "https://www.funerarium-bosmans.be/online-condoleren/",
+    "https://www.inmemoriam.be/nl/begrafenisondernemer/van-der-heyden-hellemans-lier-6473",
+    # Jobsites
+    "https://www.student.be/en/lier/student-jobs/",
+    "https://www.jobat.be/nl/jobs/lier",
+    # Broken SSL / nauwelijks content
+    "https://www.leoxiii-lier.be/",
+    "https://brandweervrienden.com/",
+    # Statische clubpagina's (zelden nieuws)
+    "https://rivierenland.brandweerzone.be/pagina/post-lier",
+    "https://www.made-in.be/falingen/",
+    "https://lierseclubvanbedrijven.nl/",
+    "https://thofke.mivas.be/sociale-kruidenier",
+    "https://lierseacademy.be/",
+    "https://avll.be/",
+    "https://guco.sportadministratie.be/",
+    "https://www.zevenbergensport.be/",
+    "https://mister100-salledeau.be/biljardzaal-mister-100-lier/",
+    "https://www.chesslooks-lier.be/",
+    "https://www.pallieterjogging.be/",
+    # Jeugdverenigingen (statisch, geen nieuws)
+    "https://www.chirolips.be/",
+    "https://www.chirolier.be/",
+    "https://www.chirojut.be/",
+    "https://scoutinglier.be/",
+    "https://scoutslier.be/",
+    "https://ksalier.weebly.com/",
+    "https://www.kljliernoord.be/",
+    "https://www.kljlierzuid.be/",
+    # Kleine toneelgezelschappen
+    "https://www.arlecchinolier.be/",
+    "http://www.deseine.be",
+    # Senioren / sociaal / kerk
+    "https://okra.be/antwerpen/lier-lisp/",
+    "https://neosvzw.be/lier/agenda-activiteiten/",
+    "https://www.hoplr.com/stad/lier",
+    "https://www.kerknet.be/pastorale-eenheid-h-gummarus-z-beatrijs-lier/artikel/parochieblad",
+    "https://www.liersgenootschap.be/",
+    "https://www.herenvanlier.be/",
+    "https://www.natuurpunt.be/afdelingen/natuurpunt-de-wielewaal",
+    "https://www.kiesjetoekomst.be/",
+    "https://www.vlaamsbelang.org/activiteiten/vlaams-belang-lier-koningshooikt",
+    "https://sporten.uitinlier.be/",
+    # Serviceclubs (zelden nieuws)
+    "https://lionslier.be/onze-evenementen/",
+    "https://kiwanisliertweeneten.be/acties-en-nieuws/",
+    "https://www.rotarylier.be/",
+]
+
+
+def _cleanup_sources():
+    """Deactivate known-useless sources in existing databases."""
+    from database import get_db
+    conn = get_db()
+    deactivated = 0
+    for url in _URLS_TO_DEACTIVATE:
+        cursor = conn.execute(
+            "UPDATE sources SET active = 0 WHERE url = ? AND active = 1", (url,)
+        )
+        deactivated += cursor.rowcount
+    conn.commit()
+    conn.close()
+    if deactivated:
+        logger.info(f"Cleanup: {deactivated} nutteloze bronnen gedeactiveerd.")
+
+
+# Seed default sources if empty, then clean up useless ones
 _seed_sources()
+_cleanup_sources()
 
 
 # ---- Routes ----
@@ -236,8 +276,8 @@ def api_diagnose():
     # 4. Test API connection
     if api_key and api_key != "your-api-key-here":
         try:
-            from anthropic import Anthropic
-            client = Anthropic(api_key=api_key)
+            from ai_filter import get_client
+            client = get_client()
             response = client.messages.create(
                 model="claude-sonnet-4-5-20250929",
                 max_tokens=50,

@@ -38,6 +38,25 @@ def scrape_source(source):
             "html": resp.text,
             "status": "ok",
         }
+    except requests.exceptions.SSLError:
+        # Retry once without SSL verification for sites with broken certificates
+        logger.warning(f"SSL error for {url}, retrying without verification...")
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, verify=False)
+            resp.raise_for_status()
+            resp.encoding = resp.apparent_encoding or "utf-8"
+            return {
+                "source": source,
+                "html": resp.text,
+                "status": "ok",
+            }
+        except requests.RequestException as e:
+            logger.warning(f"Failed to scrape {url} (even without SSL): {e}")
+            return {
+                "source": source,
+                "html": None,
+                "status": f"error: {e}",
+            }
     except requests.RequestException as e:
         logger.warning(f"Failed to scrape {url}: {e}")
         return {
