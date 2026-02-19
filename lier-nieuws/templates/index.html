@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lier Nieuws Radar - HLN Regiodesk</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">Lier <span>Nieuws Radar</span></div>
+            <span class="header-subtitle">HLN Regiodesk</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" id="sourcesBtn">&#9881; Bronnen beheren</button>
+            <button class="btn btn-primary" id="searchBtn">&#128270; Ga op zoek naar nieuws</button>
+        </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar-wrapper">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">Even geduld...</div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+        <span><strong id="articleCount">0</strong> leads op het board</span>
+        <span><strong id="sourceCount">0</strong> actieve bronnen</span>
+    </div>
+
+    <!-- Main content -->
+    <div class="main">
+        <div id="emptyState" class="empty-state">
+            <h2>Nog geen nieuwsleads</h2>
+            <p>Klik op "Ga op zoek naar nieuws" om te beginnen met scrapen.</p>
+        </div>
+
+        <div id="articles"></div>
+
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- Sources Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Bronnen beheren</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Add source form -->
+                <form id="addSourceForm" class="add-source-form">
+                    <div>
+                        <label>Categorie</label>
+                        <input type="text" name="category" placeholder="bv. Sport" required>
+                    </div>
+                    <div>
+                        <label>Beschrijving</label>
+                        <input type="text" name="description" placeholder="bv. Lierse SK Nieuws" required>
+                    </div>
+                    <div>
+                        <label>URL</label>
+                        <input type="url" name="url" placeholder="https://..." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-small">+ Toevoegen</button>
+                </form>
+
+                <!-- Sources table -->
+                <table class="sources-table">
+                    <thead>
+                        <tr>
+                            <th>Categorie</th>
+                            <th>Bron</th>
+                            <th>URL</th>
+                            <th>Actief</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="sourcesTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
