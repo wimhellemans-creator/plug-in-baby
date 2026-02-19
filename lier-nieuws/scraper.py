@@ -47,7 +47,7 @@ def extract_page_content(scrape_result):
     base_url = source["url"]
     html = scrape_result["html"]
 
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(html, "html.parser")
 
     # Remove script, style, nav, footer elements
     for tag in soup(["script", "style", "nav", "footer", "header", "aside"]):
