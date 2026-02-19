@@ -68,17 +68,27 @@ def extract_page_content(scrape_result):
     # Strategy 1: Look for <article> tags
     article_tags = soup.find_all("article")
     if article_tags:
+        logger.info(f"  [{source['description']}] Strategy 1: {len(article_tags)} <article> tags gevonden")
         for art in article_tags[:30]:
             article_data = _extract_article_data(art, base_url)
             if article_data:
                 articles.append(article_data)
 
-    # Strategy 2: Look for common news listing patterns
+    # Strategy 2: Look for common news listing patterns (incl. Belgian/Dutch sites)
     if not articles:
         for selector in [
             ".news-item", ".post", ".item", ".card", ".article",
             ".teaser", ".overview-item", ".list-item", ".entry",
             "[class*='news']", "[class*='article']", "[class*='bericht']",
+            "[class*='event']", "[class*='agenda']", "[class*='activit']",
+            "[class*='nieuw']", "[class*='actua']", "[class*='blog']",
+            ".views-row", ".view-content .views-row",   # Drupal (veel gemeentesites)
+            ".node--type-news", ".node--type-article",  # Drupal
+            "li.leaf", ".field-content",                 # Drupal
+            ".wp-block-post",                            # WordPress
+            ".elementor-post",                           # Elementor/WordPress
+            ".td-module-container",                      # Flavor theme
+            ".jeg_post",                                 # flavor theme
         ]:
             items = soup.select(selector)
             if items:
@@ -86,29 +96,73 @@ def extract_page_content(scrape_result):
                     article_data = _extract_article_data(item, base_url)
                     if article_data:
                         articles.append(article_data)
-                break
+                if articles:
+                    logger.info(f"  [{source['description']}] Strategy 2: {len(articles)} items via '{selector}'")
+                    break
 
-    # Strategy 3: If still nothing, extract all meaningful text blocks with links
+    # Strategy 3: Extract individual link items as separate "articles" for Claude
     if not articles:
+        logger.info(f"  [{source['description']}] Strategy 3: links extraheren als fallback")
         main_content = soup.find("main") or soup.find(id="content") or soup.find(class_="content") or soup.body
         if main_content:
-            text = main_content.get_text(separator="\n", strip=True)
-            # Truncate to avoid huge payloads
-            text = text[:5000]
-            links = []
-            for a in (main_content.find_all("a", href=True) or [])[:30]:
+            # Find all meaningful links and turn each into a mini-article
+            seen_urls = set()
+            for a in (main_content.find_all("a", href=True) or [])[:50]:
                 href = urljoin(base_url, a["href"])
                 link_text = a.get_text(strip=True)
-                if link_text and len(link_text) > 5:
-                    links.append({"url": href, "text": link_text})
 
-            articles.append({
-                "title": "",
-                "text": text,
-                "url": base_url,
-                "date": "",
-                "links": links,
-            })
+                # Skip empty, short, duplicate, and non-content links
+                if not link_text or len(link_text) < 10:
+                    continue
+                if href in seen_urls or href == base_url:
+                    continue
+                parsed = urlparse(href)
+                if not parsed.path or parsed.path == "/":
+                    continue
+                # Skip anchors, tel:, mailto:, etc.
+                if parsed.scheme and parsed.scheme not in ("http", "https"):
+                    continue
+                seen_urls.add(href)
+
+                # Get surrounding context (parent text)
+                parent = a.parent
+                context = ""
+                if parent:
+                    context = parent.get_text(separator=" ", strip=True)[:300]
+
+                # Look for a date near this link
+                date = ""
+                if parent:
+                    date_patterns = [
+                        r"\d{1,2}[/-]\d{1,2}[/-]\d{2,4}",
+                        r"\d{1,2}\s+(?:jan|feb|maa|apr|mei|jun|jul|aug|sep|okt|nov|dec)\w*\.?\s+\d{4}",
+                    ]
+                    for pattern in date_patterns:
+                        match = re.search(pattern, parent.get_text(), re.IGNORECASE)
+                        if match:
+                            date = match.group()
+                            break
+
+                articles.append({
+                    "title": link_text,
+                    "text": context if context != link_text else link_text,
+                    "url": href,
+                    "date": date,
+                })
+
+            logger.info(f"  [{source['description']}] Strategy 3: {len(articles)} link-items geëxtraheerd")
+
+            # Fallback: if still no links found, use page text as before
+            if not articles:
+                text = main_content.get_text(separator="\n", strip=True)[:5000]
+                articles.append({
+                    "title": "",
+                    "text": text,
+                    "url": base_url,
+                    "date": "",
+                })
+
+    logger.info(f"  [{source['description']}] Totaal: {len(articles)} items geëxtraheerd")
 
     return {
         "source": source,
@@ -132,7 +186,14 @@ def _extract_article_data(element, base_url):
 
     # Find date
     date = ""
-    date_el = element.find(["time", "[class*='date']", "[class*='datum']"])
+    # find() only accepts tag names, NOT CSS selectors — use select_one for class matching
+    date_el = element.find("time")
+    if not date_el:
+        date_el = element.select_one("[class*='date']")
+    if not date_el:
+        date_el = element.select_one("[class*='datum']")
+    if not date_el:
+        date_el = element.select_one("[class*='tijd']")
     if date_el:
         date = date_el.get("datetime", "") or date_el.get_text(strip=True)
     if not date:
