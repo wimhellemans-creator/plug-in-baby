@@ -187,6 +187,67 @@ def api_delete_source(source_id):
     return jsonify({"ok": True})
 
 
+# ---- API: Diagnose ----
+
+@app.route("/api/diagnose")
+def api_diagnose():
+    """Run diagnostics to check if everything is configured correctly."""
+    results = []
+
+    # 1. Check .env / API key
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        results.append({"step": "API Key", "status": "fail", "message": "ANTHROPIC_API_KEY is niet ingesteld. Maak een .env bestand aan in de lier-nieuws map met: ANTHROPIC_API_KEY=sk-ant-..."})
+    elif api_key == "your-api-key-here":
+        results.append({"step": "API Key", "status": "fail", "message": "Je gebruikt nog de placeholder key. Vervang 'your-api-key-here' in je .env door je echte Anthropic API key."})
+    elif not api_key.startswith("sk-ant-"):
+        results.append({"step": "API Key", "status": "warn", "message": f"API key begint met '{api_key[:8]}...' — normaal begint een Anthropic key met 'sk-ant-'. Controleer of dit klopt."})
+    else:
+        results.append({"step": "API Key", "status": "ok", "message": f"API key gevonden (begint met {api_key[:12]}...)"})
+
+    # 2. Check active sources
+    sources = get_all_sources(active_only=True)
+    if not sources:
+        results.append({"step": "Bronnen", "status": "fail", "message": "Geen actieve bronnen gevonden. Ga naar 'Bronnen beheren' en voeg bronnen toe."})
+    else:
+        results.append({"step": "Bronnen", "status": "ok", "message": f"{len(sources)} actieve bronnen gevonden."})
+
+    # 3. Test scraping with first source
+    if sources:
+        from scraper import scrape_source, extract_page_content
+        test_source = sources[0]
+        result = scrape_source(test_source)
+        content = extract_page_content(result)
+        if result["status"] != "ok":
+            results.append({"step": "Scraping", "status": "fail", "message": f"Scraping van '{test_source['description']}' mislukt: {result['status']}"})
+        elif not content or not content["articles"]:
+            results.append({"step": "Scraping", "status": "warn", "message": f"Scraping van '{test_source['description']}' lukte maar leverde geen content op."})
+        else:
+            results.append({"step": "Scraping", "status": "ok", "message": f"Scraping OK: '{test_source['description']}' leverde {len(content['articles'])} items op."})
+
+    # 4. Test API connection
+    if api_key and api_key != "your-api-key-here":
+        try:
+            from anthropic import Anthropic
+            client = Anthropic(api_key=api_key)
+            response = client.messages.create(
+                model="claude-sonnet-4-5-20250929",
+                max_tokens=50,
+                messages=[{"role": "user", "content": "Zeg enkel 'OK' als je dit leest."}],
+            )
+            results.append({"step": "Anthropic API", "status": "ok", "message": f"API verbinding werkt! Antwoord: {response.content[0].text}"})
+        except Exception as e:
+            error_msg = str(e)
+            if "401" in error_msg or "authentication" in error_msg.lower():
+                results.append({"step": "Anthropic API", "status": "fail", "message": "API key is ongeldig (401 Unauthorized). Controleer je key op console.anthropic.com."})
+            elif "insufficient" in error_msg.lower() or "credit" in error_msg.lower() or "billing" in error_msg.lower():
+                results.append({"step": "Anthropic API", "status": "fail", "message": "Geen credits/billing. Voeg credits toe op console.anthropic.com/settings/billing."})
+            else:
+                results.append({"step": "Anthropic API", "status": "fail", "message": f"API fout: {error_msg}"})
+
+    return jsonify(results)
+
+
 # ---- API: Search ----
 
 @app.route("/api/search", methods=["POST"])
@@ -266,7 +327,14 @@ def api_search():
 
         except Exception as e:
             logger.error(f"Search error: {e}", exc_info=True)
-            yield _sse({"type": "error", "message": f"Er ging iets mis: {str(e)}"})
+            error_msg = str(e)
+            if "401" in error_msg or "authentication" in error_msg.lower():
+                error_msg = "API key is ongeldig. Klik op 'Diagnose' om te testen."
+            elif "insufficient" in error_msg.lower() or "credit" in error_msg.lower():
+                error_msg = "Geen API credits. Voeg credits toe op console.anthropic.com."
+            elif "ANTHROPIC_API_KEY" in error_msg:
+                error_msg = "API key niet gevonden. Maak een .env bestand aan met je ANTHROPIC_API_KEY."
+            yield _sse({"type": "error", "message": error_msg})
 
     return Response(
         stream_with_context(generate()),

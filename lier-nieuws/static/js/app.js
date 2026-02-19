@@ -22,6 +22,8 @@ const modalClose = document.getElementById("modalClose");
 const sourcesTableBody = document.getElementById("sourcesTableBody");
 const addSourceForm = document.getElementById("addSourceForm");
 
+const diagnoseBtn = document.getElementById("diagnoseBtn");
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
     loadArticles();
@@ -31,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Event listeners
 searchBtn.addEventListener("click", startSearch);
 sourcesBtn.addEventListener("click", openSourcesModal);
+diagnoseBtn.addEventListener("click", runDiagnose);
 modalClose.addEventListener("click", closeSourcesModal);
 modalOverlay.addEventListener("click", (e) => {
     if (e.target === modalOverlay) closeSourcesModal();
@@ -333,6 +336,41 @@ async function loadSourceCount() {
         const sources = await resp.json();
         sourceCount.textContent = sources.filter((s) => s.active).length;
     } catch {}
+}
+
+// Diagnose
+async function runDiagnose() {
+    diagnoseBtn.disabled = true;
+    diagnoseBtn.innerHTML = "&#9203; Testen...";
+    progressContainer.classList.add("active");
+    progressBar.style.width = "50%";
+    progressText.textContent = "Diagnose wordt uitgevoerd...";
+
+    try {
+        const resp = await fetch("/api/diagnose");
+        const results = await resp.json();
+
+        progressBar.style.width = "100%";
+
+        const icons = { ok: "\u2705", fail: "\u274c", warn: "\u26a0\ufe0f" };
+        const messages = results.map(
+            (r) => `${icons[r.status] || "?"} ${r.step}: ${r.message}`
+        );
+        progressText.innerHTML = messages.join("<br>");
+
+        const hasFail = results.some((r) => r.status === "fail");
+        if (hasFail) {
+            showToast("Er zijn problemen gevonden - bekijk de diagnose hierboven", "error");
+        } else {
+            showToast("Alles ziet er goed uit!", "success");
+        }
+    } catch (err) {
+        progressText.textContent = "Diagnose mislukt: " + err.message;
+        showToast("Diagnose mislukt: " + err.message, "error");
+    } finally {
+        diagnoseBtn.disabled = false;
+        diagnoseBtn.innerHTML = "&#9889; Diagnose";
+    }
 }
 
 // Utility functions
