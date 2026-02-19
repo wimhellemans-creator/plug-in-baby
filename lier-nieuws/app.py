@@ -207,6 +207,8 @@ def api_search():
 
             scraped_content = []
             total = len(sources)
+            scrape_ok = 0
+            scrape_fail = 0
 
             for i, source in enumerate(sources):
                 yield _sse({"type": "progress", "current": i + 1, "total": total, "source": source["description"]})
@@ -217,9 +219,17 @@ def api_search():
                 content = extract_page_content(result)
                 if content and content["articles"]:
                     scraped_content.append(content)
+                    scrape_ok += 1
+                    logger.info(f"  OK: {source['description']} -> {len(content['articles'])} items")
+                else:
+                    scrape_fail += 1
+                    logger.warning(f"  LEEG: {source['description']} (status: {result['status']})")
                 time.sleep(0.3)
 
+            logger.info(f"Scraping klaar: {scrape_ok} bronnen met content, {scrape_fail} lege bronnen")
+
             if not scraped_content:
+                logger.warning("Geen enkele bron leverde content op. Controleer je internetverbinding.")
                 yield _sse({"type": "done", "new_articles": 0})
                 return
 
@@ -228,7 +238,9 @@ def api_search():
 
             # 4. AI analysis
             yield _sse({"type": "analyzing"})
+            logger.info(f"AI-analyse gestart met {len(scraped_content)} bronnen en {len(existing_urls)} bestaande URLs...")
             articles = filter_and_summarize(scraped_content, existing_urls)
+            logger.info(f"AI-analyse klaar: {len(articles)} leads gevonden")
 
             if not articles:
                 yield _sse({"type": "done", "new_articles": 0})
