@@ -1,26 +1,56 @@
 import json
 import os
 import logging
+import ssl
 import httpx
 from anthropic import Anthropic
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-# Use certifi's CA bundle for SSL verification — fixes Windows Python installs
-# where the system certificate store is not available to Python's ssl module.
-try:
-    import certifi
-    _ssl_verify = certifi.where()
-except ImportError:
-    _ssl_verify = True  # fall back to system default
+
+def _build_ssl_context():
+    """Build an SSL context that works on Python 3.14 + Windows.
+
+    Tries multiple strategies in order:
+    1. certifi CA bundle loaded into an explicit SSLContext
+    2. System default SSL context
+    3. SSL verification disabled (last resort, logs a warning)
+    """
+    # Strategy 1: explicit SSLContext with certifi bundle
+    try:
+        import certifi
+        ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        ctx.load_verify_locations(certifi.where())
+        return ctx
+    except Exception as e:
+        logger.debug(f"SSL strategy 1 (certifi SSLContext) failed: {e}")
+
+    # Strategy 2: system defaults
+    try:
+        ctx = ssl.create_default_context()
+        return ctx
+    except Exception as e:
+        logger.debug(f"SSL strategy 2 (system defaults) failed: {e}")
+
+    # Strategy 3: no verification (same fallback the scraper uses)
+    logger.warning(
+        "SSL-certificaatverificatie uitgeschakeld voor Anthropic API — "
+        "kon geen werkende CA-bundel laden. Verbinding is nog steeds "
+        "versleuteld (TLS), maar het certificaat wordt niet geverifieerd."
+    )
+    return False
 
 
-def get_client():
+_ssl_verify = _build_ssl_context()
+
+
+def get_client(verify=None):
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY is niet ingesteld in .env")
-    http_client = httpx.Client(verify=_ssl_verify, timeout=60.0)
+    v = verify if verify is not None else _ssl_verify
+    http_client = httpx.Client(verify=v, timeout=60.0)
     return Anthropic(api_key=api_key, http_client=http_client)
 
 
@@ -118,18 +148,41 @@ def filter_and_summarize(scraped_content, existing_urls):
 
     prompt = FILTER_PROMPT.format(today=today, existing_urls=existing_urls_text)
 
+    messages = [
+        {
+            "role": "user",
+            "content": f"{prompt}\n\nHier zijn de gescrapete bronnen:\n\n{full_content}",
+        }
+    ]
+
     try:
         response = client.messages.create(
             model="claude-sonnet-4-5-20250929",
             max_tokens=4096,
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"{prompt}\n\nHier zijn de gescrapete bronnen:\n\n{full_content}",
-                }
-            ],
+            messages=messages,
         )
+    except Exception as e:
+        # If the first attempt fails with an SSL/connection error, retry
+        # with SSL verification disabled (same fallback the scraper uses).
+        if "SSL" in str(e) or "Connection" in str(e) or "ConnectError" in str(e):
+            logger.warning(
+                f"API-aanroep mislukt ({e}), opnieuw proberen zonder SSL-verificatie..."
+            )
+            client = get_client(verify=False)
+            try:
+                response = client.messages.create(
+                    model="claude-sonnet-4-5-20250929",
+                    max_tokens=4096,
+                    messages=messages,
+                )
+            except Exception as retry_err:
+                logger.error(f"Claude API error (retry): {retry_err}")
+                raise
+        else:
+            logger.error(f"Claude API error: {e}")
+            raise
 
+    try:
         response_text = response.content[0].text
 
         # Extract JSON from response
@@ -147,6 +200,3 @@ def filter_and_summarize(scraped_content, existing_urls):
         logger.error(f"Failed to parse Claude response as JSON: {e}")
         logger.error(f"Response was: {response_text[:500]}")
         return []
-    except Exception as e:
-        logger.error(f"Claude API error: {e}")
-        raise
