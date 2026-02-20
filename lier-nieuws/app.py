@@ -72,6 +72,28 @@ def _seed_sources():
         ("Media & Concurrentie", "Radio Pallieter", "https://radiopallieter.be/"),
         ("Media & Concurrentie", "Het Nieuwsblad Lier", "https://www.nieuwsblad.be/regio/lier"),
         ("Media & Concurrentie", "Gazet van Antwerpen Lier", "https://www.gva.be/regio/lier"),
+        # --- Jeugdverenigingen ---
+        ("Jeugdverenigingen", "Chiro Lips Lier", "https://www.chirolips.be/"),
+        ("Jeugdverenigingen", "Chiro Lier", "https://www.chirolier.be/"),
+        ("Jeugdverenigingen", "Chiro Jut Lier", "https://www.chirojut.be/"),
+        ("Jeugdverenigingen", "Scouting Lier", "https://scoutinglier.be/"),
+        ("Jeugdverenigingen", "Scouts Lier", "https://scoutslier.be/"),
+        ("Jeugdverenigingen", "KSA Lier", "https://ksalier.weebly.com/"),
+        ("Jeugdverenigingen", "KLJ Lier-Noord", "https://www.kljliernoord.be/"),
+        ("Jeugdverenigingen", "KLJ Lier-Zuid", "https://www.kljlierzuid.be/"),
+        # --- Kleine clubs ---
+        ("Kleine Clubs", "Mister 100 Biljartzaal Lier", "https://mister100-salledeau.be/biljardzaal-mister-100-lier/"),
+        ("Kleine Clubs", "Chesslooks Schaakclub Lier", "https://www.chesslooks-lier.be/"),
+        ("Kleine Clubs", "Pallieter Jogging Lier", "https://www.pallieterjogging.be/"),
+        # --- Serviceclubs, kerk & senioren ---
+        ("Serviceclubs & Verenigingen", "Lions Club Lier", "https://lionslier.be/onze-evenementen/"),
+        ("Serviceclubs & Verenigingen", "Kiwanis Lier Twee Neten", "https://kiwanisliertweeneten.be/acties-en-nieuws/"),
+        ("Serviceclubs & Verenigingen", "Rotary Lier", "https://www.rotarylier.be/"),
+        ("Serviceclubs & Verenigingen", "Okra Lier-Lisp (Senioren)", "https://okra.be/antwerpen/lier-lisp/"),
+        ("Serviceclubs & Verenigingen", "Neos Lier (Senioren)", "https://neosvzw.be/lier/agenda-activiteiten/"),
+        ("Serviceclubs & Verenigingen", "Parochie H. Gummarus Lier", "https://www.kerknet.be/pastorale-eenheid-h-gummarus-z-beatrijs-lier/artikel/parochieblad"),
+        ("Serviceclubs & Verenigingen", "Liers Genootschap", "https://www.liersgenootschap.be/"),
+        ("Serviceclubs & Verenigingen", "Heren van Lier", "https://www.herenvanlier.be/"),
     ]
 
     for cat, desc, url in default_sources:
@@ -112,36 +134,15 @@ _URLS_TO_DEACTIVATE = [
     "https://avll.be/",
     "https://guco.sportadministratie.be/",
     "https://www.zevenbergensport.be/",
-    "https://mister100-salledeau.be/biljardzaal-mister-100-lier/",
-    "https://www.chesslooks-lier.be/",
-    "https://www.pallieterjogging.be/",
-    # Jeugdverenigingen (statisch, geen nieuws)
-    "https://www.chirolips.be/",
-    "https://www.chirolier.be/",
-    "https://www.chirojut.be/",
-    "https://scoutinglier.be/",
-    "https://scoutslier.be/",
-    "https://ksalier.weebly.com/",
-    "https://www.kljliernoord.be/",
-    "https://www.kljlierzuid.be/",
     # Kleine toneelgezelschappen
     "https://www.arlecchinolier.be/",
     "http://www.deseine.be",
-    # Senioren / sociaal / kerk
-    "https://okra.be/antwerpen/lier-lisp/",
-    "https://neosvzw.be/lier/agenda-activiteiten/",
+    # Overige statisch
     "https://www.hoplr.com/stad/lier",
-    "https://www.kerknet.be/pastorale-eenheid-h-gummarus-z-beatrijs-lier/artikel/parochieblad",
-    "https://www.liersgenootschap.be/",
-    "https://www.herenvanlier.be/",
     "https://www.natuurpunt.be/afdelingen/natuurpunt-de-wielewaal",
     "https://www.kiesjetoekomst.be/",
     "https://www.vlaamsbelang.org/activiteiten/vlaams-belang-lier-koningshooikt",
     "https://sporten.uitinlier.be/",
-    # Serviceclubs (zelden nieuws)
-    "https://lionslier.be/onze-evenementen/",
-    "https://kiwanisliertweeneten.be/acties-en-nieuws/",
-    "https://www.rotarylier.be/",
 ]
 
 
@@ -161,9 +162,53 @@ def _cleanup_sources():
         logger.info(f"Cleanup: {deactivated} nutteloze bronnen gedeactiveerd.")
 
 
-# Seed default sources if empty, then clean up useless ones
+# URLs to reactivate — previously deactivated sources that should be active again
+_URLS_TO_REACTIVATE = [
+    # Jeugdverenigingen
+    "https://www.chirolips.be/",
+    "https://www.chirolier.be/",
+    "https://www.chirojut.be/",
+    "https://scoutinglier.be/",
+    "https://scoutslier.be/",
+    "https://ksalier.weebly.com/",
+    "https://www.kljliernoord.be/",
+    "https://www.kljlierzuid.be/",
+    # Kleine clubs
+    "https://mister100-salledeau.be/biljardzaal-mister-100-lier/",
+    "https://www.chesslooks-lier.be/",
+    "https://www.pallieterjogging.be/",
+    # Serviceclubs, kerk, senioren
+    "https://lionslier.be/onze-evenementen/",
+    "https://kiwanisliertweeneten.be/acties-en-nieuws/",
+    "https://www.rotarylier.be/",
+    "https://okra.be/antwerpen/lier-lisp/",
+    "https://neosvzw.be/lier/agenda-activiteiten/",
+    "https://www.kerknet.be/pastorale-eenheid-h-gummarus-z-beatrijs-lier/artikel/parochieblad",
+    "https://www.liersgenootschap.be/",
+    "https://www.herenvanlier.be/",
+]
+
+
+def _reactivate_sources():
+    """Reactivate sources that were previously deactivated but should be active again."""
+    from database import get_db
+    conn = get_db()
+    reactivated = 0
+    for url in _URLS_TO_REACTIVATE:
+        cursor = conn.execute(
+            "UPDATE sources SET active = 1 WHERE url = ? AND active = 0", (url,)
+        )
+        reactivated += cursor.rowcount
+    conn.commit()
+    conn.close()
+    if reactivated:
+        logger.info(f"Reactivatie: {reactivated} bronnen opnieuw geactiveerd.")
+
+
+# Seed default sources if empty, then clean up useless ones, then reactivate wanted ones
 _seed_sources()
 _cleanup_sources()
+_reactivate_sources()
 
 
 # ---- Routes ----
@@ -294,6 +339,66 @@ def api_diagnose():
                 results.append({"step": "Anthropic API", "status": "fail", "message": f"API fout: {error_msg}"})
 
     return jsonify(results)
+
+
+# ---- API: Settings (API Key) ----
+
+def _env_file_path():
+    """Return the path to the .env file in the lier-nieuws directory."""
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+
+
+@app.route("/api/settings/apikey")
+def api_get_apikey():
+    """Check if an API key is configured (returns masked version)."""
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if api_key and api_key != "your-api-key-here":
+        masked = api_key[:12] + "..." + api_key[-4:] if len(api_key) > 16 else api_key[:8] + "..."
+        return jsonify({"has_key": True, "masked": masked})
+    return jsonify({"has_key": False, "masked": ""})
+
+
+@app.route("/api/settings/apikey", methods=["POST"])
+def api_save_apikey():
+    """Save the API key to .env and activate it immediately."""
+    data = request.get_json()
+    api_key = (data.get("api_key") or "").strip()
+
+    if not api_key:
+        return jsonify({"error": "Vul een API key in."}), 400
+
+    if not api_key.startswith("sk-"):
+        return jsonify({"error": "Dit lijkt geen geldige Anthropic API key. Die begint met 'sk-'."}), 400
+
+    # Write to .env file
+    env_path = _env_file_path()
+    try:
+        # Read existing .env content (if any) and replace/add the key
+        env_lines = []
+        key_found = False
+        if os.path.exists(env_path):
+            with open(env_path, "r") as f:
+                for line in f:
+                    if line.strip().startswith("ANTHROPIC_API_KEY="):
+                        env_lines.append(f"ANTHROPIC_API_KEY={api_key}\n")
+                        key_found = True
+                    else:
+                        env_lines.append(line)
+        if not key_found:
+            env_lines.append(f"ANTHROPIC_API_KEY={api_key}\n")
+
+        with open(env_path, "w") as f:
+            f.writelines(env_lines)
+
+        # Activate immediately in the running process
+        os.environ["ANTHROPIC_API_KEY"] = api_key
+
+        logger.info("API key opgeslagen en geactiveerd.")
+        return jsonify({"ok": True, "message": "API key opgeslagen en meteen actief!"})
+
+    except Exception as e:
+        logger.error(f"Fout bij opslaan API key: {e}")
+        return jsonify({"error": f"Kon .env niet opslaan: {e}"}), 500
 
 
 # ---- API: Search ----

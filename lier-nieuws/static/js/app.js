@@ -24,6 +24,16 @@ const addSourceForm = document.getElementById("addSourceForm");
 
 const diagnoseBtn = document.getElementById("diagnoseBtn");
 
+// Settings modal elements
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsModalOverlay = document.getElementById("settingsModalOverlay");
+const settingsModalClose = document.getElementById("settingsModalClose");
+const apiKeyInput = document.getElementById("apiKeyInput");
+const saveApiKeyBtn = document.getElementById("saveApiKeyBtn");
+const toggleKeyVisibility = document.getElementById("toggleKeyVisibility");
+const apiKeyStatus = document.getElementById("apiKeyStatus");
+const apiKeyMessage = document.getElementById("apiKeyMessage");
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
     loadArticles();
@@ -34,6 +44,21 @@ document.addEventListener("DOMContentLoaded", () => {
 searchBtn.addEventListener("click", startSearch);
 sourcesBtn.addEventListener("click", openSourcesModal);
 diagnoseBtn.addEventListener("click", runDiagnose);
+settingsBtn.addEventListener("click", openSettingsModal);
+settingsModalClose.addEventListener("click", closeSettingsModal);
+settingsModalOverlay.addEventListener("click", (e) => {
+    if (e.target === settingsModalOverlay) closeSettingsModal();
+});
+saveApiKeyBtn.addEventListener("click", saveApiKey);
+toggleKeyVisibility.addEventListener("click", () => {
+    if (apiKeyInput.type === "password") {
+        apiKeyInput.type = "text";
+        toggleKeyVisibility.textContent = "Verberg";
+    } else {
+        apiKeyInput.type = "password";
+        toggleKeyVisibility.textContent = "Toon";
+    }
+});
 modalClose.addEventListener("click", closeSourcesModal);
 modalOverlay.addEventListener("click", (e) => {
     if (e.target === modalOverlay) closeSourcesModal();
@@ -370,6 +395,74 @@ async function runDiagnose() {
     } finally {
         diagnoseBtn.disabled = false;
         diagnoseBtn.innerHTML = "&#9889; Diagnose";
+    }
+}
+
+// Settings management
+async function openSettingsModal() {
+    settingsModalOverlay.classList.add("active");
+    apiKeyInput.value = "";
+    apiKeyMessage.className = "settings-message";
+    apiKeyMessage.textContent = "";
+    await loadApiKeyStatus();
+}
+
+function closeSettingsModal() {
+    settingsModalOverlay.classList.remove("active");
+}
+
+async function loadApiKeyStatus() {
+    try {
+        const resp = await fetch("/api/settings/apikey");
+        const data = await resp.json();
+        if (data.has_key) {
+            apiKeyStatus.className = "settings-key-status has-key";
+            apiKeyStatus.textContent = "Huidige key: " + data.masked;
+        } else {
+            apiKeyStatus.className = "settings-key-status no-key";
+            apiKeyStatus.textContent = "Geen API key ingesteld. Vul hieronder je key in.";
+        }
+    } catch (err) {
+        apiKeyStatus.className = "settings-key-status no-key";
+        apiKeyStatus.textContent = "Kon status niet ophalen.";
+    }
+}
+
+async function saveApiKey() {
+    const key = apiKeyInput.value.trim();
+    if (!key) {
+        apiKeyMessage.className = "settings-message error";
+        apiKeyMessage.textContent = "Vul een API key in.";
+        return;
+    }
+
+    saveApiKeyBtn.disabled = true;
+    saveApiKeyBtn.textContent = "Opslaan...";
+
+    try {
+        const resp = await fetch("/api/settings/apikey", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ api_key: key }),
+        });
+        const data = await resp.json();
+
+        if (resp.ok) {
+            apiKeyMessage.className = "settings-message success";
+            apiKeyMessage.textContent = data.message;
+            apiKeyInput.value = "";
+            await loadApiKeyStatus();
+            showToast("API key opgeslagen!", "success");
+        } else {
+            apiKeyMessage.className = "settings-message error";
+            apiKeyMessage.textContent = data.error;
+        }
+    } catch (err) {
+        apiKeyMessage.className = "settings-message error";
+        apiKeyMessage.textContent = "Fout bij opslaan: " + err.message;
+    } finally {
+        saveApiKeyBtn.disabled = false;
+        saveApiKeyBtn.textContent = "Opslaan";
     }
 }
 

@@ -15,6 +15,7 @@
             <span class="header-subtitle">HLN Regiodesk</span>
         </div>
         <div class="header-actions">
+            <button class="btn btn-secondary" id="settingsBtn">&#128273; Instellingen</button>
             <button class="btn btn-secondary" id="diagnoseBtn">&#9889; Diagnose</button>
             <button class="btn btn-secondary" id="sourcesBtn">&#9881; Bronnen beheren</button>
             <button class="btn btn-primary" id="searchBtn">&#128270; Ga op zoek naar nieuws</button>
@@ -86,6 +87,39 @@
                     <tbody id="sourcesTableBody">
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModalOverlay">
+        <div class="modal" style="max-width: 520px;">
+            <div class="modal-header">
+                <h2>Instellingen</h2>
+                <button class="modal-close" id="settingsModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <label class="settings-label" for="apiKeyInput">Anthropic API-sleutel</label>
+                    <p class="settings-help">
+                        Je hebt een API-sleutel nodig van Anthropic om de AI-analyse te gebruiken.
+                        Deze wordt opgeslagen in het .env bestand op je computer.
+                    </p>
+                    <div class="settings-key-status" id="apiKeyStatus"></div>
+                    <input type="password" id="apiKeyInput" class="settings-input" placeholder="sk-ant-..." />
+                    <div class="settings-actions">
+                        <button class="btn btn-primary btn-small" id="saveApiKeyBtn">Opslaan</button>
+                        <button class="btn btn-secondary btn-small" id="toggleKeyVisibility" type="button">Toon</button>
+                    </div>
+                    <div id="apiKeyMessage" class="settings-message"></div>
+                </div>
+                <div class="settings-info">
+                    <strong>Hoe krijg je een API-sleutel?</strong><br>
+                    1. Ga naar <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a><br>
+                    2. Maak een account aan of log in<br>
+                    3. Ga naar "API Keys" en maak een nieuwe sleutel aan<br>
+                    4. Kopieer de sleutel en plak hem hierboven
+                </div>
             </div>
         </div>
     </div>
