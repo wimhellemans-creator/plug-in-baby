@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>De Coiffeur — HLN Print-inkorter</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      background: #f0f1f3;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+
+    .logo { font-size: 18px; font-weight: 700; color: #1a5276; letter-spacing: -0.3px; }
+    .logo-sub { font-size: 11px; color: #999; }
+
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
+
+    .api-key-group { display: flex; align-items: center; gap: 6px; }
+    .api-key-group label { font-size: 12px; color: #666; white-space: nowrap; }
+
+    .api-key-input {
+      width: 260px; padding: 5px 10px; border: 1px solid #ddd;
+      border-radius: 5px; font-size: 12px; font-family: monospace;
+    }
+    .api-key-input:focus { outline: none; border-color: #1a5276; }
+
+    .api-status { width: 8px; height: 8px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+    .api-status.connected { background: #28a745; }
+    .api-status.error { background: #dc3545; }
+
+    /* ── Main layout ── */
+    .main { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Editor (center) ── */
+    .editor-panel {
+      flex: 1; display: flex; flex-direction: column;
+      background: #fff; border-right: 1px solid #e0e0e0;
+    }
+
+    .editor-toolbar {
+      background: #f8f9fa; border-bottom: 1px solid #e0e0e0;
+      padding: 8px 20px; display: flex; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
+    }
+
+    .editor-toolbar-left { display: flex; align-items: center; gap: 8px; }
+
+    .btn-upload {
+      display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px;
+      border: 1px solid #ddd; border-radius: 5px; font-size: 12px;
+      background: #fff; cursor: pointer; color: #333;
+    }
+    .btn-upload:hover { background: #f0f0f0; }
+
+    .editor-stats { display: flex; gap: 16px; font-size: 12px; color: #888; }
+    .stat-item { display: flex; align-items: center; gap: 4px; }
+    .stat-value { font-weight: 600; color: #555; font-variant-numeric: tabular-nums; }
+
+    .stat-diff { font-size: 11px; margin-left: 2px; }
+    .stat-diff.negative { color: #28a745; }
+    .stat-diff.positive { color: #dc3545; }
+
+    #editor {
+      flex: 1; padding: 32px 48px; font-size: 16px; line-height: 1.8;
+      outline: none; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word;
+    }
+
+    #editor:empty::before {
+      content: "Plak hier je HLN-artikel om in te korten voor print...";
+      color: #bbb;
+    }
+
+    #editor .czn-highlight {
+      background: rgba(26, 82, 118, 0.12);
+      border-bottom: 2px solid rgba(26, 82, 118, 0.4);
+      border-radius: 2px; transition: all 0.25s ease; cursor: default;
+    }
+    #editor .czn-highlight.active {
+      background: rgba(26, 82, 118, 0.25);
+      border-bottom-color: #1a5276;
+    }
+
+    #editor .czn-applied {
+      background: rgba(40, 167, 69, 0.25);
+      border-radius: 2px; transition: background 2s ease;
+    }
+    #editor .czn-applied.fade { background: transparent; }
+
+    /* ── Coach panel (right) ── */
+    .coach-panel {
+      width: 400px; flex-shrink: 0; display: flex;
+      flex-direction: column; background: #fafafa; overflow: hidden;
+    }
+
+    .coach-header {
+      padding: 16px 20px; border-bottom: 2px solid #1a5276;
+      background: #fff; flex-shrink: 0;
+    }
+    .coach-header h2 { font-size: 16px; font-weight: 700; color: #1a5276; }
+    .coach-header p { font-size: 11px; color: #888; margin-top: 2px; }
+
+    .coach-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+
+    .coach-footer {
+      padding: 12px 20px; border-top: 1px solid #e0e0e0;
+      background: #fff; flex-shrink: 0; display: flex; gap: 8px;
+    }
+
+    /* ── Status ── */
+    .status-msg {
+      background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px;
+      padding: 8px 12px; margin-bottom: 12px; font-size: 12px; color: #856404;
+    }
+    .status-msg.success { background: #d4edda; border-color: #28a745; color: #155724; }
+    .status-msg.error { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+    .status-msg.info { background: #e8f4fd; border-color: #bee5eb; color: #0c5460; }
+
+    /* ── Diagnosis ── */
+    .diagnosis {
+      background: #fff; border-left: 3px solid #1a5276; padding: 10px 14px;
+      margin-bottom: 12px; font-size: 13px; line-height: 1.5; color: #333;
+      border-radius: 0 6px 6px 0; font-style: italic; display: none;
+    }
+    .diagnosis.visible { display: block; }
+
+    /* ── Round info ── */
+    .round-info {
+      display: none; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; font-size: 12px; color: #666;
+    }
+    .round-info.visible { display: flex; }
+    .progress-text { font-variant-numeric: tabular-nums; }
+
+    /* ── Suggestion card ── */
+    .suggestion-card {
+      background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
+      padding: 12px; margin-bottom: 10px; transition: all 0.35s ease; position: relative;
+    }
+    .suggestion-card.removing {
+      opacity: 0; transform: translateX(60px); max-height: 0;
+      padding: 0 12px; margin-bottom: 0; overflow: hidden;
+    }
+    .suggestion-card:hover { border-color: #1a5276; }
+
+    .suggestion-type {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.5px; color: #1a5276; margin-bottom: 4px;
+    }
+
+    .suggestion-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-top: 8px; margin-bottom: 2px;
+    }
+    .suggestion-label.was { color: #999; }
+    .suggestion-label.wordt { color: #28a745; }
+
+    .suggestion-original {
+      background: #fff5f5; border-left: 3px solid #dc3545; padding: 6px 10px;
+      margin: 0 0 4px; font-size: 13px; border-radius: 0 4px 4px 0;
+      text-decoration: line-through; color: #888;
+    }
+    .suggestion-replacement {
+      background: #f0fff4; border-left: 3px solid #28a745; padding: 6px 10px;
+      margin: 0 0 4px; font-size: 13px; border-radius: 0 4px 4px 0;
+      color: #1a1a1a; font-weight: 500;
+    }
+    .suggestion-delete {
+      background: #fff0f0; border-left: 3px solid #dc3545; padding: 6px 10px;
+      margin: 0 0 4px; font-size: 12px; font-weight: 700; color: #dc3545;
+      text-transform: uppercase; letter-spacing: 0.5px; border-radius: 0 4px 4px 0;
+    }
+    .suggestion-explanation {
+      font-size: 12px; color: #666; margin: 6px 0 8px; font-style: italic;
+    }
+
+    .suggestion-actions { display: flex; gap: 8px; }
+
+    .btn-accept, .btn-reject {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border: 2px solid; border-radius: 50%;
+      font-size: 18px; cursor: pointer; transition: all 0.15s ease; background: #fff;
+    }
+    .btn-accept { border-color: #28a745; color: #28a745; }
+    .btn-accept:hover { background: #28a745; color: #fff; transform: scale(1.1); }
+    .btn-reject { border-color: #dc3545; color: #dc3545; }
+    .btn-reject:hover { background: #dc3545; color: #fff; transform: scale(1.1); }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 4px; padding: 8px 16px;
+      border: none; border-radius: 6px; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: #1a5276; color: #fff; flex: 1; justify-content: center; }
+    .btn-primary:hover:not(:disabled) { background: #154360; }
+    .btn-secondary { background: #e9ecef; color: #495057; flex: 1; justify-content: center; }
+    .btn-secondary:hover:not(:disabled) { background: #dee2e6; }
+
+    /* ── Loading ── */
+    .loading { text-align: center; padding: 32px 16px; color: #888; display: none; }
+    .loading.visible { display: block; }
+    .spinner {
+      width: 28px; height: 28px; border: 3px solid #e0e0e0;
+      border-top-color: #1a5276; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 48px 24px; color: #aaa; }
+    .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+    .empty-state p { font-size: 13px; line-height: 1.6; }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .main { flex-direction: column; }
+      .coach-panel { width: 100%; border-top: 1px solid #e0e0e0; }
+      .editor-panel { border-right: none; }
+      #editor { padding: 20px 24px; }
+      .api-key-input { width: 180px; }
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #aaa; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="logo">De Coiffeur</span>
+      <span class="logo-sub">HLN print-inkorter</span>
+    </div>
+    <div class="topbar-right">
+      <div class="api-key-group">
+        <label for="api-key">API key:</label>
+        <input type="password" id="api-key" class="api-key-input" placeholder="sk-ant-..." />
+        <div id="api-status" class="api-status" title="Niet verbonden"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="editor-panel">
+      <div class="editor-toolbar">
+        <div class="editor-toolbar-left">
+          <button id="btn-upload" class="btn-upload">Bestand uploaden</button>
+          <button id="btn-paste" class="btn-upload">Plakken</button>
+          <button id="btn-clear" class="btn-upload">Wissen</button>
+          <input type="file" id="file-input" accept=".txt,.md,.html,.doc,.rtf" hidden />
+        </div>
+        <div class="editor-stats">
+          <div class="stat-item">
+            <span>Woorden:</span>
+            <span class="stat-value" id="word-count">0</span>
+            <span class="stat-diff" id="word-diff"></span>
+          </div>
+          <div class="stat-item">
+            <span>Tekens:</span>
+            <span class="stat-value" id="char-count">0</span>
+            <span class="stat-diff" id="char-diff"></span>
+          </div>
+        </div>
+      </div>
+      <div id="editor" contenteditable="true"></div>
+    </div>
+
+    <div class="coach-panel">
+      <div class="coach-header">
+        <h2>De Coiffeur</h2>
+        <p>clarity &middot; simplicity &middot; brevity &middot; humanity</p>
+      </div>
+
+      <div class="coach-body" id="coach-body">
+        <div id="status" class="status-msg info">
+          Plak je HLN-artikel links en klik op "Inkorten".
+        </div>
+        <div id="diagnosis" class="diagnosis"></div>
+        <div id="round-info" class="round-info">
+          <span>Ronde <span id="round-number">1</span></span>
+          <span class="progress-text"><span id="progress-done">0</span> / <span id="progress-total">0</span></span>
+        </div>
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <span>De Coiffeur knipt...</span>
+        </div>
+        <div id="suggestions-list"></div>
+        <div id="empty-state" class="empty-state">
+          <div class="icon">&#9986;</div>
+          <p>Hier verschijnen straks de inkortings-<br>suggesties van De Coiffeur.</p>
+        </div>
+      </div>
+
+      <div class="coach-footer">
+        <button id="btn-review" class="btn btn-primary">Inkorten</button>
+        <button id="btn-new-round" class="btn btn-secondary" disabled>Nieuwe ronde</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SYSTEM_PROMPT = `# HLN Print-inkorter
+
+Je bent een ervaren eindredacteur van HLN, de grootste nieuwssite en krant van Vlaanderen. Je helpt schrijvers om artikelen in te korten voor de printeditie — met overgave, inzicht en stijl, zonder de journalistieke essentie te verliezen en zonder te verliezen wat het verhaal uniek maakt.
+
+## Jouw filosofie
+
+Je volgt de principes van William Zinsser (On Writing Well): **clarity, simplicity, brevity, humanity**. En de gulden regel van Strunk & White: **"Omit needless words."**
+
+Dat betekent:
+- Elk woord moet zijn plek verdienen
+- Actieve vorm boven passief
+- Positieve formuleringen boven negatieve ("hij kwam vaak te laat" is beter dan "hij was niet vaak op tijd")
+- Concrete, specifieke taal — vermijd vage concepten
+- Schrijf met sterke zelfstandige naamwoorden en werkwoorden; wees zuinig met bijvoeglijke naamwoorden en bijwoorden
+
+Maar je bent geen robot. Je snapt dat een goed citaat, een treffend detail, een moment van warmte het verhaal máákt. Daar blijf je van af.
+
+## Hoe je werkt
+
+### Volgorde van evidentie (rangschik je suggesties zo):
+
+1. **Print-irrelevante elementen**: "lees ook"-secties, paywall-markers, zinnen als "lees verder onder de foto" of "dat zie je op onderstaande grafiek"
+2. **Kop en bovenkop**: Als de titel nog niet gesplitst is, stel meteen een opsplitsing voor:
+   - Bovenkop: draagt de context, het feitelijke (wie, wat)
+   - Kop: kort, krachtig, landt hard — vaak een citaat bij human interest
+3. **Inleiding**: Winst hier telt dubbel (groter lettertype in print). Let vooral op teasende vragen die online de lezer over de paywall moeten trekken — in print kunnen die vaak weg.
+4. **Redundantie**: Niet alleen losse opvulwoorden ("echter", "uiteraard", "eigenlijk"), maar ook concepten die dubbel worden uitgelegd, hele zinnen die niets toevoegen.
+5. **Uitstapjes**: Passages die het verhaal vertragen zonder iets bij te dragen aan de essentie of wat het bijzonder maakt.
+6. **Bij interviews**: Vraag-antwoord combinaties die geschrapt kunnen worden, of twee antwoorden die onder één vraag kunnen.
+7. **Structurele keuzes**: Hele thematische lijnen die niet passen bij de rest, of voorbeelden die redundant zijn (schrap dan het zwakste/minst herkende eerst).
+
+## Wat je NIET doet
+
+- Je werkt niet naar een vooraf bepaalde lengte — je gaat door tot de gebruiker stopt
+- Je voert nooit wijzigingen door zonder goedkeuring
+- Je schrapt niet eigenmachtig wat het verhaal zijn ziel geeft: rake citaten, menselijke details, de stem van de geïnterviewde
+- Je herschrijft niet de stijl van de auteur — je snoeit, je vervangt niet
+
+## Toon
+
+Zakelijk maar warm. Je legt kort uit waarom je iets voorstelt als dat niet evident is, maar je houdt het bondig. Je bent een collega die meedenkt, geen schoolmeester die corrigeert.
+
+---
+
+## OUTPUTFORMAAT (STRIKT)
+
+Je antwoordt ALTIJD en UITSLUITEND in geldig JSON-formaat. Geen tekst buiten de JSON.
+
+Begin met een diagnose, gevolgd door de suggesties. Rangschik op evidentie — print-irrelevante elementen eerst, dan kop, inleiding, redundantie, uitstapjes, interviews, structuur.
+
+Geef je antwoord als JSON:
+{
+  "diagnosis": "Korte diagnose in 2-3 zinnen: wat voor type stuk is dit, waar zit de kern, en waar zie je de meeste ruimte om in te korten?",
+  "suggestions": [
+    {
+      "type": "print-irrelevant|kop|inleiding|redundantie|uitstapje|interview|structuur|opvulwoord|passief|constructie",
+      "original": "de originele passage die vervangen moet worden (LETTERLIJK uit de brontekst)",
+      "replacement": "de voorgestelde versie (of leeg voor SCHRAPPEN)",
+      "explanation": "korte toelichting, alleen als het niet vanzelf spreekt"
+    }
+  ]
+}
+
+Regels voor de JSON:
+- "original" moet LETTERLIJK in de brontekst voorkomen, karakter per karakter
+- Als iets geschrapt moet worden zonder vervanging, gebruik dan "replacement": ""
+- Rangschik suggesties van meest evident naar minst evident
+- Focus op suggesties die de tekst echt korter maken voor print
+- Als de tekst perfect is: { "diagnosis": "...", "suggestions": [] }
+- Geen markdown, geen tekst buiten de JSON`;
+
+    // ════════════════════════════════════════
+    //  STATE
+    // ════════════════════════════════════════
+    let suggestions = [];
+    let roundNumber = 0;
+    let handledCount = 0;
+    let totalCount = 0;
+    let startWords = 0;
+    let startChars = 0;
+
+    // ════════════════════════════════════════
+    //  DOM
+    // ════════════════════════════════════════
+    const editor = document.getElementById('editor');
+    const wordCountEl = document.getElementById('word-count');
+    const charCountEl = document.getElementById('char-count');
+    const wordDiffEl = document.getElementById('word-diff');
+    const charDiffEl = document.getElementById('char-diff');
+    const apiKeyInput = document.getElementById('api-key');
+    const apiStatus = document.getElementById('api-status');
+    const statusEl = document.getElementById('status');
+    const diagnosisEl = document.getElementById('diagnosis');
+    const roundInfo = document.getElementById('round-info');
+    const roundNumberEl = document.getElementById('round-number');
+    const progressDone = document.getElementById('progress-done');
+    const progressTotal = document.getElementById('progress-total');
+    const loadingEl = document.getElementById('loading');
+    const suggestionsList = document.getElementById('suggestions-list');
+    const emptyState = document.getElementById('empty-state');
+    const btnReview = document.getElementById('btn-review');
+    const btnNewRound = document.getElementById('btn-new-round');
+    const btnUpload = document.getElementById('btn-upload');
+    const btnPaste = document.getElementById('btn-paste');
+    const btnClear = document.getElementById('btn-clear');
+    const fileInput = document.getElementById('file-input');
+
+    // ════════════════════════════════════════
+    //  INIT
+    // ════════════════════════════════════════
+    const savedKey = localStorage.getItem('coiffeur_api_key');
+    if (savedKey) {
+      apiKeyInput.value = savedKey;
+      apiStatus.classList.add('connected');
+      apiStatus.title = 'API key opgeslagen';
+    }
+
+    apiKeyInput.addEventListener('change', () => {
+      const key = apiKeyInput.value.trim();
+      if (key) {
+        localStorage.setItem('coiffeur_api_key', key);
+        apiStatus.className = 'api-status connected';
+        apiStatus.title = 'API key opgeslagen';
+      } else {
+        localStorage.removeItem('coiffeur_api_key');
+        apiStatus.className = 'api-status';
+        apiStatus.title = 'Niet verbonden';
+      }
+    });
+
+    editor.addEventListener('input', updateStats);
+    btnReview.addEventListener('click', startReview);
+    btnNewRound.addEventListener('click', startReview);
+    btnUpload.addEventListener('click', () => fileInput.click());
+    btnPaste.addEventListener('click', pasteFromClipboard);
+    btnClear.addEventListener('click', () => {
+      editor.innerText = '';
+      startWords = 0; startChars = 0;
+      wordDiffEl.textContent = ''; charDiffEl.textContent = '';
+      updateStats();
+    });
+    fileInput.addEventListener('change', handleFileUpload);
+
+    updateStats();
+
+    // ════════════════════════════════════════
+    //  STATS (met verschil-teller)
+    // ════════════════════════════════════════
+    function updateStats() {
+      const text = editor.innerText.trim();
+      const words = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
+      const chars = text.length;
+      wordCountEl.textContent = words.toLocaleString('nl-BE');
+      charCountEl.textContent = chars.toLocaleString('nl-BE');
+
+      // Show difference since start of review
+      if (startWords > 0) {
+        const wDiff = words - startWords;
+        const cDiff = chars - startChars;
+        const wPct = ((wDiff / startWords) * 100).toFixed(1);
+        const cPct = ((cDiff / startChars) * 100).toFixed(1);
+
+        if (wDiff !== 0) {
+          wordDiffEl.textContent = '(' + (wDiff > 0 ? '+' : '') + wDiff + ' / ' + wPct + '%)';
+          wordDiffEl.className = 'stat-diff ' + (wDiff < 0 ? 'negative' : 'positive');
+        }
+        if (cDiff !== 0) {
+          charDiffEl.textContent = '(' + (cDiff > 0 ? '+' : '') + cDiff + ' / ' + cPct + '%)';
+          charDiffEl.className = 'stat-diff ' + (cDiff < 0 ? 'negative' : 'positive');
+        }
+      }
+    }
+
+    // ════════════════════════════════════════
+    //  FILE UPLOAD
+    // ════════════════════════════════════════
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        editor.innerText = ev.target.result;
+        updateStats();
+        setStatus('Bestand geladen: ' + file.name, 'success');
+      };
+      reader.readAsText(file);
+      fileInput.value = '';
+    }
+
+    async function pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        editor.innerText = text;
+        updateStats();
+        setStatus('Tekst geplakt vanuit klembord.', 'success');
+      } catch (e) {
+        setStatus('Kon niet plakken. Gebruik Ctrl+V in het tekstvak.', 'error');
+      }
+    }
+
+    function setStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = 'status-msg' + (type ? ' ' + type : '');
+    }
+
+    // ════════════════════════════════════════
+    //  REVIEW
+    // ════════════════════════════════════════
+    async function startReview() {
+      const text = editor.innerText.trim();
+      if (!text) {
+        setStatus('Plak eerst een artikel in de editor.', 'error');
+        return;
+      }
+
+      const apiKey = apiKeyInput.value.trim();
+      if (!apiKey) {
+        setStatus('Vul eerst je Anthropic API-sleutel in (rechtsboven).', 'error');
+        apiKeyInput.focus();
+        return;
+      }
+
+      // Record starting stats on first round
+      if (roundNumber === 0) {
+        const words = text.split(/\s+/).filter(w => w.length > 0).length;
+        startWords = words;
+        startChars = text.length;
+      }
+
+      // Clear old highlights
+      editor.querySelectorAll('.czn-highlight').forEach(el => {
+        const textNode = document.createTextNode(el.textContent);
+        el.parentNode.replaceChild(textNode, el);
+      });
+      editor.normalize();
+
+      suggestionsList.innerHTML = '';
+      suggestions = [];
+      handledCount = 0;
+      emptyState.style.display = 'none';
+      diagnosisEl.classList.remove('visible');
+      roundInfo.classList.remove('visible');
+      btnReview.disabled = true;
+      btnNewRound.disabled = true;
+      loadingEl.classList.add('visible');
+
+      roundNumber++;
+      setStatus('De Coiffeur bekijkt je artikel...', '');
+
+      try {
+        const result = await callClaude(apiKey, text);
+        loadingEl.classList.remove('visible');
+
+        if (result.diagnosis) {
+          diagnosisEl.textContent = result.diagnosis;
+          diagnosisEl.classList.add('visible');
+        }
+
+        suggestions = result.suggestions.map((s, i) => ({ ...s, id: i, status: 'pending' }));
+        totalCount = suggestions.length;
+
+        if (totalCount === 0) {
+          setStatus('Niks meer te knippen! Dit artikel is print-klaar.', 'success');
+          btnNewRound.disabled = false;
+          btnReview.disabled = false;
+          return;
+        }
+
+        roundNumberEl.textContent = roundNumber;
+        progressDone.textContent = '0';
+        progressTotal.textContent = totalCount;
+        roundInfo.classList.add('visible');
+
+        suggestions.forEach((s, i) => {
+          setTimeout(() => renderCard(s), i * 120);
+        });
+
+        setStatus(totalCount + ' suggestie(s) gevonden. Klik \u2713 of \u2717.', 'success');
+        apiStatus.className = 'api-status connected';
+        apiStatus.title = 'Verbonden';
+
+      } catch (err) {
+        loadingEl.classList.remove('visible');
+        setStatus(err.message, 'error');
+        if (err.message.includes('API') || err.message.includes('401')) {
+          apiStatus.className = 'api-status error';
+        }
+      }
+
+      btnReview.disabled = false;
+    }
+
+    // ════════════════════════════════════════
+    //  CLAUDE API CALL
+    // ════════════════════════════════════════
+    async function callClaude(apiKey, text) {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 4096,
+          system: SYSTEM_PROMPT,
+          messages: [{
+            role: 'user',
+            content: 'Lees het volgende artikel na en geef je diagnose en inkortingssuggesties als JSON:\n\n' + text
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) throw new Error('Ongeldige API-sleutel. Controleer je invoer rechtsboven.');
+        if (response.status === 429) throw new Error('Te veel verzoeken. Wacht even en probeer opnieuw.');
+        const body = await response.text();
+        throw new Error('API-fout (' + response.status + '): ' + body.substring(0, 200));
+      }
+
+      const data = await response.json();
+      const content = data.content[0].text;
+
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        return { diagnosis: parsed.diagnosis || '', suggestions: parsed.suggestions || [] };
+      }
+
+      try {
+        const parsed = JSON.parse(content);
+        return { diagnosis: parsed.diagnosis || '', suggestions: parsed.suggestions || [] };
+      } catch (e) {
+        throw new Error('De Coiffeur gaf een onverwacht antwoord. Probeer opnieuw.');
+      }
+    }
+
+    // ════════════════════════════════════════
+    //  RENDER SUGGESTION CARD
+    // ════════════════════════════════════════
+    const TYPE_LABELS = {
+      'print-irrelevant': 'Print-irrelevant', 'kop': 'Kop / Bovenkop',
+      'inleiding': 'Inleiding', 'redundantie': 'Redundantie',
+      'uitstapje': 'Uitstapje', 'interview': 'Interview',
+      'structuur': 'Structuur', 'opvulwoord': 'Opvulwoord',
+      'passief': 'Passief', 'constructie': 'Constructie',
+      'spelling': 'Spelling', 'grammatica': 'Grammatica'
+    };
+
+    function renderCard(s) {
+      const card = document.createElement('div');
+      card.className = 'suggestion-card';
+      card.id = 'card-' + s.id;
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(8px)';
+
+      const isDelete = !s.replacement || s.replacement.trim() === '';
+      const wordtLabel = isDelete ? 'Schrappen' : 'Wordt:';
+      const replHtml = isDelete
+        ? '<div class="suggestion-delete">SCHRAPPEN</div>'
+        : '<div class="suggestion-replacement">' + esc(s.replacement) + '</div>';
+      const explHtml = s.explanation
+        ? '<div class="suggestion-explanation">' + esc(s.explanation) + '</div>'
+        : '';
+
+      card.innerHTML =
+        '<div class="suggestion-type">' + (TYPE_LABELS[s.type] || s.type) + '</div>' +
+        '<div class="suggestion-label was">Was:</div>' +
+        '<div class="suggestion-original">' + esc(s.original) + '</div>' +
+        '<div class="suggestion-label wordt">' + wordtLabel + '</div>' +
+        replHtml + explHtml +
+        '<div class="suggestion-actions">' +
+          '<button class="btn-accept" title="Aanvaarden">\u2713</button>' +
+          '<button class="btn-reject" title="Verwerpen">\u2717</button>' +
+        '</div>';
+
+      card.querySelector('.btn-accept').addEventListener('click', () => acceptCard(s.id));
+      card.querySelector('.btn-reject').addEventListener('click', () => rejectCard(s.id));
+      card.addEventListener('mouseenter', () => activateHighlight(s.id));
+      card.addEventListener('mouseleave', () => deactivateHighlight(s.id));
+
+      suggestionsList.appendChild(card);
+      highlightInEditor(s.id, s.original);
+
+      requestAnimationFrame(() => {
+        card.style.transition = 'all 0.3s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      });
+    }
+
+    // ════════════════════════════════════════
+    //  HIGHLIGHTING
+    // ════════════════════════════════════════
+    function highlightInEditor(id, original) {
+      const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+      let node;
+      while (node = walker.nextNode()) {
+        const idx = node.textContent.indexOf(original);
+        if (idx === -1) continue;
+        const before = node.textContent.substring(0, idx);
+        const match = node.textContent.substring(idx, idx + original.length);
+        const after = node.textContent.substring(idx + original.length);
+        const span = document.createElement('span');
+        span.className = 'czn-highlight';
+        span.dataset.suggestionId = id;
+        span.textContent = match;
+        const parent = node.parentNode;
+        parent.insertBefore(document.createTextNode(before), node);
+        parent.insertBefore(span, node);
+        parent.insertBefore(document.createTextNode(after), node);
+        parent.removeChild(node);
+        return;
+      }
+    }
+
+    function activateHighlight(id) {
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (el) { el.classList.add('active'); el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    }
+
+    function deactivateHighlight(id) {
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (el) el.classList.remove('active');
+    }
+
+    function removeHighlight(id) {
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (!el) return;
+      el.parentNode.replaceChild(document.createTextNode(el.textContent), el);
+      editor.normalize();
+    }
+
+    // ════════════════════════════════════════
+    //  ACCEPT / REJECT
+    // ════════════════════════════════════════
+    function acceptCard(id) {
+      const s = suggestions.find(x => x.id === id);
+      if (!s || s.status !== 'pending') return;
+      s.status = 'accepted';
+
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (el) {
+        if (s.replacement) {
+          const span = document.createElement('span');
+          span.className = 'czn-applied';
+          span.textContent = s.replacement;
+          el.parentNode.replaceChild(span, el);
+          setTimeout(() => span.classList.add('fade'), 2000);
+        } else {
+          el.parentNode.removeChild(el);
+        }
+        editor.normalize();
+      }
+      updateStats();
+      removeCard(id);
+      advanceProgress();
+    }
+
+    function rejectCard(id) {
+      const s = suggestions.find(x => x.id === id);
+      if (!s || s.status !== 'pending') return;
+      s.status = 'rejected';
+      removeHighlight(id);
+      removeCard(id);
+      advanceProgress();
+    }
+
+    function removeCard(id) {
+      const card = document.getElementById('card-' + id);
+      if (!card) return;
+      card.classList.add('removing');
+      setTimeout(() => card.remove(), 400);
+    }
+
+    function advanceProgress() {
+      handledCount++;
+      progressDone.textContent = handledCount;
+      if (handledCount === totalCount) {
+        const accepted = suggestions.filter(s => s.status === 'accepted').length;
+        const rejected = suggestions.filter(s => s.status === 'rejected').length;
+        setStatus('Ronde ' + roundNumber + ' klaar! ' + accepted + ' aanvaard, ' + rejected + ' verworpen.', 'success');
+        btnNewRound.disabled = false;
+      }
+    }
+
+    function esc(text) {
+      const d = document.createElement('div');
+      d.textContent = text;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>
