@@ -8,20 +8,42 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-# Build a proper SSL context using certifi (fixes Windows Python SSL issues)
-try:
-    import certifi
-    _ssl_context = ssl.create_default_context(cafile=certifi.where())
-except ImportError:
-    _ssl_context = ssl.create_default_context()
+
+def _build_ssl_context():
+    """Build SSL context that works on corporate networks and Windows.
+
+    Tries in order:
+    1. System default (includes corporate CAs on managed machines)
+    2. Certifi bundle (fallback for bare Python installs)
+    """
+    # First try system defaults — this picks up corporate root CAs
+    try:
+        ctx = ssl.create_default_context()
+        # On Windows, load certs from the Windows certificate store
+        if hasattr(ctx, "load_default_certs"):
+            ctx.load_default_certs()
+        return ctx
+    except Exception:
+        pass
+
+    # Fallback: use certifi bundle
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
+_ssl_context = _build_ssl_context()
 
 
 def get_client():
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY is niet ingesteld in .env")
-    # Pass certifi SSL context directly to httpx so the Anthropic SDK can connect
-    http_client = httpx.Client(verify=_ssl_context)
+    # Pass SSL context to httpx so the Anthropic SDK can connect,
+    # even on corporate networks with custom root CAs
+    http_client = httpx.Client(verify=_ssl_context, timeout=60.0)
     return Anthropic(api_key=api_key, http_client=http_client)
 
 

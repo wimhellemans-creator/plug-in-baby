@@ -335,6 +335,8 @@ def api_diagnose():
                 results.append({"step": "Anthropic API", "status": "fail", "message": "API key is ongeldig (401 Unauthorized). Controleer je key op console.anthropic.com."})
             elif "insufficient" in error_msg.lower() or "credit" in error_msg.lower() or "billing" in error_msg.lower():
                 results.append({"step": "Anthropic API", "status": "fail", "message": "Geen credits/billing. Voeg credits toe op console.anthropic.com/settings/billing."})
+            elif "connection" in error_msg.lower() or "ssl" in error_msg.lower() or "certificate" in error_msg.lower():
+                results.append({"step": "Anthropic API", "status": "fail", "message": f"Kan niet verbinden met api.anthropic.com. Mogelijke oorzaken: (1) Geen internet, (2) Bedrijfsfirewall blokkeert de verbinding, (3) SSL/certificaat probleem. Probeer eventueel via een ander netwerk (bv. mobiele hotspot). Fout: {error_msg[:150]}"})
             else:
                 results.append({"step": "Anthropic API", "status": "fail", "message": f"API fout: {error_msg}"})
 
