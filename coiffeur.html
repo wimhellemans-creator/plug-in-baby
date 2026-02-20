@@ -726,50 +726,107 @@ Regels voor de JSON:
     //  HIGHLIGHTING
     // ════════════════════════════════════════
     function highlightInEditor(id, original) {
+      // Strategy 1: exact match in a single text node (fast path)
+      if (highlightSingleNode(id, original)) return;
+
+      // Strategy 2: multi-line passage — highlight each line separately
+      const lines = original.split(/\n/).map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length > 1) {
+        let found = 0;
+        for (const line of lines) {
+          if (highlightSingleNode(id, line)) found++;
+        }
+        if (found > 0) return;
+      }
+
+      // Strategy 3: normalized whitespace match within single text nodes
+      highlightNormalized(id, original);
+    }
+
+    function highlightSingleNode(id, text) {
       const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
       let node;
       while (node = walker.nextNode()) {
-        const idx = node.textContent.indexOf(original);
+        const idx = node.textContent.indexOf(text);
         if (idx === -1) continue;
-        const before = node.textContent.substring(0, idx);
-        const match = node.textContent.substring(idx, idx + original.length);
-        const after = node.textContent.substring(idx + original.length);
-        const span = document.createElement('span');
-        span.className = 'czn-highlight';
-        span.dataset.suggestionId = id;
-        span.textContent = match;
-        const parent = node.parentNode;
-        parent.insertBefore(document.createTextNode(before), node);
-        parent.insertBefore(span, node);
-        parent.insertBefore(document.createTextNode(after), node);
-        parent.removeChild(node);
-        return;
+        wrapMatch(node, idx, text.length, id);
+        return true;
       }
+      return false;
+    }
+
+    function highlightNormalized(id, original) {
+      const normOrig = original.replace(/\s+/g, ' ').trim();
+      const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+      let node;
+      while (node = walker.nextNode()) {
+        const nodeText = node.textContent;
+        let normText = '';
+        const posMap = [];
+        let i = 0;
+        while (i < nodeText.length) {
+          if (/\s/.test(nodeText[i])) {
+            if (normText.length === 0 || normText[normText.length - 1] !== ' ') {
+              posMap.push(i);
+              normText += ' ';
+            }
+            i++;
+          } else {
+            posMap.push(i);
+            normText += nodeText[i];
+            i++;
+          }
+        }
+        const normIdx = normText.indexOf(normOrig);
+        if (normIdx === -1) continue;
+        const origStart = posMap[normIdx];
+        const normEnd = normIdx + normOrig.length;
+        const origEnd = normEnd < posMap.length ? posMap[normEnd] : nodeText.length;
+        wrapMatch(node, origStart, origEnd - origStart, id);
+        return true;
+      }
+      return false;
+    }
+
+    function wrapMatch(textNode, offset, length, id) {
+      const text = textNode.textContent;
+      const before = text.substring(0, offset);
+      const match = text.substring(offset, offset + length);
+      const after = text.substring(offset + length);
+      const span = document.createElement('span');
+      span.className = 'czn-highlight';
+      span.dataset.suggestionId = id;
+      span.textContent = match;
+      const parent = textNode.parentNode;
+      if (before) parent.insertBefore(document.createTextNode(before), textNode);
+      parent.insertBefore(span, textNode);
+      if (after) parent.insertBefore(document.createTextNode(after), textNode);
+      parent.removeChild(textNode);
     }
 
     function activateHighlight(id) {
-      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
-      if (el) { el.classList.add('active'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      const els = editor.querySelectorAll('[data-suggestion-id="' + id + '"]');
+      els.forEach(el => el.classList.add('active'));
+      if (els.length > 0) els[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function deactivateHighlight(id) {
-      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
-      if (el) el.classList.remove('active');
+      const els = editor.querySelectorAll('[data-suggestion-id="' + id + '"]');
+      els.forEach(el => el.classList.remove('active'));
     }
 
     function scrollToHighlight(id) {
-      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
-      if (el) {
-        el.classList.add('active');
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      const els = editor.querySelectorAll('[data-suggestion-id="' + id + '"]');
+      els.forEach(el => el.classList.add('active'));
+      if (els.length > 0) els[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function removeHighlight(id) {
-      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
-      if (!el) return;
-      el.parentNode.replaceChild(document.createTextNode(el.textContent), el);
-      editor.normalize();
+      const spans = editor.querySelectorAll('[data-suggestion-id="' + id + '"]');
+      spans.forEach(el => {
+        el.parentNode.replaceChild(document.createTextNode(el.textContent), el);
+      });
+      if (spans.length > 0) editor.normalize();
     }
 
     // ════════════════════════════════════════
@@ -783,30 +840,40 @@ Regels voor de JSON:
       const replacement = s.replacement || '';
       let applied = false;
 
-      // Try 1: Replace the highlighted span
-      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
-      if (el) {
+      // Try 1: Replace highlight span(s) — may be multiple for multi-line highlights
+      const spans = Array.from(editor.querySelectorAll('[data-suggestion-id="' + id + '"]'));
+      if (spans.length > 0) {
         if (replacement) {
-          const span = document.createElement('span');
-          span.className = 'czn-applied';
-          span.textContent = replacement;
-          el.parentNode.replaceChild(span, el);
-          setTimeout(() => span.classList.add('fade'), 2000);
+          const appliedSpan = document.createElement('span');
+          appliedSpan.className = 'czn-applied';
+          appliedSpan.textContent = replacement;
+          spans[0].parentNode.replaceChild(appliedSpan, spans[0]);
+          setTimeout(() => appliedSpan.classList.add('fade'), 2000);
+          for (let i = 1; i < spans.length; i++) {
+            spans[i].parentNode.removeChild(spans[i]);
+          }
         } else {
-          el.parentNode.removeChild(el);
+          // SCHRAPPEN: remove all spans, clean up empty containers
+          for (const span of spans) {
+            const parent = span.parentNode;
+            parent.removeChild(span);
+            if (parent !== editor && !parent.textContent.trim()) {
+              parent.parentNode.removeChild(parent);
+            }
+          }
         }
         editor.normalize();
         applied = true;
       }
 
-      // Try 2: Fallback text-based replacement
+      // Try 2: Fallback text-node search
       if (!applied) {
         applied = applyToEditor(s.original, replacement);
       }
 
-      // Try 3: Normalized whitespace search
+      // Try 3: innerHTML-based replacement (handles cross-node HTML)
       if (!applied) {
-        applied = applyToEditorNormalized(s.original, replacement);
+        applied = applyViaInnerHTML(s.original, replacement);
       }
 
       updateStats();
@@ -842,7 +909,7 @@ Regels voor de JSON:
     }
 
     // ════════════════════════════════════════
-    //  FALLBACK: APPLY TO EDITOR (text-based)
+    //  FALLBACK: TEXT-NODE SEARCH
     // ════════════════════════════════════════
     function applyToEditor(original, replacement) {
       const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
@@ -870,76 +937,110 @@ Regels voor de JSON:
         editor.normalize();
         return true;
       }
+      return false;
+    }
 
-      // Fallback: innerHTML
-      const escaped = esc(original);
-      if (editor.innerHTML.includes(escaped)) {
-        if (replacement) {
-          editor.innerHTML = editor.innerHTML.replace(escaped,
-            '<span class="czn-applied">' + esc(replacement) + '</span>');
-          setTimeout(() => {
-            const el = editor.querySelector('.czn-applied:not(.fade)');
-            if (el) el.classList.add('fade');
-          }, 2000);
-        } else {
-          editor.innerHTML = editor.innerHTML.replace(escaped, '');
-        }
+    // ════════════════════════════════════════
+    //  FALLBACK: innerHTML (cross-node HTML)
+    // ════════════════════════════════════════
+    function applyViaInnerHTML(original, replacement) {
+      const html = editor.innerHTML;
+
+      // Direct match in innerHTML
+      const escapedOrig = esc(original);
+      if (html.includes(escapedOrig)) {
+        applyHTMLReplace(html, escapedOrig, replacement);
         return true;
+      }
+
+      // Multi-line: original has \n but innerHTML has </div><div> or <br> between lines
+      const lines = original.split(/\n/).map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length > 1) {
+        const pattern = lines.map(l => escRegex(esc(l))).join('[\\s\\S]*?');
+        const regex = new RegExp(pattern);
+        const match = html.match(regex);
+        if (match) {
+          applyHTMLReplace(html, match[0], replacement, true);
+          return true;
+        }
+      }
+
+      // Normalized whitespace match via innerText
+      const fullText = editor.innerText;
+      const normOrig = original.replace(/\s+/g, ' ').trim();
+      const normText = fullText.replace(/\s+/g, ' ');
+      const normIdx = normText.indexOf(normOrig);
+      if (normIdx === -1) return false;
+
+      // Map normalized position back to actual text positions
+      let origPos = 0, normPos = 0;
+      while (normPos < normIdx && origPos < fullText.length) {
+        if (/\s/.test(fullText[origPos])) {
+          while (origPos < fullText.length && /\s/.test(fullText[origPos])) origPos++;
+          normPos++;
+        } else { origPos++; normPos++; }
+      }
+      const matchStart = origPos;
+      while (normPos < normIdx + normOrig.length && origPos < fullText.length) {
+        if (/\s/.test(fullText[origPos])) {
+          while (origPos < fullText.length && /\s/.test(fullText[origPos])) origPos++;
+          normPos++;
+        } else { origPos++; normPos++; }
+      }
+      const actualText = fullText.substring(matchStart, origPos);
+
+      // Build regex from actual text lines for cross-node matching
+      const actualLines = actualText.split(/\n/).map(l => l.trim()).filter(l => l.length > 0);
+      if (actualLines.length > 1) {
+        const pattern = actualLines.map(l => escRegex(esc(l))).join('[\\s\\S]*?');
+        const regex = new RegExp(pattern);
+        const match = html.match(regex);
+        if (match) {
+          applyHTMLReplace(html, match[0], replacement, true);
+          return true;
+        }
+      } else {
+        const escapedActual = esc(actualText);
+        if (html.includes(escapedActual)) {
+          applyHTMLReplace(html, escapedActual, replacement);
+          return true;
+        }
       }
       return false;
     }
 
-    function applyToEditorNormalized(original, replacement) {
-      const normalize = (t) => t.replace(/\s+/g, ' ').trim();
-      const normOriginal = normalize(original);
-      const fullText = editor.innerText;
-
-      let matchStart = -1;
-      let matchEnd = -1;
-
-      for (let i = 0; i < fullText.length; i++) {
-        const normRemaining = normalize(fullText.substring(i));
-        if (normRemaining.indexOf(normOriginal) === 0) {
-          matchStart = i;
-          let matched = 0;
-          let j = i;
-          while (matched < normOriginal.length && j < fullText.length) {
-            if (/\s/.test(fullText[j]) && /\s/.test(normOriginal[matched])) {
-              while (j < fullText.length && /\s/.test(fullText[j])) j++;
-              matched++;
-              while (matched < normOriginal.length && /\s/.test(normOriginal[matched])) matched++;
-            } else if (fullText[j] === normOriginal[matched]) {
-              j++;
-              matched++;
-            } else {
-              break;
-            }
-          }
-          if (matched >= normOriginal.length) {
-            matchEnd = j;
-            break;
-          }
-        }
-      }
-
-      if (matchStart === -1) return false;
-
-      const actualText = fullText.substring(matchStart, matchEnd);
-      const escapedActual = esc(actualText);
-      if (editor.innerHTML.includes(escapedActual)) {
-        if (replacement) {
-          editor.innerHTML = editor.innerHTML.replace(escapedActual,
-            '<span class="czn-applied">' + esc(replacement) + '</span>');
-          setTimeout(() => {
-            const el = editor.querySelector('.czn-applied:not(.fade)');
-            if (el) el.classList.add('fade');
-          }, 2000);
+    function applyHTMLReplace(html, matchStr, replacement, isRegex) {
+      if (replacement) {
+        const replHtml = '<span class="czn-applied">' + esc(replacement) + '</span>';
+        if (isRegex) {
+          editor.innerHTML = html.replace(new RegExp(escRegex(matchStr)), replHtml);
         } else {
-          editor.innerHTML = editor.innerHTML.replace(escapedActual, '');
+          editor.innerHTML = html.replace(matchStr, replHtml);
         }
-        return true;
+        setTimeout(() => {
+          const el = editor.querySelector('.czn-applied:not(.fade)');
+          if (el) el.classList.add('fade');
+        }, 2000);
+      } else {
+        if (isRegex) {
+          editor.innerHTML = html.replace(new RegExp(escRegex(matchStr)), '');
+        } else {
+          editor.innerHTML = html.replace(matchStr, '');
+        }
+        // Clean up empty containers left after removal
+        editor.querySelectorAll('div, p').forEach(el => {
+          if (el !== editor && !el.textContent.trim() && !el.querySelector('img, video')) {
+            el.parentNode.removeChild(el);
+          }
+        });
       }
-      return false;
+    }
+
+    // ════════════════════════════════════════
+    //  UTIL
+    // ════════════════════════════════════════
+    function escRegex(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
     function esc(text) {
