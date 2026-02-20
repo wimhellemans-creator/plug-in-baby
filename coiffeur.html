@@ -155,6 +155,7 @@
     .suggestion-card {
       background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
       padding: 12px; margin-bottom: 10px; transition: all 0.35s ease; position: relative;
+      cursor: pointer;
     }
     .suggestion-card.removing {
       opacity: 0; transform: translateX(60px); max-height: 0;
@@ -705,6 +706,12 @@ Regels voor de JSON:
       card.addEventListener('mouseenter', () => activateHighlight(s.id));
       card.addEventListener('mouseleave', () => deactivateHighlight(s.id));
 
+      // Click: scroll editor to the highlighted passage
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.btn-accept, .btn-reject')) return;
+        scrollToHighlight(s.id);
+      });
+
       suggestionsList.appendChild(card);
       highlightInEditor(s.id, s.original);
 
@@ -742,12 +749,20 @@ Regels voor de JSON:
 
     function activateHighlight(id) {
       const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
-      if (el) { el.classList.add('active'); el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+      if (el) { el.classList.add('active'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     }
 
     function deactivateHighlight(id) {
       const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
       if (el) el.classList.remove('active');
+    }
+
+    function scrollToHighlight(id) {
+      const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
+      if (el) {
+        el.classList.add('active');
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
 
     function removeHighlight(id) {
@@ -765,19 +780,35 @@ Regels voor de JSON:
       if (!s || s.status !== 'pending') return;
       s.status = 'accepted';
 
+      const replacement = s.replacement || '';
+      let applied = false;
+
+      // Try 1: Replace the highlighted span
       const el = editor.querySelector('[data-suggestion-id="' + id + '"]');
       if (el) {
-        if (s.replacement) {
+        if (replacement) {
           const span = document.createElement('span');
           span.className = 'czn-applied';
-          span.textContent = s.replacement;
+          span.textContent = replacement;
           el.parentNode.replaceChild(span, el);
           setTimeout(() => span.classList.add('fade'), 2000);
         } else {
           el.parentNode.removeChild(el);
         }
         editor.normalize();
+        applied = true;
       }
+
+      // Try 2: Fallback text-based replacement
+      if (!applied) {
+        applied = applyToEditor(s.original, replacement);
+      }
+
+      // Try 3: Normalized whitespace search
+      if (!applied) {
+        applied = applyToEditorNormalized(s.original, replacement);
+      }
+
       updateStats();
       removeCard(id);
       advanceProgress();
@@ -808,6 +839,107 @@ Regels voor de JSON:
         setStatus('Ronde ' + roundNumber + ' klaar! ' + accepted + ' aanvaard, ' + rejected + ' verworpen.', 'success');
         btnNewRound.disabled = false;
       }
+    }
+
+    // ════════════════════════════════════════
+    //  FALLBACK: APPLY TO EDITOR (text-based)
+    // ════════════════════════════════════════
+    function applyToEditor(original, replacement) {
+      const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+      let node;
+
+      while (node = walker.nextNode()) {
+        const idx = node.textContent.indexOf(original);
+        if (idx === -1) continue;
+
+        const before = node.textContent.substring(0, idx);
+        const after = node.textContent.substring(idx + original.length);
+
+        if (replacement) {
+          const span = document.createElement('span');
+          span.className = 'czn-applied';
+          span.textContent = replacement;
+          const afterNode = document.createTextNode(after);
+          node.textContent = before;
+          node.parentNode.insertBefore(span, node.nextSibling);
+          node.parentNode.insertBefore(afterNode, span.nextSibling);
+          setTimeout(() => span.classList.add('fade'), 2000);
+        } else {
+          node.textContent = before + after;
+        }
+        editor.normalize();
+        return true;
+      }
+
+      // Fallback: innerHTML
+      const escaped = esc(original);
+      if (editor.innerHTML.includes(escaped)) {
+        if (replacement) {
+          editor.innerHTML = editor.innerHTML.replace(escaped,
+            '<span class="czn-applied">' + esc(replacement) + '</span>');
+          setTimeout(() => {
+            const el = editor.querySelector('.czn-applied:not(.fade)');
+            if (el) el.classList.add('fade');
+          }, 2000);
+        } else {
+          editor.innerHTML = editor.innerHTML.replace(escaped, '');
+        }
+        return true;
+      }
+      return false;
+    }
+
+    function applyToEditorNormalized(original, replacement) {
+      const normalize = (t) => t.replace(/\s+/g, ' ').trim();
+      const normOriginal = normalize(original);
+      const fullText = editor.innerText;
+
+      let matchStart = -1;
+      let matchEnd = -1;
+
+      for (let i = 0; i < fullText.length; i++) {
+        const normRemaining = normalize(fullText.substring(i));
+        if (normRemaining.indexOf(normOriginal) === 0) {
+          matchStart = i;
+          let matched = 0;
+          let j = i;
+          while (matched < normOriginal.length && j < fullText.length) {
+            if (/\s/.test(fullText[j]) && /\s/.test(normOriginal[matched])) {
+              while (j < fullText.length && /\s/.test(fullText[j])) j++;
+              matched++;
+              while (matched < normOriginal.length && /\s/.test(normOriginal[matched])) matched++;
+            } else if (fullText[j] === normOriginal[matched]) {
+              j++;
+              matched++;
+            } else {
+              break;
+            }
+          }
+          if (matched >= normOriginal.length) {
+            matchEnd = j;
+            break;
+          }
+        }
+      }
+
+      if (matchStart === -1) return false;
+
+      const actualText = fullText.substring(matchStart, matchEnd);
+      const escapedActual = esc(actualText);
+      if (editor.innerHTML.includes(escapedActual)) {
+        if (replacement) {
+          editor.innerHTML = editor.innerHTML.replace(escapedActual,
+            '<span class="czn-applied">' + esc(replacement) + '</span>');
+          setTimeout(() => {
+            const el = editor.querySelector('.czn-applied:not(.fade)');
+            if (el) el.classList.add('fade');
+          }, 2000);
+        } else {
+          editor.innerHTML = editor.innerHTML.replace(escapedActual, '');
+        }
+        return true;
+      }
+      return false;
     }
 
     function esc(text) {
