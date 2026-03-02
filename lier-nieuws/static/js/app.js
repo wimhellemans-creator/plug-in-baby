@@ -98,7 +98,10 @@ function renderArticles(articles) {
             (a) => `
         <div class="article-card" data-id="${a.id}">
             <div class="card-header">
-                <h3>${escapeHtml(a.title)}</h3>
+                <div class="card-header-left">
+                    ${a.label ? `<span class="card-label label-${(a.label || '').toLowerCase()}">${escapeHtml(a.label)}</span>` : ""}
+                    <h3>${escapeHtml(a.title)}</h3>
+                </div>
                 <span class="card-date">${formatDate(a.original_date)}</span>
             </div>
             <p class="card-summary">${escapeHtml(a.summary)}</p>

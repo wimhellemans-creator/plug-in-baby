@@ -44,47 +44,77 @@ def _seed_sources():
         ("Stad & Bestuur", "Stad Lier Algemeen Nieuws", "https://www.lier.be/"),
         ("Stad & Bestuur", "Agenda Gemeente- en OCMW-raad", "https://lier.be/agenda-gemeente-en-ocmw-raad"),
         ("Stad & Bestuur", "Zittingen & Verslagen", "https://www.lier.be/zittingen"),
+        ("Stad & Bestuur", "Gemeenteraad Lier (live/herbekijken)", "https://www.lier.be/gemeenteraad-volgen"),
+        ("Stad & Bestuur", "Lier.be Wegenwerken & Hinder", "https://www.lier.be/wegenwerken-hinder"),
+        ("Stad & Bestuur", "Stad Lier - Participatie / Maak je Wijk", "https://www.lier.be/stadsbestuur/participatie-neem-deel-aan-het-beleid/maak-je-wijk"),
         # --- Veiligheid ---
         ("Veiligheid", "Lokale Politie Lier Nieuws", "https://www.politie.be/5360/nieuws"),
         ("Veiligheid", "Brandweerzone Rivierenland", "https://rivierenland.hulpverleningszone.be/"),
+        # --- Justitie ---
+        ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten"),
+        ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen"),
         # --- Economie ---
         ("Economie", "Made in Mechelen (regio Lier)", "https://www.made-in.be/mechelen/"),
+        ("Economie", "Shoppen in Lier", "https://www.shoppeninlier.be/"),
+        ("Economie", "UNIZO Lier", "https://www.unizo.be/provincie/antwerpen/lier/"),
+        ("Economie", "Lier.be - Ondernemen", "https://www.lier.be/ondernemen"),
         # --- Zorg ---
         ("Zorg & Welzijn", "Heilig Hartziekenhuis Nieuws", "https://www.heilighartlier.be/nieuws/"),
         # --- Sport (hoofdclubs) ---
         ("Sport", "Lierse SK (Kempenzonen)", "https://www.lierse.com/"),
         ("Sport", "K. Lyra-Lierse", "https://lyralierse.be/"),
         ("Sport", "Royal Herakles HC (Hockey)", "https://herakles.be/"),
+        ("Sport", "VK Hooikt (Voetbal Koningshooikt)", "https://www.vkhooikt.be/"),
         # --- Cultuur ---
         ("Cultuur & Vrije Tijd", "CC De Mol Programmatie", "https://www.lierscultuurcentrum.be/nl/programma"),
         ("Cultuur & Vrije Tijd", "UiT in Lier (Kalender)", "https://ikorganiseerinlier.uitinlier.be/kalender"),
+        ("Cultuur & Vrije Tijd", "UiT in Lier (Breed)", "https://www.uitinlier.be/"),
         ("Cultuur & Theater", "Teater Lier (Den Bril)", "https://denbril.be/"),
-        # --- Erfgoed ---
+        # --- Erfgoed & Feesten ---
         ("Erfgoed & Traditie", "Zimmertoren & Zimmermuseum", "https://zimmertoren.be/"),
+        ("Erfgoed & Traditie", "Sint-Gummarusfeesten", "https://www.sintgummaruslier.be/"),
+        ("Erfgoed & Traditie", "Pallieterfeesten / Ommegang", "https://www.lier.be/pallieter"),
+        ("Erfgoed & Traditie", "Zomer in Lier / Lier Centraal", "https://www.lier.be/zomer-in-lier"),
+        ("Erfgoed & Traditie", "Lier Feest", "https://lierfeest.be/"),
         # --- Lokale Politiek ---
         ("Lokale Politiek", "N-VA Lier (Nieuws)", "https://lier.n-va.be/nieuws"),
         ("Lokale Politiek", "Missie2500 (CD&V Lier)", "https://afdeling.cdenv.be/lier"),
         ("Lokale Politiek", "Vooruit Lier", "https://nieuws.vooruit.org/lier"),
         # --- Media & Concurrentie ---
+        ("Media & Concurrentie", "HLN Regio Lier", "https://www.hln.be/lier/"),
         ("Media & Concurrentie", "RTV Lier", "https://www.rtv.be/regio/lier"),
         ("Media & Concurrentie", "Lier Belicht", "https://www.lierbelicht.be/"),
         ("Media & Concurrentie", "Nnieuws Brandweer Rivierenland", "https://nnieuws.be/tags/brandweer-rivierenland"),
         ("Media & Concurrentie", "Radio Pallieter", "https://radiopallieter.be/"),
         ("Media & Concurrentie", "Het Nieuwsblad Lier", "https://www.nieuwsblad.be/regio/lier"),
         ("Media & Concurrentie", "Gazet van Antwerpen Lier", "https://www.gva.be/regio/lier"),
+        # --- Onderwijs ---
+        ("Onderwijs", "Sint-Gummaruscollege (SGC) Kalender", "https://www.sgclier.be/kalender.php"),
+        ("Onderwijs", "Campus Sint-Ursula", "https://campussintursula.be/"),
+        ("Onderwijs", "Atheneum Lier", "https://www.atheneumlier.be/"),
+        ("Onderwijs", "Naar School in Lier", "https://naarschoolinlier.be/"),
+        ("Onderwijs", "Lierse Scholen (overzicht)", "https://www.lier.be/onderwijs-en-vorming/scholen"),
+        # --- Jeugd ---
+        ("Jeugd", "Jeugdcentrum De Moeve", "https://www.demoeve.be/"),
+        ("Jeugd", "Jeugdraad Lier", "https://www.lier.be/jeugdraad"),
         # --- Jeugdverenigingen ---
         ("Jeugdverenigingen", "Chiro Lips Lier", "https://www.chirolips.be/"),
         ("Jeugdverenigingen", "Chiro Lier", "https://www.chirolier.be/"),
         ("Jeugdverenigingen", "Chiro Jut Lier", "https://www.chirojut.be/"),
+        ("Jeugdverenigingen", "Chiro Sint-Gummarus (Lutje)", "https://www.chirolutje.be/"),
+        ("Jeugdverenigingen", "Chiro Jochiko (Koningshooikt)", "https://chirojochiko.be/"),
         ("Jeugdverenigingen", "Scouting Lier", "https://scoutinglier.be/"),
         ("Jeugdverenigingen", "Scouts Lier", "https://scoutslier.be/"),
-        ("Jeugdverenigingen", "KSA Lier", "https://ksalier.weebly.com/"),
+        ("Jeugdverenigingen", "KSA Sint-Gummarus Lier", "https://www.ksalier.be/"),
+        ("Jeugdverenigingen", "KSA Lier (Weebly)", "https://ksalier.weebly.com/"),
         ("Jeugdverenigingen", "KLJ Lier-Noord", "https://www.kljliernoord.be/"),
         ("Jeugdverenigingen", "KLJ Lier-Zuid", "https://www.kljlierzuid.be/"),
         # --- Kleine clubs ---
         ("Kleine Clubs", "Mister 100 Biljartzaal Lier", "https://mister100-salledeau.be/biljardzaal-mister-100-lier/"),
         ("Kleine Clubs", "Chesslooks Schaakclub Lier", "https://www.chesslooks-lier.be/"),
         ("Kleine Clubs", "Pallieter Jogging Lier", "https://www.pallieterjogging.be/"),
+        # --- Wijken & Buurt ---
+        ("Wijken & Buurt", "Verenigingendatabank Lier", "https://verenigingen.uitinlier.be/"),
         # --- Serviceclubs, kerk & senioren ---
         ("Serviceclubs & Verenigingen", "Lions Club Lier", "https://lionslier.be/onze-evenementen/"),
         ("Serviceclubs & Verenigingen", "Kiwanis Lier Twee Neten", "https://kiwanisliertweeneten.be/acties-en-nieuws/"),
@@ -100,6 +130,47 @@ def _seed_sources():
         add_source(cat, desc, url)
 
     logger.info(f"Seeded {len(default_sources)} default sources.")
+
+
+# New sources to add to existing databases (won't duplicate thanks to UNIQUE constraint)
+_NEW_SOURCES_V2 = [
+    ("Stad & Bestuur", "Gemeenteraad Lier (live/herbekijken)", "https://www.lier.be/gemeenteraad-volgen"),
+    ("Stad & Bestuur", "Lier.be Wegenwerken & Hinder", "https://www.lier.be/wegenwerken-hinder"),
+    ("Stad & Bestuur", "Stad Lier - Participatie / Maak je Wijk", "https://www.lier.be/stadsbestuur/participatie-neem-deel-aan-het-beleid/maak-je-wijk"),
+    ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten"),
+    ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen"),
+    ("Economie", "Shoppen in Lier", "https://www.shoppeninlier.be/"),
+    ("Economie", "UNIZO Lier", "https://www.unizo.be/provincie/antwerpen/lier/"),
+    ("Economie", "Lier.be - Ondernemen", "https://www.lier.be/ondernemen"),
+    ("Sport", "VK Hooikt (Voetbal Koningshooikt)", "https://www.vkhooikt.be/"),
+    ("Cultuur & Vrije Tijd", "UiT in Lier (Breed)", "https://www.uitinlier.be/"),
+    ("Erfgoed & Traditie", "Sint-Gummarusfeesten", "https://www.sintgummaruslier.be/"),
+    ("Erfgoed & Traditie", "Pallieterfeesten / Ommegang", "https://www.lier.be/pallieter"),
+    ("Erfgoed & Traditie", "Zomer in Lier / Lier Centraal", "https://www.lier.be/zomer-in-lier"),
+    ("Erfgoed & Traditie", "Lier Feest", "https://lierfeest.be/"),
+    ("Media & Concurrentie", "HLN Regio Lier", "https://www.hln.be/lier/"),
+    ("Onderwijs", "Sint-Gummaruscollege (SGC) Kalender", "https://www.sgclier.be/kalender.php"),
+    ("Onderwijs", "Campus Sint-Ursula", "https://campussintursula.be/"),
+    ("Onderwijs", "Atheneum Lier", "https://www.atheneumlier.be/"),
+    ("Onderwijs", "Naar School in Lier", "https://naarschoolinlier.be/"),
+    ("Onderwijs", "Lierse Scholen (overzicht)", "https://www.lier.be/onderwijs-en-vorming/scholen"),
+    ("Jeugd", "Jeugdcentrum De Moeve", "https://www.demoeve.be/"),
+    ("Jeugd", "Jeugdraad Lier", "https://www.lier.be/jeugdraad"),
+    ("Jeugdverenigingen", "Chiro Sint-Gummarus (Lutje)", "https://www.chirolutje.be/"),
+    ("Jeugdverenigingen", "Chiro Jochiko (Koningshooikt)", "https://chirojochiko.be/"),
+    ("Jeugdverenigingen", "KSA Sint-Gummarus Lier", "https://www.ksalier.be/"),
+    ("Wijken & Buurt", "Verenigingendatabank Lier", "https://verenigingen.uitinlier.be/"),
+]
+
+
+def _add_new_sources():
+    """Add new sources to existing databases (skips duplicates via UNIQUE constraint)."""
+    added = 0
+    for cat, desc, url in _NEW_SOURCES_V2:
+        if add_source(cat, desc, url):
+            added += 1
+    if added:
+        logger.info(f"Nieuwe bronnen: {added} bronnen toegevoegd.")
 
 
 # URLs to deactivate in existing databases — static pages, funeral homes, job boards, etc.
@@ -205,8 +276,9 @@ def _reactivate_sources():
         logger.info(f"Reactivatie: {reactivated} bronnen opnieuw geactiveerd.")
 
 
-# Seed default sources if empty, then clean up useless ones, then reactivate wanted ones
+# Seed default sources if empty, add new sources, clean up useless ones, reactivate wanted ones
 _seed_sources()
+_add_new_sources()
 _cleanup_sources()
 _reactivate_sources()
 
@@ -467,6 +539,10 @@ def api_search():
             new_count = 0
             for art in articles:
                 bullets = json.dumps(art.get("bullets", []), ensure_ascii=False)
+                # Validate label — must be one of the three allowed values
+                label = art.get("label", "")
+                if label not in ("Nieuws", "Mensen", "Agenda"):
+                    label = ""
                 ok = add_article(
                     title=art.get("title", "Geen titel"),
                     summary=art.get("summary", ""),
@@ -474,6 +550,7 @@ def api_search():
                     source_url=art.get("source_url", ""),
                     original_url=art.get("original_url", ""),
                     original_date=art.get("original_date", "onbekend"),
+                    label=label,
                 )
                 if ok:
                     new_count += 1

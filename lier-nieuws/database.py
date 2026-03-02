@@ -32,6 +32,7 @@ def init_db():
             source_url TEXT NOT NULL,
             original_url TEXT NOT NULL,
             original_date TEXT,
+            label TEXT DEFAULT '',
             created_at TEXT DEFAULT (datetime('now')),
             UNIQUE(original_url)
         );
@@ -39,6 +40,14 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_articles_created_at ON articles(created_at DESC);
         CREATE INDEX IF NOT EXISTS idx_articles_original_url ON articles(original_url);
     """)
+
+    # Add label column to existing databases (migration)
+    try:
+        conn.execute("ALTER TABLE articles ADD COLUMN label TEXT DEFAULT ''")
+        conn.commit()
+    except Exception:
+        pass  # column already exists
+
     conn.commit()
     conn.close()
 
@@ -96,13 +105,13 @@ def get_existing_urls():
     return {r["original_url"] for r in rows}
 
 
-def add_article(title, summary, bullets, source_url, original_url, original_date):
+def add_article(title, summary, bullets, source_url, original_url, original_date, label=""):
     conn = get_db()
     try:
         conn.execute(
-            """INSERT INTO articles (title, summary, bullets, source_url, original_url, original_date)
-               VALUES (?, ?, ?, ?, ?, ?)""",
-            (title, summary, bullets, source_url, original_url, original_date),
+            """INSERT INTO articles (title, summary, bullets, source_url, original_url, original_date, label)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (title, summary, bullets, source_url, original_url, original_date, label),
         )
         conn.commit()
         conn.close()

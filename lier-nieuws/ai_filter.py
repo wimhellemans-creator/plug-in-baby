@@ -82,6 +82,10 @@ Je krijgt een verzameling gescrapete webpagina's van lokale bronnen. Jouw taak:
    - title: een pakkende titel (in het Nederlands)
    - summary: een samenvatting in 1 zin
    - bullets: exact 3 bullet points die het verhaal duiden of pitchen voor de journalist
+   - label: een van deze drie categorieën (kies de best passende):
+       * "Nieuws" — hard nieuws uit Lier: ongelukken, criminaliteit, politiek, infrastructuur, verkeer, wegenwerken, veiligheid
+       * "Mensen" — menselijke verhalen: portretten, handel/horeca, onderwijs, jeugd, sport, wijknieuws, vrijwilligers, verenigingen
+       * "Agenda" — aankondigingen: evenementen, feesten, concerten, tentoonstellingen, culturele programmatie, markten
    - original_url: de exacte URL van het bronartikel (NIET de homepage van de bron)
    - source_url: de URL van de bron/website
    - original_date: de datum van publicatie (formaat: YYYY-MM-DD HH:MM of YYYY-MM-DD als uur onbekend)
@@ -91,6 +95,7 @@ BELANGRIJK:
 - De original_url moet een echte, specifieke link zijn naar het artikel, niet de homepage.
 - Als je geen datum kan vinden, gebruik dan de tekst "onbekend".
 - Wees selectief: liever 3 goede leads dan 10 matige.
+- Het label moet EXACT een van deze drie zijn: "Nieuws", "Mensen" of "Agenda".
 
 Reeds bestaande artikelen in onze database (deze NIET opnieuw opnemen):
 {existing_urls}
@@ -102,6 +107,7 @@ Antwoord ENKEL in geldig JSON-formaat:
       "title": "...",
       "summary": "...",
       "bullets": ["...", "...", "..."],
+      "label": "Nieuws|Mensen|Agenda",
       "original_url": "...",
       "source_url": "...",
       "original_date": "..."
