@@ -43,10 +43,8 @@ def _seed_sources():
         # --- Stad & Bestuur ---
         ("Stad & Bestuur", "Stad Lier Algemeen Nieuws", "https://www.lier.be/"),
         ("Stad & Bestuur", "Agenda Gemeente- en OCMW-raad", "https://lier.be/agenda-gemeente-en-ocmw-raad"),
-        ("Stad & Bestuur", "Zittingen & Verslagen", "https://www.lier.be/zittingen"),
-        ("Stad & Bestuur", "Gemeenteraad Lier (live/herbekijken)", "https://www.lier.be/gemeenteraad-volgen"),
-        ("Stad & Bestuur", "Lier.be Wegenwerken & Hinder", "https://www.lier.be/wegenwerken-hinder"),
-        ("Stad & Bestuur", "Stad Lier - Participatie / Maak je Wijk", "https://www.lier.be/stadsbestuur/participatie-neem-deel-aan-het-beleid/maak-je-wijk"),
+        ("Stad & Bestuur", "Verslagen Gemeenteraad", "https://lier.meetingburger.net/?AlleVergaderingen=False"),
+        ("Stad & Bestuur", "Werken & Verkeersberichten Lier", "https://lier.be/verkeersberichten"),
         # --- Veiligheid ---
         ("Veiligheid", "Lokale Politie Lier Nieuws", "https://www.politie.be/5360/nieuws"),
         ("Veiligheid", "Brandweerzone Rivierenland", "https://rivierenland.hulpverleningszone.be/"),
@@ -54,17 +52,16 @@ def _seed_sources():
         ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten"),
         ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen"),
         # --- Economie ---
-        ("Economie", "Made in Mechelen (regio Lier)", "https://www.made-in.be/mechelen/"),
-        ("Economie", "Shoppen in Lier", "https://www.shoppeninlier.be/"),
-        ("Economie", "UNIZO Lier", "https://www.unizo.be/provincie/antwerpen/lier/"),
-        ("Economie", "Lier.be - Ondernemen", "https://www.lier.be/ondernemen"),
+        ("Economie", "Made in Mechelen (regio Lier)", "https://www.made-in.be/regio/mechelen/"),
+        ("Economie", "Shoppen in Lier", "https://visitlier.be/nl/home-shoppen-in-lier"),
+        ("Economie", "Lier.be - Nieuws voor Ondernemers", "https://www.lier.be/ondernemen/nieuws-voor-ondernemers"),
         # --- Zorg ---
         ("Zorg & Welzijn", "Heilig Hartziekenhuis Nieuws", "https://www.heilighartlier.be/nieuws/"),
         # --- Sport (hoofdclubs) ---
         ("Sport", "Lierse SK (Kempenzonen)", "https://www.lierse.com/"),
         ("Sport", "K. Lyra-Lierse", "https://lyralierse.be/"),
         ("Sport", "Royal Herakles HC (Hockey)", "https://herakles.be/"),
-        ("Sport", "VK Hooikt (Voetbal Koningshooikt)", "https://www.vkhooikt.be/"),
+        ("Sport", "KVK Hooikt (Voetbal Koningshooikt)", "https://kvkhooikt.be/"),
         # --- Cultuur ---
         ("Cultuur & Vrije Tijd", "CC De Mol Programmatie", "https://www.lierscultuurcentrum.be/nl/programma"),
         ("Cultuur & Vrije Tijd", "UiT in Lier (Kalender)", "https://ikorganiseerinlier.uitinlier.be/kalender"),
@@ -72,49 +69,34 @@ def _seed_sources():
         ("Cultuur & Theater", "Teater Lier (Den Bril)", "https://denbril.be/"),
         # --- Erfgoed & Feesten ---
         ("Erfgoed & Traditie", "Zimmertoren & Zimmermuseum", "https://zimmertoren.be/"),
-        ("Erfgoed & Traditie", "Sint-Gummarusfeesten", "https://www.sintgummaruslier.be/"),
-        ("Erfgoed & Traditie", "Pallieterfeesten / Ommegang", "https://www.lier.be/pallieter"),
-        ("Erfgoed & Traditie", "Zomer in Lier / Lier Centraal", "https://www.lier.be/zomer-in-lier"),
         ("Erfgoed & Traditie", "Lier Feest", "https://lierfeest.be/"),
         # --- Lokale Politiek ---
         ("Lokale Politiek", "N-VA Lier (Nieuws)", "https://lier.n-va.be/nieuws"),
-        ("Lokale Politiek", "Missie2500 (CD&V Lier)", "https://afdeling.cdenv.be/lier"),
+        ("Lokale Politiek", "Missie2500 (CD&V Lier)", "https://missie2500.be/nieuws/"),
         ("Lokale Politiek", "Vooruit Lier", "https://nieuws.vooruit.org/lier"),
         # --- Media & Concurrentie ---
-        ("Media & Concurrentie", "HLN Regio Lier", "https://www.hln.be/lier/"),
         ("Media & Concurrentie", "RTV Lier", "https://www.rtv.be/regio/lier"),
         ("Media & Concurrentie", "Lier Belicht", "https://www.lierbelicht.be/"),
         ("Media & Concurrentie", "Nnieuws Brandweer Rivierenland", "https://nnieuws.be/tags/brandweer-rivierenland"),
-        ("Media & Concurrentie", "Radio Pallieter", "https://radiopallieter.be/"),
         ("Media & Concurrentie", "Het Nieuwsblad Lier", "https://www.nieuwsblad.be/regio/lier"),
         ("Media & Concurrentie", "Gazet van Antwerpen Lier", "https://www.gva.be/regio/lier"),
         # --- Onderwijs ---
         ("Onderwijs", "Sint-Gummaruscollege (SGC) Kalender", "https://www.sgclier.be/kalender.php"),
         ("Onderwijs", "Campus Sint-Ursula", "https://campussintursula.be/"),
         ("Onderwijs", "Atheneum Lier", "https://www.atheneumlier.be/"),
-        ("Onderwijs", "Naar School in Lier", "https://naarschoolinlier.be/"),
-        ("Onderwijs", "Lierse Scholen (overzicht)", "https://www.lier.be/onderwijs-en-vorming/scholen"),
-        # --- Jeugd ---
-        ("Jeugd", "Jeugdcentrum De Moeve", "https://www.demoeve.be/"),
-        ("Jeugd", "Jeugdraad Lier", "https://www.lier.be/jeugdraad"),
         # --- Jeugdverenigingen ---
         ("Jeugdverenigingen", "Chiro Lips Lier", "https://www.chirolips.be/"),
         ("Jeugdverenigingen", "Chiro Lier", "https://www.chirolier.be/"),
         ("Jeugdverenigingen", "Chiro Jut Lier", "https://www.chirojut.be/"),
-        ("Jeugdverenigingen", "Chiro Sint-Gummarus (Lutje)", "https://www.chirolutje.be/"),
-        ("Jeugdverenigingen", "Chiro Jochiko (Koningshooikt)", "https://chirojochiko.be/"),
         ("Jeugdverenigingen", "Scouting Lier", "https://scoutinglier.be/"),
         ("Jeugdverenigingen", "Scouts Lier", "https://scoutslier.be/"),
-        ("Jeugdverenigingen", "KSA Sint-Gummarus Lier", "https://www.ksalier.be/"),
-        ("Jeugdverenigingen", "KSA Lier (Weebly)", "https://ksalier.weebly.com/"),
+        ("Jeugdverenigingen", "KSA Lier", "https://ksalier.weebly.com/"),
         ("Jeugdverenigingen", "KLJ Lier-Noord", "https://www.kljliernoord.be/"),
         ("Jeugdverenigingen", "KLJ Lier-Zuid", "https://www.kljlierzuid.be/"),
         # --- Kleine clubs ---
         ("Kleine Clubs", "Mister 100 Biljartzaal Lier", "https://mister100-salledeau.be/biljardzaal-mister-100-lier/"),
         ("Kleine Clubs", "Chesslooks Schaakclub Lier", "https://www.chesslooks-lier.be/"),
         ("Kleine Clubs", "Pallieter Jogging Lier", "https://www.pallieterjogging.be/"),
-        # --- Wijken & Buurt ---
-        ("Wijken & Buurt", "Verenigingendatabank Lier", "https://verenigingen.uitinlier.be/"),
         # --- Serviceclubs, kerk & senioren ---
         ("Serviceclubs & Verenigingen", "Lions Club Lier", "https://lionslier.be/onze-evenementen/"),
         ("Serviceclubs & Verenigingen", "Kiwanis Lier Twee Neten", "https://kiwanisliertweeneten.be/acties-en-nieuws/"),
@@ -133,48 +115,62 @@ def _seed_sources():
 
 
 # New sources to add to existing databases (won't duplicate thanks to UNIQUE constraint)
-_NEW_SOURCES_V2 = [
-    ("Stad & Bestuur", "Gemeenteraad Lier (live/herbekijken)", "https://www.lier.be/gemeenteraad-volgen"),
-    ("Stad & Bestuur", "Lier.be Wegenwerken & Hinder", "https://www.lier.be/wegenwerken-hinder"),
-    ("Stad & Bestuur", "Stad Lier - Participatie / Maak je Wijk", "https://www.lier.be/stadsbestuur/participatie-neem-deel-aan-het-beleid/maak-je-wijk"),
+_NEW_SOURCES_V3 = [
+    # Correcte/nieuwe URLs
+    ("Stad & Bestuur", "Verslagen Gemeenteraad", "https://lier.meetingburger.net/?AlleVergaderingen=False"),
+    ("Stad & Bestuur", "Werken & Verkeersberichten Lier", "https://lier.be/verkeersberichten"),
     ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten"),
     ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen"),
-    ("Economie", "Shoppen in Lier", "https://www.shoppeninlier.be/"),
-    ("Economie", "UNIZO Lier", "https://www.unizo.be/provincie/antwerpen/lier/"),
-    ("Economie", "Lier.be - Ondernemen", "https://www.lier.be/ondernemen"),
-    ("Sport", "VK Hooikt (Voetbal Koningshooikt)", "https://www.vkhooikt.be/"),
+    ("Economie", "Made in Mechelen (regio Lier)", "https://www.made-in.be/regio/mechelen/"),
+    ("Economie", "Shoppen in Lier", "https://visitlier.be/nl/home-shoppen-in-lier"),
+    ("Economie", "Lier.be - Nieuws voor Ondernemers", "https://www.lier.be/ondernemen/nieuws-voor-ondernemers"),
+    ("Sport", "KVK Hooikt (Voetbal Koningshooikt)", "https://kvkhooikt.be/"),
     ("Cultuur & Vrije Tijd", "UiT in Lier (Breed)", "https://www.uitinlier.be/"),
-    ("Erfgoed & Traditie", "Sint-Gummarusfeesten", "https://www.sintgummaruslier.be/"),
-    ("Erfgoed & Traditie", "Pallieterfeesten / Ommegang", "https://www.lier.be/pallieter"),
-    ("Erfgoed & Traditie", "Zomer in Lier / Lier Centraal", "https://www.lier.be/zomer-in-lier"),
     ("Erfgoed & Traditie", "Lier Feest", "https://lierfeest.be/"),
-    ("Media & Concurrentie", "HLN Regio Lier", "https://www.hln.be/lier/"),
+    ("Lokale Politiek", "Missie2500 (CD&V Lier)", "https://missie2500.be/nieuws/"),
     ("Onderwijs", "Sint-Gummaruscollege (SGC) Kalender", "https://www.sgclier.be/kalender.php"),
     ("Onderwijs", "Campus Sint-Ursula", "https://campussintursula.be/"),
     ("Onderwijs", "Atheneum Lier", "https://www.atheneumlier.be/"),
-    ("Onderwijs", "Naar School in Lier", "https://naarschoolinlier.be/"),
-    ("Onderwijs", "Lierse Scholen (overzicht)", "https://www.lier.be/onderwijs-en-vorming/scholen"),
-    ("Jeugd", "Jeugdcentrum De Moeve", "https://www.demoeve.be/"),
-    ("Jeugd", "Jeugdraad Lier", "https://www.lier.be/jeugdraad"),
-    ("Jeugdverenigingen", "Chiro Sint-Gummarus (Lutje)", "https://www.chirolutje.be/"),
-    ("Jeugdverenigingen", "Chiro Jochiko (Koningshooikt)", "https://chirojochiko.be/"),
-    ("Jeugdverenigingen", "KSA Sint-Gummarus Lier", "https://www.ksalier.be/"),
-    ("Wijken & Buurt", "Verenigingendatabank Lier", "https://verenigingen.uitinlier.be/"),
 ]
 
 
 def _add_new_sources():
     """Add new sources to existing databases (skips duplicates via UNIQUE constraint)."""
     added = 0
-    for cat, desc, url in _NEW_SOURCES_V2:
+    for cat, desc, url in _NEW_SOURCES_V3:
         if add_source(cat, desc, url):
             added += 1
     if added:
         logger.info(f"Nieuwe bronnen: {added} bronnen toegevoegd.")
 
 
-# URLs to deactivate in existing databases — static pages, funeral homes, job boards, etc.
+# URLs to deactivate in existing databases — static pages, broken links, removed sources, etc.
 _URLS_TO_DEACTIVATE = [
+    # V3: verwijderde/vervangen bronnen
+    "https://www.lier.be/pallieter",  # Ommegang - bestaat niet meer
+    "https://www.sintgummaruslier.be/",  # Sint-Gummarusfeesten - bestaat niet meer
+    "https://www.lier.be/zomer-in-lier",  # Zomer in Lier - geschrapt
+    "https://www.unizo.be/provincie/antwerpen/lier/",  # UNIZO - geschrapt
+    "https://www.demoeve.be/",  # Jeugdcentrum De Moeve - geschrapt
+    "https://www.lier.be/jeugdraad",  # Jeugdraad - geschrapt
+    "https://chirojochiko.be/",  # Chiro Jochiko - geschrapt
+    "https://www.chirolutje.be/",  # Chiro Lutje - geschrapt
+    "https://www.hln.be/lier/",  # HLN - eigen platform
+    "https://radiopallieter.be/",  # Radio Pallieter - geschrapt
+    "https://www.lier.be/onderwijs-en-vorming/scholen",  # Scholenoverzicht - statisch
+    "https://naarschoolinlier.be/",  # Naar School in Lier - geschrapt
+    "https://www.lier.be/gemeenteraad-volgen",  # Bestaat niet
+    "https://www.lier.be/wegenwerken-hinder",  # Bestaat niet
+    "https://www.lier.be/stadsbestuur/participatie-neem-deel-aan-het-beleid/maak-je-wijk",  # Geschrapt
+    "https://www.lier.be/zittingen",  # Vervangen door meetingburger
+    "https://verenigingen.uitinlier.be/",  # Overzichtspagina - niet nuttig
+    "https://www.ksalier.be/",  # Vervangen door weebly
+    # Vervangen URLs (oude versies deactiveren)
+    "https://www.made-in.be/mechelen/",  # Oud URL, nu /regio/mechelen/
+    "https://www.shoppeninlier.be/",  # Oud URL, nu visitlier.be
+    "https://www.lier.be/ondernemen",  # Oud URL, nu /nieuws-voor-ondernemers
+    "https://www.vkhooikt.be/",  # Oud URL, nu kvkhooikt.be
+    "https://afdeling.cdenv.be/lier",  # Oud URL, nu missie2500.be
     # Statische stadspagina's (geen nieuwswaarde)
     "https://www.lier.be/stadsbestuur/beleid-en-wetgeving/register-van-bekendmakingen",
     "https://www.lier.be/stadsbestuur/beleid-en-wetgeving/reglementen-stad-lier",
