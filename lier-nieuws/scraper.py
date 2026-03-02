@@ -245,6 +245,106 @@ def _extract_article_data(element, base_url):
     }
 
 
+def search_google_news_lier():
+    """Search Google News RSS for recent news mentioning Lier (Belgium).
+
+    Returns content in the same format as extract_page_content() so it can
+    be fed directly into the AI analysis pipeline.
+    """
+    queries = [
+        "Lier+België",
+        "Lier+Antwerpen",
+        "Koningshooikt",
+    ]
+    all_articles = []
+    seen_urls = set()
+
+    for query in queries:
+        url = (
+            f"https://news.google.com/rss/search?"
+            f"q={query}&hl=nl&gl=BE&ceid=BE:nl"
+        )
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
+            resp.raise_for_status()
+            resp.encoding = "utf-8"
+        except requests.exceptions.SSLError:
+            try:
+                resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, verify=False)
+                resp.raise_for_status()
+                resp.encoding = "utf-8"
+            except requests.RequestException as e:
+                logger.warning(f"Google News search failed for '{query}': {e}")
+                continue
+        except requests.RequestException as e:
+            logger.warning(f"Google News search failed for '{query}': {e}")
+            continue
+
+        try:
+            soup = BeautifulSoup(resp.text, "xml")
+            items = soup.find_all("item")
+            logger.info(f"  [Google News '{query}'] {len(items)} items gevonden")
+
+            for item in items[:15]:
+                title = item.find("title")
+                link = item.find("link")
+                pub_date = item.find("pubDate")
+                source_el = item.find("source")
+                description = item.find("description")
+
+                title_text = title.get_text(strip=True) if title else ""
+                link_text = link.get_text(strip=True) if link else ""
+                date_text = pub_date.get_text(strip=True) if pub_date else ""
+                source_name = source_el.get_text(strip=True) if source_el else ""
+                desc_text = ""
+                if description:
+                    desc_soup = BeautifulSoup(description.get_text(), "html.parser")
+                    desc_text = desc_soup.get_text(separator=" ", strip=True)
+
+                if not title_text or not link_text:
+                    continue
+                if link_text in seen_urls:
+                    continue
+                seen_urls.add(link_text)
+
+                # Parse the date from RSS format (e.g. "Sun, 02 Mar 2026 10:30:00 GMT")
+                parsed_date = ""
+                if date_text:
+                    try:
+                        from email.utils import parsedate_to_datetime
+                        dt = parsedate_to_datetime(date_text)
+                        parsed_date = dt.strftime("%Y-%m-%d %H:%M")
+                    except Exception:
+                        parsed_date = date_text
+
+                text = f"{title_text}\n{desc_text}"
+                if source_name:
+                    text += f"\nBron: {source_name}"
+
+                all_articles.append({
+                    "title": title_text,
+                    "text": text[:2000],
+                    "url": link_text,
+                    "date": parsed_date,
+                })
+        except Exception as e:
+            logger.warning(f"Failed to parse Google News RSS for '{query}': {e}")
+            continue
+
+    if not all_articles:
+        return None
+
+    logger.info(f"  [Google News] Totaal: {len(all_articles)} unieke items")
+    return {
+        "source": {
+            "category": "Web Search",
+            "description": "Google News (Lier / Koningshooikt)",
+            "url": "https://news.google.com/",
+        },
+        "articles": all_articles,
+    }
+
+
 def scrape_all_sources(sources, progress_callback=None):
     """Scrape all sources and return extracted content."""
     all_content = []

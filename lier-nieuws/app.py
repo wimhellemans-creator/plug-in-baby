@@ -16,7 +16,7 @@ except ImportError:
 
 from database import init_db, get_all_sources, add_source, update_source, delete_source as db_delete_source
 from database import get_articles, add_article, delete_article as db_delete_article, get_existing_urls
-from scraper import scrape_all_sources
+from scraper import scrape_all_sources, search_google_news_lier
 from ai_filter import filter_and_summarize
 
 # Load environment variables
@@ -511,6 +511,18 @@ def api_search():
                 time.sleep(0.3)
 
             logger.info(f"Scraping klaar: {scrape_ok} bronnen met content, {scrape_fail} lege bronnen")
+
+            # 2b. Google News search for Lier (catches national media coverage)
+            yield _sse({"type": "progress", "current": total, "total": total, "source": "Google News zoeken..."})
+            try:
+                news_results = search_google_news_lier()
+                if news_results and news_results["articles"]:
+                    scraped_content.append(news_results)
+                    logger.info(f"  OK: Google News -> {len(news_results['articles'])} items")
+                else:
+                    logger.info("  Google News: geen resultaten")
+            except Exception as e:
+                logger.warning(f"Google News search overgeslagen: {e}")
 
             if not scraped_content:
                 logger.warning("Geen enkele bron leverde content op. Controleer je internetverbinding.")
