@@ -120,6 +120,80 @@ Als er geen nieuwswaardige artikelen zijn, antwoord dan:
 """
 
 
+ARTICLE_PROMPT = """Je bent een ervaren regiojournalist bij HLN, de populairste nieuwssite van Vlaanderen.
+Je schrijft een artikel in de typische HLN-stijl:
+- Korte, pakkende kop die nieuwsgierig maakt
+- Een vetgedrukte intro van 1-2 zinnen die de kern samenvat
+- Vlotte, toegankelijke taal — geen wollig taalgebruik
+- Korte alinea's (2-3 zinnen max)
+- Actieve schrijfstijl, dicht bij de lezer
+- Menselijk en concreet, niet abstract
+
+Je krijgt hieronder de informatie uit een nieuwslead. Schrijf hier een publicatieklaar artikel van.
+
+CRUCIALE REGELS:
+- Schrijf UITSLUITEND op basis van de informatie die hieronder staat. Voeg NIETS toe.
+- Verzin GEEN quotes, GEEN namen die niet in de bron staan, GEEN extra details of omstandigheden.
+- Als er weinig info is, schrijf dan een kort artikel (3-5 alinea's). Dat is prima.
+- Als er meer info is, mag het langer zijn (6-10 alinea's).
+- Gebruik NOOIT de woorden "aldus", "desgevallend" of andere archaïsche termen.
+- Begin NIET met "In Lier..." — varieer je opening.
+- Het artikel moet 100% feitelijk correct zijn op basis van de broninfo.
+
+Structuur van je output (gebruik exact deze markdown-opmaak):
+# [Pakkende kop]
+
+**[Vetgedrukte intro van 1-2 zinnen]**
+
+[Artikel in korte alinea's]
+
+---
+*Bron: [naam/url van de bron]*
+"""
+
+
+def generate_hln_article(article_data):
+    """Generate an HLN-style article from a news lead using Claude."""
+    client = get_client()
+
+    # Build the context from the article data
+    context = f"""Titel van de lead: {article_data.get('title', '')}
+Samenvatting: {article_data.get('summary', '')}
+Bullet points:
+{chr(10).join('- ' + b for b in article_data.get('bullets', []))}
+Label/categorie: {article_data.get('label', 'onbekend')}
+Datum: {article_data.get('original_date', 'onbekend')}
+Bron-URL: {article_data.get('original_url', '')}
+Bronsite: {article_data.get('source_url', '')}"""
+
+    messages = [
+        {
+            "role": "user",
+            "content": f"{ARTICLE_PROMPT}\n\n--- BRONINFO ---\n{context}",
+        }
+    ]
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-5-20250929",
+            max_tokens=2048,
+            messages=messages,
+        )
+    except Exception as e:
+        if "SSL" in str(e) or "Connection" in str(e) or "ConnectError" in str(e):
+            logger.warning(f"Article generation API call failed ({e}), retrying without SSL...")
+            client = get_client(verify=False)
+            response = client.messages.create(
+                model="claude-sonnet-4-5-20250929",
+                max_tokens=2048,
+                messages=messages,
+            )
+        else:
+            raise
+
+    return response.content[0].text
+
+
 def filter_and_summarize(scraped_content, existing_urls):
     """Use Claude to filter and summarize scraped content into news leads."""
     client = get_client()

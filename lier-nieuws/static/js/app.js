@@ -111,9 +111,14 @@ function renderArticles(articles) {
                     .join("")}
             </ul>
             <div class="card-footer">
-                <a href="${escapeHtml(a.original_url)}" target="_blank" rel="noopener" class="card-source">
-                    &#8599; Bekijk bron
-                </a>
+                <div class="card-footer-links">
+                    <a href="${escapeHtml(a.original_url)}" target="_blank" rel="noopener" class="card-source">
+                        &#8599; Bekijk bron
+                    </a>
+                    <button class="btn-generate" onclick="generateArticle(${a.id})" title="Genereer een artikelvoorstel">
+                        &#9998; Voorstel artikel
+                    </button>
+                </div>
                 <div class="card-actions">
                     <button class="btn-icon delete" onclick="deleteArticle(${a.id})" title="Verwijder">&#10005;</button>
                 </div>
@@ -488,6 +493,84 @@ function formatDate(dateStr) {
         });
     } catch {
         return dateStr;
+    }
+}
+
+// Article generation modal
+const articleModalOverlay = document.getElementById("articleModalOverlay");
+const articleModalClose = document.getElementById("articleModalClose");
+const articleModalContent = document.getElementById("articleModalContent");
+const copyArticleBtn = document.getElementById("copyArticleBtn");
+
+articleModalClose.addEventListener("click", closeArticleModal);
+articleModalOverlay.addEventListener("click", (e) => {
+    if (e.target === articleModalOverlay) closeArticleModal();
+});
+copyArticleBtn.addEventListener("click", copyArticleToClipboard);
+
+function closeArticleModal() {
+    articleModalOverlay.classList.remove("active");
+}
+
+async function generateArticle(id) {
+    // Open modal immediately with loading state
+    articleModalOverlay.classList.add("active");
+    articleModalContent.innerHTML = '<div class="article-loading">Artikel wordt geschreven...</div>';
+    copyArticleBtn.style.display = "none";
+
+    try {
+        const resp = await fetch(`/api/articles/${id}/generate`, { method: "POST" });
+        const data = await resp.json();
+
+        if (!resp.ok) {
+            articleModalContent.innerHTML = `<div class="article-error">Fout: ${escapeHtml(data.error || "Onbekende fout")}</div>`;
+            return;
+        }
+
+        // Render markdown-like content as HTML
+        articleModalContent.innerHTML = renderArticleMarkdown(data.article_text);
+        copyArticleBtn.style.display = "inline-flex";
+        copyArticleBtn.dataset.rawText = data.article_text;
+    } catch (err) {
+        articleModalContent.innerHTML = `<div class="article-error">Fout bij genereren: ${escapeHtml(err.message)}</div>`;
+    }
+}
+
+function renderArticleMarkdown(text) {
+    // Simple markdown to HTML: headings, bold, italic, hr, paragraphs
+    let html = text
+        .replace(/^# (.+)$/gm, '<h1 class="article-title">$1</h1>')
+        .replace(/^## (.+)$/gm, '<h2>$2</h2>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/^---$/gm, '<hr>');
+
+    // Split into paragraphs (double newline)
+    html = html.split(/\n\n+/).map(block => {
+        block = block.trim();
+        if (!block) return "";
+        if (block.startsWith("<h1") || block.startsWith("<h2") || block.startsWith("<hr")) return block;
+        return `<p>${block.replace(/\n/g, "<br>")}</p>`;
+    }).join("\n");
+
+    return html;
+}
+
+async function copyArticleToClipboard() {
+    const rawText = copyArticleBtn.dataset.rawText;
+    if (!rawText) return;
+    try {
+        await navigator.clipboard.writeText(rawText);
+        showToast("Artikel gekopieerd naar klembord!", "success");
+    } catch {
+        // Fallback for older browsers
+        const ta = document.createElement("textarea");
+        ta.value = rawText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("Artikel gekopieerd naar klembord!", "success");
     }
 }
 

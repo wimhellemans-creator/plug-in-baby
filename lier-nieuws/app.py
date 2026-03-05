@@ -15,9 +15,9 @@ except ImportError:
     pass
 
 from database import init_db, get_all_sources, add_source, update_source, delete_source as db_delete_source
-from database import get_articles, add_article, delete_article as db_delete_article, get_existing_urls
+from database import get_articles, get_article, add_article, delete_article as db_delete_article, get_existing_urls
 from scraper import scrape_all_sources, search_google_news_lier
-from ai_filter import filter_and_summarize
+from ai_filter import filter_and_summarize, generate_hln_article
 
 # Load environment variables
 load_dotenv()
@@ -307,6 +307,45 @@ def api_get_articles():
 def api_delete_article(article_id):
     db_delete_article(article_id)
     return jsonify({"ok": True})
+
+
+@app.route("/api/articles/<int:article_id>/generate", methods=["POST"])
+def api_generate_article(article_id):
+    """Generate an HLN-style article from a news lead."""
+    article = get_article(article_id)
+    if not article:
+        return jsonify({"error": "Artikel niet gevonden"}), 404
+
+    # Parse bullets from JSON string
+    bullets = []
+    try:
+        parsed = json.loads(article.get("bullets", "[]"))
+        if isinstance(parsed, list):
+            bullets = parsed
+    except (json.JSONDecodeError, TypeError):
+        bullets = [b.strip() for b in article.get("bullets", "").split("\n") if b.strip()]
+
+    article_data = {
+        "title": article.get("title", ""),
+        "summary": article.get("summary", ""),
+        "bullets": bullets,
+        "label": article.get("label", ""),
+        "original_url": article.get("original_url", ""),
+        "source_url": article.get("source_url", ""),
+        "original_date": article.get("original_date", ""),
+    }
+
+    try:
+        generated_text = generate_hln_article(article_data)
+        return jsonify({"ok": True, "article_text": generated_text})
+    except Exception as e:
+        logger.error(f"Article generation error: {e}", exc_info=True)
+        error_msg = str(e)
+        if "401" in error_msg or "authentication" in error_msg.lower():
+            error_msg = "API key is ongeldig. Controleer je instellingen."
+        elif "insufficient" in error_msg.lower() or "credit" in error_msg.lower():
+            error_msg = "Geen API credits meer."
+        return jsonify({"error": error_msg}), 500
 
 
 # ---- API: Sources ----

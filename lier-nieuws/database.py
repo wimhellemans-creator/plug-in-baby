@@ -133,6 +133,13 @@ def get_articles(page=1, per_page=20):
     return [dict(r) for r in rows], total
 
 
+def get_article(article_id):
+    conn = get_db()
+    row = conn.execute("SELECT * FROM articles WHERE id=?", (article_id,)).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
 def delete_article(article_id):
     conn = get_db()
     conn.execute("DELETE FROM articles WHERE id=?", (article_id,))
