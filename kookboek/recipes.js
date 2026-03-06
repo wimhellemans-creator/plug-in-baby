@@ -403,6 +403,157 @@ const recipes = [
       "Serveer in een mooi kommetje of als je een echte mosselpot hebt, daarin dan. Zet ook altijd een kommetje klaar om de schelpen in te gooien."
     ],
     tip: "Dit is genoeg voor een aperitiefhapje voor een man of vier pakt. Als je mosselen als hoofdgerecht wil, moet je rekenen op zo \u00e9\u00e9n portie per persoon (en er verse mayonaise \u2013 recept: zie tong \u2013 bij serveren)."
+  },
+  {
+    id: 14,
+    name: "Tong met ovenpatatjes",
+    category: "doordeweeks",
+    time: "50 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🐠",
+    description: "Gebakken tong met krokante ovenpatatjes en een frisse salade. Plus het recept voor zelfgemaakte mayonaise.",
+    ingredients: [
+      "1 gekuiste tong p.p.",
+      "500 g patatjes",
+      "1 zakje sla",
+      "bakboter",
+      "peper en zout",
+      "citroen",
+      "2 teentjes look",
+      "olijfolie"
+    ],
+    steps: [
+      "Zet de oven op 200\u00b0C.",
+      "Snijd de patatjes (met schil) en schijfjes of kwartjes. Doe wat olijfolie in een ovenvaste schotel. Leg de patatjes erin, samen met de teentjes look. Kruid met peper en zout. Giet er nog wat olie over en zet 30 \u00e0 40 minuten in de oven, of tot ze goudbruin zijn. Begin pas aan de vis en de sla als de patatjes al (of bijna) klaar zijn.",
+      "Kruid de vis langs beide kanten met een beetje peper en zout. Smelt een klontje boter in een tefalpan op hoog vuur. Bak de vis in de pan, dat duurt ongeveer drie minuten aan elke kant. Maar zoals altijd: blijf erbij, als je ziet dat ie langs een kant een beetje bruin kleurt zoals op de foto mag je hem omdraaien. Als ook de andere kant er goed uitziet, leg je de tongen al op de borden.",
+      "Doe de sla in een kom. Doe er wat zout en peper op. Pers de citroen erover uit en giet er (desgewenst, maar het moet ni\u00e9t) een goeie scheut olijfolie over. Meng alles goed door elkaar.",
+      "Schep wat patatjes en de sla bij de vis op het bord: klaar!"
+    ],
+    tip: "Is dat\u2026 zelfgemaakte mayonaise? Jawel, en da\u2019s echt makkelijk om te maken! Daarvoor meng je in een mengbeker \u2013 of nog makkelijker: een blender! \u2013 1 ei, het sap van 1 citroen, 2 eetlepels dijonmosterd en wat peper en zout. Dan neem je een staafmixer \u2013 of zet je de blender aan \u2013 en giet je er 250 ml (voor de kenners: een bierglas) slaolie bij, terwijl je alles stevig blijft mixen, niet te lang zelfs. Mislukt nooit. Proef nog eens of er nog wat peper, zout of citroen bij moet\u2026 et voil\u00e0! Devos-Lemmens is er niks tegen."
+  },
+  {
+    id: 15,
+    name: "Zalm met chorizo en kerstomaten",
+    category: "doordeweeks",
+    time: "25 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🍣",
+    description: "Zalm met chorizo, kerstomaten en basilicum. Op een bedje van rijst. Te kort gebakken rijst is niet te eten.",
+    ingredients: [
+      "2 zalmhaasjes",
+      "300 g kerstomaatjes",
+      "basilicum",
+      "10 cm chorizo",
+      "olijfolie",
+      "een zakje rijst",
+      "wijnazijn",
+      "peper en zout",
+      "olijfolie"
+    ],
+    steps: [
+      "Snijd de tomaatjes doormidden en doe ze in een kommetje met een goeie scheut azijn, wat zout en peper.",
+      "Kook de rijst zoals op de verpakking staat (en bij twijfel een minuutje langer dan er staat \u2013 te kort gebakken rijst is niet te eten).",
+      "Doe een scheutje olijfolie in een tefalpan, zet het vuur hoog en bak de zalm langs beide kanten.",
+      "Snijd de chorizo in schijfjes en bak die nog twee minuten mee met de zalm.",
+      "Kap de tomaatjes en de azijn bij de zalm en chorizo en laat nog een minuutje of zo meebakken.",
+      "Leg alles op het bord, samen met nog enkele blaadjes basilicum.",
+      "Klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 16,
+    name: "Zalig kruidige kleefrijst",
+    category: "doordeweeks",
+    time: "25 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🍚",
+    description: "Keisimpel en belachelijk lekker. Rijst met gember, pinda\u2019s, koriander en limoen.",
+    ingredients: [
+      "1 zakje rijst",
+      "arachideolie",
+      "5 cm gember",
+      "3 teentjes look",
+      "2 rode pepers",
+      "koriander",
+      "gezouten, geroosterde pinda\u2019s",
+      "sesamzaad",
+      "1 limoen",
+      "zout"
+    ],
+    steps: [
+      "Schil de gember en snijd in julienne (Frans voor: in dunne reepjes). Snijd de topjes van de pepers, verwijder de pitjes en snijd in julienne (je weet nu wat dat is). Snijd de look in dunne plakjes.",
+      "Kook de rijst, 2 minuten langer dan op de verpakking staat, giet af, en doe in een kom.",
+      "Doe wat arachideolie in een Tefalpan. Zet het vuur hoog. Doe de gember, rode peper en look in de pan. Bak een kleine 5 minuten terwijl je geregeld roert, tot de look en de gember goudbruin kleurt.",
+      "Doe een handvol pinda\u2019s, best wat koriander, wat sesamzaad en genoeg zout in de pan. Roer nog eens goed, en bak alles nog een minuutje of twee.",
+      "Kap het mengsel uit de pan over de rijst. Pers er het sap van de limoen over.",
+      "Klaar! Keisimpel en belachelijk lekker. Zeker met een stukje gebakken witte vis erbij (of tofoe of zo, als dat uw ding is)."
+    ],
+    tip: null
+  },
+  {
+    id: 17,
+    name: "Asperges met ei en zalm",
+    category: "doordeweeks",
+    time: "30 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🌿",
+    description: "Witte asperges met gehakt ei, peterselie en gerookte zalm. Lente op een bord.",
+    ingredients: [
+      "2 eieren",
+      "500 g witte asperges",
+      "peterselie",
+      "een pakje gerookte zalm",
+      "peper",
+      "zout",
+      "goeie boter (eventueel)"
+    ],
+    steps: [
+      "Kook de eitjes gedurende een kwartier of zo, zodat ze zeker hardgekookt zijn. Laat ze afkoelen.",
+      "Schil de asperges (maar laat de topjes eraan) en breek de houterige uiteinden af.",
+      "Breng de asperges in een grote pot met ruim water en zout aan de kook. Opgepast: niet weglopen nu.",
+      "Zodra het water kookt, zet je het vuur af. Laat de asperges nog 5 \u00e0 10 minuten liggen in de pot, daarna zijn ze klaar.",
+      "Pel de eitjes en snijd ze in kleine blokjes, dat mag (of mo\u00e9t) rommelig. Snijd de peterselie fijn en meng met het ei. Kruid met wat peper en zout.",
+      "Leg de asperges op het bord. Verdeel het ei-peterseliemengsel erover. (*)",
+      "Leg er nog enkele mooie stukjes gerookte zalm bij.",
+      "Klaar!"
+    ],
+    tip: "(*) M\u00e9t goeie boter: voor traditionele asperges \u00e0 la flamande moet er ook nog boter bij (en geen zalm, maar het is altijd lekkerder met zalm), maar dat maakt het gerecht natuurlijk meteen een pak vettiger/zwaarder. Smelt daarvoor aan het eind gewoon wat boter in een pannetje en giet het over de asperges nadat je het ei en de peterselie erbij hebt gedaan."
+  },
+  {
+    id: 18,
+    name: "Prei met zalm",
+    category: "doordeweeks",
+    time: "30 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🥬",
+    description: "Gestoofde prei met gerookte zalm, vinaigrette en geroosterde pijnboompitten.",
+    ingredients: [
+      "1 stengel prei per persoon",
+      "2 schijfjes gerookte zalm p.p.",
+      "1 eetlepel goeie boter p.p.",
+      "olijfolie",
+      "mosterd",
+      "citroen",
+      "pijnboompitten",
+      "peper en zout"
+    ],
+    steps: [
+      "Snijd de onderkant van de prei en verwijder de te donkergroene delen (of nog beter: koop gewoon prei waar dat al bij gebeurd is). Maak een insnede over de lengte van de prei, zodat je het eventuele zand er nog uit kan spoelen onder de kraan.",
+      "Breng 1/2 liter water (per prei) aan de kook.",
+      "Snijd de prei in 3 stukken. Leg in het kokende water, samen met de boter en ruim zout. Breng opnieuw aan de kook. Zet het vuur dan meteen laag en laat 15 minuten sudderen.",
+      "Rooster de pijnboompitjes kort in een klein pannetje. Zodra ze bruin kleuren, kap je ze in een kommetje.",
+      "Meng een lepeltje mosterd, wat olijfolie en het sap van een halve citroen (= vinaigrette).",
+      "Laat de prei even uitlekken in een vergiet.",
+      "Leg dan de prei op een bord. Giet wat vinaigrette erover. Leg de zalm en de pijnboompitten erop.",
+      "Klaar!"
+    ],
+    tip: null
   }
 ];
 
