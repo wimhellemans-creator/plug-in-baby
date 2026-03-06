@@ -881,6 +881,325 @@ const recipes = [
       "Proef of er nog zout, peper\u2026 bij moet. Gooi er eventueel nog wat blaadjes basilicum bij, en klaar!"
     ],
     tip: null
+  },
+  // === BATCH: veggie ragù t/m tortiglioni ===
+  {
+    id: 29,
+    name: "Zotte veggie ragù",
+    category: "pasta",
+    time: "120 min",
+    servings: 4,
+    difficulty: "gemiddeld",
+    image: "🍄",
+    description: "Dit is misschien wel het beste vegetarische gerecht sinds eitjes geroerd. Oesterzwammen, porcini, linzen en parelgort uit de oven.",
+    ingredients: [
+      "3 wortels",
+      "2 ajuinen",
+      "300 g oesterzwammen",
+      "60 g gedroogde porcini",
+      "4 tenen look",
+      "4 romatomaten",
+      "olijfolie",
+      "witte miso",
+      "rozenharissa",
+      "tomatenpuree",
+      "sojasaus",
+      "komijnzaad",
+      "180 g gedroogde bruine linzen",
+      "100 g parelgort",
+      "1 l groentebouillon (een liter water en twee blokjes)",
+      "160 g kokoscrème",
+      "1 glas rode wijn (+ eentje voor de kok)",
+      "zout en peper",
+      "pasta",
+      "parmezaan"
+    ],
+    steps: [
+      "Bekom efkes van uw grote toer langs zowat alle super-, vers- en biomarkten om al die ingrediënten bij elkaar te scoren. Je bent een held. Maar geloof me: de beloning zal straks navenant zijn.",
+      "Zet de oven op 190°.",
+      "Pel de look en de ajuin. Schil de wortelen. Hak de wortels, ajuinen, oesterzwammen en tomaten grof. Doe ze samen met de look en de porcini in een keukenmachine (als je dat niet hebt: met de hand, vrees ik) en hak fijn.",
+      "Doe de fijngehakte groenten in een grote ovenschotel. Voeg 120 ml (een half bierglas) olijfolie toe, 70 g miso, 40 g rozenharissa, 4 eetlepels tomatenpuree, 90 ml sojasaus en een beetje komijn.",
+      "Meng alles goed en zet 40 minuten in de oven. Roer alles halverwege nog eens goed om.",
+      "Haal de schotel eruit en zet de oven op 180°.",
+      "Kap de linzen, parelgort, bouillon, kokoscrème, wijn in de schotel, samen met een klein glas water. Doe er wat zout bij en een royaal versgemalen peper. Roer alles door elkaar. Dek af met zilverpapier en zet 40 minuten in de oven.",
+      "Haal het zilverpapier eraf en bak nog eens 5 minuten.",
+      "Kook de pasta al dente. Serveer in een bord met de ragù en rasp er wat parmezaan over. Hehe, klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 30,
+    name: "Lasagne",
+    category: "pasta",
+    time: "60 min",
+    servings: 6,
+    difficulty: "gemiddeld",
+    image: "🫕",
+    description: "De klassieker. Bolognese, bechamel, lasagnevellen, mozzarella. Meer knutselen dan koken eigenlijk.",
+    ingredients: [
+      "2 porties bolognese-saus (zie begin boek)",
+      "2 porties bechamelsaus (zie vorige recept, zonder de bloemkool natuurlijk)",
+      "1 pak gedroogde lasagnevellen",
+      "bakboter",
+      "parmezaan",
+      "1 pakje geraspte mozzarella"
+    ],
+    steps: [
+      "Zorg dat je een stevige pot bolognesesaus en een pot belhamel klaar hebt staan. Als je vreest dat het te veel is: niet erg. Als straks niet alle saus hebt opgebruikt, kan je die nog invriezen voor bij een andere pasta.",
+      "Verwarm de oven voor op 200 graden.",
+      "Beboter een ovenschotel met hoge rand.",
+      "Vanaf nu is het meer knutselen dan koken. Leg eerst een laagje lasagnevellen. Schep daar een goeie laag bolognese over. Daarbovenop een laagje bechamel. En rasp er dan een dun laagje parmezaan overheen.",
+      "Herhaal stap 4 nog twee keer.",
+      "Strooi de geraspte mozzarella op de bovenkant van de lasagne.",
+      "Zet een dik halfuur in de oven (of wat langer, tot hij goudbruin ziet).",
+      "Klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 31,
+    name: "Rappe pasta met tonijn",
+    category: "pasta",
+    time: "20 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🐟",
+    description: "Verse tonijn, kerstomaten, basilicum en wijnazijn. Niet te grondig afgieten – dat kookvocht maakt het smeuïg.",
+    ingredients: [
+      "250 g pasta",
+      "1 tonijnsteak",
+      "200 g kerstomaten",
+      "1 rode peper",
+      "1 handvol basilicum",
+      "wijnazijn",
+      "olijfolie",
+      "peper en zout"
+    ],
+    steps: [
+      "Breng water met een goed handje zout erin aan de kook. Gooi de pasta erin en kook tot hij al dente is.",
+      "Snijd ondertussen de tonijnsteak in kleine blokjes. Halveer de kerstomaatjes. Verwijder de pitjes van de rode peper – of niet, stel: je hebt het graag pikant – en snijd fijn.",
+      "Neem een mooie serveerschaal/een grote kom die je straks op tafel wil zetten en mik er de blokjes tonijn, kerstomaatjes en rode peper in. Scheur de helft van de basilicumblaadjes in stukjes en gooi die er ook bij. Kruid met peper en zout.",
+      "Doe een goeie scheut wijnazijn – rode of witte, wat je in huis hebt – en twee scheuten olijfolie bij het mengsel en roer alles goed om.",
+      "De pasta zou nu bijna klaar moeten zijn – proeven! Als dat zo is, giet je hem af – maar niet te grondig, er mag nog wat kookvocht blijven aanhangen. Liefst zelfs, want dat maakt het resultaat smeuïger.",
+      "Kap de pasta mee in de serveerschaal, meng alles door elkaar. De tonijn gaart nu een beetje door de warmte van de pasta, meer moet dat niet zijn.",
+      "Leg er nog wat hele blaadjes basilicum op voor de presentatie, et voilà. Klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 32,
+    name: "Tunesische spaghetti met garnalen en harissa",
+    category: "pasta",
+    time: "30 min",
+    servings: 4,
+    difficulty: "gemiddeld",
+    image: "🦐",
+    description: "Gemarineerde garnalen met harissa, look, peterselie en citroen. Giet af, maar niet te enthousiast – kookvocht is je vriend.",
+    ingredients: [
+      "500 g garnalenstaarten (diepvries, easy peel)",
+      "350 g spaghetti",
+      "rozenharissa",
+      "2 tenen look",
+      "een handje bladpeterselie",
+      "olijfolie",
+      "peper en zout",
+      "2 citroenen"
+    ],
+    steps: [
+      "Ontdooi de (tijger)garnalen door ze een tijdje in een kommetje koud water te leggen. Haal de schaal eraf.",
+      "Giet het water weg, dep het kommetje droog en leg de garnalen er terug in met twee eetlepels harissa, wat olijfolie en een beetje zout. Meng alles goed door elkaar en laat een tijdje marineren.",
+      "Even later\u2026 Snijd de peterselie fijn. Pel de look en snijd in fijne plakjes.",
+      "Zet een grote pot gezouten water op het vuur. Zodra het water kookt, gooi je de pasta erin en kook je hem al dente (niet te plat).",
+      "Zet intussen een grote pan op hoog vuur. Doe er wat olijfolie in en bak de gemarineerde garnalen erin langs beide kanten (kap alles wat er van saus achterblijft in de kom mee in de pan). Dit moet hoop en al maar drie minuten duren.",
+      "Zet het vuur wat lager (dat moet je wat aanvoelen nu). Kap de look en de helft van de peterselie mee in de pan, laat even meebakken.",
+      "Pers er dan het sap van een citroen over en schep er al wat kookvocht van de pasta bij.",
+      "De pasta is wellicht klaar nu. Giet af, maar niet te enthousiast, er mag nog wat kookvocht aanhangen, en kap de pasta mee in de pan. Roer alles goed door elkaar.",
+      "Serveer in een groot bord, strooi er de rest van de peterselie over en geef iedereen nog een stukje citroen om erover te persen voor als ze het te pikant vinden. Klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 33,
+    name: "Warres tortiglioni met gerookt spek en erwtjes",
+    category: "pasta",
+    time: "25 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🍝",
+    description: "Tortiglioni met gerookt spek, erwtjes, munt en room. Een recept van Warre – voor fussy eaters: munt kan ook achteraf op het bord.",
+    ingredients: [
+      "500 g tortiglioni",
+      "1 sjalot",
+      "4 sneetjes gerookt spek (of pancetta) van ca. 0,5 cm dik",
+      "een handvol (of iets meer) diepvrieserwtjes",
+      "een handvol verse munt",
+      "(soja)room",
+      "een halve citroen",
+      "olijfolie",
+      "pecorino of parmezaan",
+      "zout en peper"
+    ],
+    steps: [
+      "Snipper de sjalot. Snijd het spek in reepjes of blokjes. Hak de munt heel fijn.",
+      "Doe wat olijfolie in een pan op halfhoog vuur en stoof de sjalot enkele minuten tot ze lichtbruin kleurt. Hou de sjalot nadien apart in een kommetje.",
+      "Doe opnieuw wat olijfolie in de pan. Zet het vuur hoog en bak het spek er enkele minuten in.",
+      "Doe de erwtjes erbij samen met een beetje water. Rasp de schil van de halve citroen erover en laat alles even pruttelen.",
+      "Doe er na een tijdje een goeie scheut van de room bij. Kruid met peper en kap de blaadjes munt erbij (voor fussy eaters: dat laatste kan ook achteraf op het bord). Roer maar eens goed nu.",
+      "Kook de pasta in een grote pot gezouten water tot hij al dente \u2013 niet meer hard, maar nog wel met \u2018beet\u2019 \u2013 is.",
+      "Kap de pasta bij de saus en meng alles goed dooreen.",
+      "Rasp er nog wat pecorino of parmezaan over. Klaar!"
+    ],
+    tip: null
+  },
+  // === BATCH: pesto t/m pizzadeeg ===
+  {
+    id: 34,
+    name: "(Pasta) pesto",
+    category: "pasta",
+    time: "15 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🌿",
+    description: "Parmezaan, basilicum, pijnboompitten, amandelen, citroen. Het zwaarste werk is al achter de rug na stap 1.",
+    ingredients: [
+      "200 g parmezaan",
+      "2 grote bossen verse basilicum",
+      "2 teentjes look",
+      "100 g pijnboompitten",
+      "100 g blanke amandelen",
+      "1 citroen",
+      "olijfolie",
+      "pasta (stel: je wil pasta)"
+    ],
+    steps: [
+      "Pel de look. Scheur de blaadjes basilicum (daar mag wat lichtgroen takje bij zitten). Het zwaarste werk is al achter de rug.",
+      "Doe de parmezaan in stukjes in een keukenmachine. De schil mag je weggooien. Kap de basilicum, look, pijnboompitten, amandelen erbij.",
+      "Rasp de schil van de citroen er ook nog bij. En het sap van de citroen mag er ook in, net als 100 ml olijfolie.",
+      "Mix alles tot een fijn mengsel. Proef of er nog iets bij moet. Klaar!",
+      "Als je pasta wil, kook je de pasta af zoals op de verpakking staat \u2013 niet te slap. En als die klaar is, meng je er de pesto gewoon onder. Weeral klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 35,
+    name: "Pasta con cozze di nonno",
+    category: "pasta",
+    time: "30 min",
+    servings: 4,
+    difficulty: "gemiddeld",
+    image: "🦪",
+    description: "Mosselen met ansjovis, tomaten, look en peterselie. Let op: niet overkappen, want dan lijkt het meer op soep.",
+    ingredients: [
+      "350 g pasta (of wat meer)",
+      "1 kg mosselen (gekuist)",
+      "4 tomaten (San Marzano)",
+      "2 tenen look",
+      "1 rode peper",
+      "1 blikje ansjovis op olie",
+      "een handvol peterselie",
+      "olijfolie",
+      "zout"
+    ],
+    steps: [
+      "Pel de look en snijd in dunne plakjes. Verwijder de pitjes van de rode peper en snijd zo fijn als je kan. Snijd de tomaten in blokjes van een centimeter. Snijd de peterselie redelijk fijn.",
+      "Zet een grote pot (waarvan je een deksel hebt) op een middelhoog vuur. Doe er een goede scheut olijfolie in. En laat de look, rode peper en de ansjovis erin stoven. Je moet wat spelen met de temperatuur: niet zo warm dat de look bruin (of zwart) wordt, maar warm genoeg zodat de ansjovis smelt.",
+      "Zet een andere pot met ruim gezouten water op het vuur. Zodra het water kookt, gooi je de pasta erin en kook je die al dente (niet te plat dus).",
+      "Gooi de tomaatjes mee in de pot bij de ansjovis, look en peper en laat nog even zachtjes mee sudderen.",
+      "Gooi de mosselen en de peterselie mee in de pot. Doe het deksel erop. Schud er eens mee (of roer alles door elkaar). En zet dan het vuur hoog, zodat de mosselen kunnen koken. Als de mosselen open zijn, is de saus klaar.",
+      "Giet de pasta af, kap hem mee in de pot met de saus, en roer alles door elkaar.",
+      "Misschien nog juist alles op een mooi groot bord scheppen (let op: niet overkappen, want dan lijkt het meer op soep \u2013 laat maar een beetje van het vocht in de pot achter), en klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 36,
+    name: "Zotte open lasagne",
+    category: "pasta",
+    time: "50 min",
+    servings: 4,
+    difficulty: "gemiddeld",
+    image: "🍕",
+    description: "Gehaktworstjes, verse lasagnevellen, passata en mozzarella. Onder de grill tot de kaas borrelt en de vellen blakeren.",
+    ingredients: [
+      "4 dikke gehaktworstjes",
+      "2 wortelen",
+      "4 sjalotten",
+      "6 tenen look",
+      "1 fles passata (750 ml)",
+      "+/- 10 verse lasagnevellen",
+      "2 bolletjes mozzarella",
+      "olijfolie",
+      "verse tijm",
+      "venkelzaad",
+      "verse oregano",
+      "peper en zout"
+    ],
+    steps: [
+      "Schil de wortel en snijd in kleine blokjes. Pel de sjalotten en de look en snijd fijn. Rits de blaadjes van een paar takjes tijm en oregano. Snij de worstjes open en verwijder het omhulsel.",
+      "Zet een grote, ovenvaste pan op hoog vuur. Doe er wat olijfolie in. Doe het er het gehakt van de worstjes in, samen met de wortelen, sjalotten, tijm- en oreganoblaadjes. Bak alles zo\u2019n 15 minuten, terwijl je geregeld met een lepel het gehakt uit elkaar roert.",
+      "Voeg naar het einde toe de look toe en een beetje venkelzaad \u2013 niet te veel, want da\u2019s rap heel venkelig. Bak nog 2 \u00e0 3 minuten.",
+      "Zet het uur wat zachter en giet de passata (en eventueel wat warm water) erbij. Roer alles goed om. Doe er wat zout en flink wat peper bij en laat de ragu zeker 10 minuten zachtjes pruttelen.",
+      "Zet de grill van de oven aan op de hoogste stand.",
+      "Breng een pot gezouten water aan de kook, en laat de verse lasagnevellen 1 \u00e0 2 minuten koken, niet langer. Giet af en leg opzij.",
+      "Zet het vuur van de ragu af. Roer de lasagnevellen erdoor en probeer ze met een lepel extra \u2018rommelig\u2019 te leggen, zodat sommige vellen erboven uitsteken. Als gevouwen zakdoekjes een beetje.",
+      "Scheur de bollen mozzarella in stukken en verdeel ze over de pan. Zet de lasagne 6 minuten onder de grill, tot de kaas borrelt en de lasagnevellen hier en daar een beetje geblakerd zijn.",
+      "Strooi er eventueel nog wat oregano over. Klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 37,
+    name: "\u2018Zelfgemaakte\u2019 pizza",
+    category: "pizza",
+    time: "30 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🍕",
+    description: "Pizzadeeg uit de winkel (of zelf gemaakt!), passata, mozzarella en toppings naar keuze. GEEN ananas.",
+    ingredients: [
+      "1 pak pizzadeeg",
+      "passata",
+      "1 bol mozzarella",
+      "olijfolie",
+      "toppings, zoals hesp, salami, champignons, paprika\u2026 GEEN ananas"
+    ],
+    steps: [
+      "Verwarm de oven voor op 200\u00b0.",
+      "Rol het pizzadeeg (dat koop je gewoon in de winkel, h\u00e8 \u2013 je moet dat niet zelf gaan liggen fabriceren als je niet pakweg Luigi heet) met het bakpapier uit op een ovenplaat. Of je maakt het w\u00e9l zelf, met Martha\u2019s recept op de volgende bladzijde!",
+      "Prik met een vork een hoop gaatjes in het deeg.",
+      "Wrijf het deeg in (met een kwastje) met een druppeltje olijfolie.",
+      "Verdeel 2 \u00e0 3 eetlepels passata over de bodem. Dat mag zeker geen dikke, hermetische laag zijn, zeker de eerste keren zal je meer gebruiken dan nodig. Probeer dat niet te doen, is de boodschap.",
+      "Snijd de mozzarella in plakjes en leg ze verspreid op de bodem.",
+      "Beleg met toppings naar keuze, maar ik zou wel zeggen: niet te veel verschillende dingen tegelijk. Simpel is vaak beter.",
+      "Zijn er flurken die toch een pizza Hawa\u00ef willen, dan kan je twee dingen doen. A) Zeggen dat ze moeten ophoepelen met hun vuile ananas, capiche\u2026 B) Lief zijn en het fruit er pas tegen het einde op leggen, zodat het niet helemaal doorbakken is. Antwoord A heeft natuurlijk oneindig de voorkeur.",
+      "Zet een twintigtal minuten in de oven.",
+      "Klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 38,
+    name: "Martha\u2019s pizzadeeg",
+    category: "pizza",
+    time: "60 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🫓",
+    description: "500 g bloem, gist, water, olijfolie. Kneed, laat rijzen, rol uit. Binnen een kwartiertje in de oven heb je een toppizza.",
+    ingredients: [
+      "500 g bloem",
+      "zout",
+      "droge gist",
+      "olijfolie"
+    ],
+    steps: [
+      "Doe de bloem, 2 theelepels zout, 1 theelepel (of zo\u2019n zakje) gist, 1 eetlepel olijfolie en een groot glas lauw water in een grote kom. Kneed tot een glad en soepel deeg.",
+      "Dek de kom af met vershoudfolie en laat 40 minuten rijzen in de ijskast. De bol deeg wordt normaal gezien zeker dubbel zo groot.",
+      "Snijd het deeg in 4 gelijke stukken. Rol elk stuk uit tot een dun pizzavel.",
+      "Leg de pizzavellen op bakpapier op een ovenschaal en beleg naar hartelust (niet te veel tomatensaus is de tip).",
+      "Zet de oven op 220\u00b0 en bakken maar. Binnen een kwartiertje ongeveer heb je een toppizza."
+    ],
+    tip: null
   }
 ];
 
@@ -889,5 +1208,6 @@ const categories = [
   { id: "stoemp", name: "Stoemp", icon: "🥔", color: "#ea580c" },
   { id: "soepen", name: "Soepen", icon: "🥣", color: "#ca8a04" },
   { id: "doordeweeks", name: "Doordeweeks", icon: "🍽️", color: "#16a34a" },
-  { id: "pasta", name: "Pasta", icon: "🍝", color: "#dc2626" }
+  { id: "pasta", name: "Pasta", icon: "🍝", color: "#dc2626" },
+  { id: "pizza", name: "Pizza", icon: "🍕", color: "#f59e0b" }
 ];
