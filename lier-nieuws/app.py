@@ -140,61 +140,41 @@ _LIER_DEFAULT_SOURCES = [
 _NIJLEN_DEFAULT_SOURCES = [
     # --- Stad & Bestuur ---
     ("Stad & Bestuur", "Gemeente Nijlen Nieuws", "https://nijlen.be/nieuws"),
-    ("Stad & Bestuur", "Agenda & Verslagen Gemeenteraad", "https://nijlen.be/bestuur-en-beleid/gemeenteraad-en-ocmw-raad"),
     ("Stad & Bestuur", "Verslagen Gemeenteraad (Smart Cities)", "https://raadpleeg-nijlen.onlinesmartcities.be"),
-    ("Stad & Bestuur", "Werken & Verkeershinder Nijlen", "https://nijlen.be/verkeersberichten"),
     # --- Veiligheid ---
     ("Veiligheid", "Lokale Politie Berlaar-Nijlen", "https://www.politie.be/5361/nieuws"),
     ("Veiligheid", "Brandweer Nijlen (Vrijwilligers)", "https://brandweernijlen.be"),
-    # --- Justitie ---
-    ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten-nijlen"),
-    ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen-nijlen"),
     # --- Economie ---
     ("Economie", "Bekend in Nijlen", "https://bekendinnijlen.be"),
-    ("Economie", "Ondernemen in Nijlen", "https://nijlen.be/ondernemen/nieuws-voor-ondernemers"),
-    ("Economie", "Made in Mechelen (Regio Nijlen)", "https://www.made-in.be/regio/mechelen-nijlen/"),
-    # --- Zorg ---
-    ("Zorg & Welzijn", "Sociaal Huis Nijlen", "https://nijlen.be/sociaal-huis"),
     # --- Sport ---
     ("Sport", "KFC Nijlen (Voetbal)", "https://nijlen.voetbalassist.be"),
     ("Sport", "KFC Bevel (Voetbal)", "https://kfcbevel.be"),
     ("Sport", "FH Nijlen (Volleybal)", "https://fhnijlen.be"),
-    ("Sport", "VC Nijlen (Volleybal)", "https://vcnijlen.be"),
     # --- Cultuur & Vrije Tijd ---
-    ("Cultuur & Vrije Tijd", "GC 't Dorp (Gemeenschapscentrum)", "https://nijlen.be/gc-t-dorp-2"),
-    ("Cultuur & Vrije Tijd", "Evenementen Nijlen", "https://nijlen.be/vrije_tijd/cultuur/evenementen"),
-    ("Cultuur & Vrije Tijd", "UiT in Nijlen (Kalender)", "https://uitinvlaanderen.be/agenda/l/nijlen/2560"),
-    ("Cultuur & Vrije Tijd", "Vrije Tijd Gemeente Nijlen", "https://nijlen.be/vrije-tijd"),
     ("Cultuur & Vrije Tijd", "Jeugdhuis Kroenkel", "https://kroenkel.be"),
     # --- Jeugd ---
     ("Jeugd", "Jeugd Nijlen (Overkoepelend)", "https://jeugdnijlen.be/jeugd-in-nijlen/jeugdwerk"),
     # --- Erfgoed & Traditie ---
-    ("Erfgoed & Traditie", "Kempens Diamantcentrum", "https://briljante-kempen.be"),
     ("Erfgoed & Traditie", "Kempens Karakter (Erfgoedcel)", "https://kempenskarakter.be"),
     # --- Lokale Politiek ---
-    ("Lokale Politiek", "N-VA Nijlen (Nieuws)", "https://nijlen.n-va.be/nieuws"),
     ("Lokale Politiek", "Nieuw Nijlen (Meerderheid)", "https://nieuwnijlen.be/nieuws"),
     ("Lokale Politiek", "CD&V Nijlen", "https://nijlen.cdenv.be"),
     ("Lokale Politiek", "Groen Nijlen", "https://groennijlen.be"),
     ("Lokale Politiek", "Vooruit Nijlen", "https://nieuws.vooruit.org/nijlen"),
     # --- Media & Concurrentie ---
-    ("Media & Concurrentie", "RTV Nijlen", "https://www.rtv.be/regio/nijlen"),
     ("Media & Concurrentie", "NNieuws Nijlen Regio", "https://nnieuws.be/uw-gemeente/nijlen-regio"),
     ("Media & Concurrentie", "Het Nieuwsblad Nijlen", "https://www.nieuwsblad.be/regio/nijlen"),
     ("Media & Concurrentie", "Gazet van Antwerpen Nijlen", "https://www.gva.be/regio/nijlen"),
-    ("Media & Concurrentie", "Brandweerzone Rivierenland (Nieuws)", "https://rivierenland.hulpverleningszone.be/nijlen"),
     # --- Onderwijs ---
     ("Onderwijs", "githo Nijlen (Secundair)", "https://githonijlen.be"),
     ("Onderwijs", "Sint-Calasanzinstituut (Secundair)", "https://sintcalasanzinstituut.be"),
     ("Onderwijs", "VBS Sint-Calasanz (Basisschool)", "https://basisschool-calasanz.be"),
-    ("Onderwijs", "Overzicht Scholen Nijlen", "https://nijlen.be/leven/scholen/kleuter-en-lager-onderwijs"),
     # --- Jeugdverenigingen ---
     ("Jeugdverenigingen", "Chiro Pako Nijlen", "https://chiropako.be"),
     ("Jeugdverenigingen", "Chiro Elckerlyc & Jong Leven Nijlen", "https://chiroelckerlycenjongleven.be"),
     ("Jeugdverenigingen", "Chiro Gust & Nele (Kessel)", "https://chiro-gustnele.be"),
     ("Jeugdverenigingen", "Chiro Bevel", "https://chirobevel.be"),
     ("Jeugdverenigingen", "Scouts & Gidsen Sparlekijn Nijlen", "https://scoutsnijlen.be"),
-    ("Jeugdverenigingen", "KLJ Nijlen", "https://kljnijlen.be"),
     # --- Religie ---
     ("Religie", "Pastorale Eenheid Sint-Salvator", "https://pe-sint-salvator.be"),
     # --- Extra ---
