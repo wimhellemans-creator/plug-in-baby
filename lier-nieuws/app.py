@@ -140,17 +140,28 @@ _LIER_DEFAULT_SOURCES = [
 _NIJLEN_DEFAULT_SOURCES = [
     # --- Stad & Bestuur ---
     ("Stad & Bestuur", "Gemeente Nijlen Nieuws", "https://nijlen.be/nieuws"),
+    ("Stad & Bestuur", "Gemeenteraad Nijlen", "https://nijlen.be/bestuur/gemeenteraad-2025-2030"),
     ("Stad & Bestuur", "Verslagen Gemeenteraad (Smart Cities)", "https://raadpleeg-nijlen.onlinesmartcities.be"),
+    ("Stad & Bestuur", "Werken & Verkeershinder Nijlen", "https://nijlen.be/hoe-vorderen-de-werken"),
     # --- Veiligheid ---
     ("Veiligheid", "Lokale Politie Berlaar-Nijlen", "https://www.politie.be/5361/nieuws"),
     ("Veiligheid", "Brandweer Nijlen (Vrijwilligers)", "https://brandweernijlen.be"),
+    # --- Justitie ---
+    ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten"),
+    ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen"),
     # --- Economie ---
     ("Economie", "Bekend in Nijlen", "https://bekendinnijlen.be"),
+    ("Economie", "Ondernemen in Nijlen", "https://nijlen.be/lokaal-ondernemen"),
+    ("Economie", "Made in Mechelen (Regio Nijlen)", "https://www.made-in.be/regio/mechelen/"),
+    # --- Zorg ---
+    ("Zorg & Welzijn", "Sociaal Huis Nijlen", "https://nijlen.be/sociaal-2"),
     # --- Sport ---
     ("Sport", "KFC Nijlen (Voetbal)", "https://nijlen.voetbalassist.be"),
     ("Sport", "KFC Bevel (Voetbal)", "https://kfcbevel.be"),
     ("Sport", "FH Nijlen (Volleybal)", "https://fhnijlen.be"),
     # --- Cultuur & Vrije Tijd ---
+    ("Cultuur & Vrije Tijd", "GC 't Dorp (Gemeenschapscentrum)", "https://nijlen.be/gemeenschapscentrum-t-dorp"),
+    ("Cultuur & Vrije Tijd", "UiT in Nijlen (Kalender)", "https://uitinvlaanderen.be/agenda/alle/nijlen"),
     ("Cultuur & Vrije Tijd", "Jeugdhuis Kroenkel", "https://kroenkel.be"),
     # --- Jeugd ---
     ("Jeugd", "Jeugd Nijlen (Overkoepelend)", "https://jeugdnijlen.be/jeugd-in-nijlen/jeugdwerk"),
@@ -162,6 +173,7 @@ _NIJLEN_DEFAULT_SOURCES = [
     ("Lokale Politiek", "Groen Nijlen", "https://groennijlen.be"),
     ("Lokale Politiek", "Vooruit Nijlen", "https://nieuws.vooruit.org/nijlen"),
     # --- Media & Concurrentie ---
+    ("Media & Concurrentie", "RTV Nijlen", "https://www.rtv.be/taxonomy/term/62"),
     ("Media & Concurrentie", "NNieuws Nijlen Regio", "https://nnieuws.be/uw-gemeente/nijlen-regio"),
     ("Media & Concurrentie", "Het Nieuwsblad Nijlen", "https://www.nieuwsblad.be/regio/nijlen"),
     ("Media & Concurrentie", "Gazet van Antwerpen Nijlen", "https://www.gva.be/regio/nijlen"),
@@ -169,6 +181,7 @@ _NIJLEN_DEFAULT_SOURCES = [
     ("Onderwijs", "githo Nijlen (Secundair)", "https://githonijlen.be"),
     ("Onderwijs", "Sint-Calasanzinstituut (Secundair)", "https://sintcalasanzinstituut.be"),
     ("Onderwijs", "VBS Sint-Calasanz (Basisschool)", "https://basisschool-calasanz.be"),
+    ("Onderwijs", "Overzicht Scholen Nijlen", "https://nijlen.be/scholen-2"),
     # --- Jeugdverenigingen ---
     ("Jeugdverenigingen", "Chiro Pako Nijlen", "https://chiropako.be"),
     ("Jeugdverenigingen", "Chiro Elckerlyc & Jong Leven Nijlen", "https://chiroelckerlycenjongleven.be"),
