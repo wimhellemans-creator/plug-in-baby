@@ -554,6 +554,333 @@ const recipes = [
       "Klaar!"
     ],
     tip: null
+  },
+  {
+    id: 19,
+    name: "Gestoomde zalm met broccoli en rijstnoedels",
+    category: "doordeweeks",
+    time: "25 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🥢",
+    description: "Zalm en broccoli gestoomd in een vergiet, met rijstnoedels gekookt in groene thee. Fancy harmonica optioneel.",
+    ingredients: [
+      "1 stuk zalmhaasje p.p.",
+      "1 broccoli",
+      "pakje rijstnoedels",
+      "potje ingemaakte gember",
+      "teriyaki-saus",
+      "zakje groene thee",
+      "2 lente-uitjes"
+    ],
+    steps: [
+      "Zoek zo\u2019n grote pastapot (van de Ikea bijvoorbeeld) waarin een vergiet past. Of zoek een vergiet dat toevallig net past in \u00e9\u00e9n van je potten. Of als je een stoommand hebt, gebruik die dan (maar niet kopen: want wanneer ga je die nog eens gebruiken?)",
+      "Doe een centimetertje water in de pot (zodat het vergiet nog droog blijft). En zet hem met het deksel erop op een hoog vuur.",
+      "Zodra het stoomt in de pot, leg je de stukken zalm in het midden erin, en drapeer je de roosjes van de broccoli errond. Zet het deksel er weer op en laat ongeveer 5 minuten stomen, tot alles net gaar is.",
+      "Kook de rijstnoedels zoals op de verpakking staat, maar steek het zakje groene thee wel mee in de pot voor extra smaak.",
+      "Snijd de lente-uitjes in ringetjes.",
+      "Leg de zalm, de broccoli en de noedels op een bord.",
+      "Leg wat van de gember op de zalm, giet een goeie scheut teriyaki-saus over de zalm en de noedels en strooi over het geheel nog wat lente-uitjes.",
+      "Klaar!"
+    ],
+    tip: "Fancy harmonica: om het er nog beter te laten uitzien, maak je in de zalmhaasjes insnijdingen om de 2 cm ongeveer voor je ze in pot legt. Als het klaar is, heb je dan een soort \u2018harmonica\u2019. Proeft wel gewoon hetzelfde."
+  },
+  {
+    id: 20,
+    name: "Zalm met groene groentjes en soja-honing in de oven",
+    category: "doordeweeks",
+    time: "40 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🥦",
+    description: "Alles op \u00e9\u00e9n schaal de oven in. Als je wat meer of minder hebt van \u2019t een of \u2019t ander: no problemo, zoals ze zeggen in Noorwegen.",
+    ingredients: [
+      "1 stuk zalmhaasje p.p.",
+      "1 kleine broccoli",
+      "pakje aspergetipjes",
+      "100 g sugarsnaps",
+      "100 g diepvrieserwten",
+      "zout en peper",
+      "sesamolie",
+      "sojasaus",
+      "honing",
+      "5 cm verse gember",
+      "1 limoen",
+      "2 lente-uitjes",
+      "1 handje pinda\u2019s",
+      "1 rode peper"
+    ],
+    steps: [
+      "Zet de oven op 180\u00b0.",
+      "Snijd de broccoli in kleine roosjes. Schil en rasp de gember. Snijd de lente-uitjes en rode peper in ringetjes. Hak de pindanoten grof.",
+      "Meng broccoli, asperges, sugarsnaps, erwtjes met wat zout en peper en een goede scheut sesamolie in een ovenschaal. Leg de zalm ertussen. De hoeveelheden doen er niet zoveel toe: als je wat meer of minder hebt van \u2019t een of \u2019t ander: no problemo, zoals ze zeggen in Noorwegen.",
+      "Roer ongeveer 1 eetlepel sojasaus, 1 eetlepel sesamolie en 1 eetlepel honing door elkaar en sprenkel het sausje over de zalm.",
+      "Zet de schaal 25 minuten in de oven.",
+      "Roer ondertussen in een potje geraspte gember, lente-ui, rode peper, het sap van de limoen en 1 eetlepel sesamolie door elkaar tot een dressing.",
+      "Haal de schaal uit de oven. Giet de dressing over de zalm. Strooi de pinda\u2019s er nog over.",
+      "Klaar! (Een zakje rijst voor erbij zal wel lukken, zeker?)"
+    ],
+    tip: null
+  },
+
+  // === PASTA ===
+  {
+    id: 21,
+    name: "Spaghetti bolognese",
+    category: "pasta",
+    time: "60 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🍝",
+    description: "De klassieker. Soms moet het wat langer, soms korter. Platte pasta is een ramp!",
+    ingredients: [
+      "500 g pasta",
+      "500 g gehakt",
+      "1 ajuin",
+      "1 grote wortel",
+      "1 stengel selder",
+      "1 teentje look (of meer)",
+      "2 blikken van 400 g tomaten in blokjes (Elvea) of een grote fles passata",
+      "olijfolie",
+      "peper en zout"
+    ],
+    steps: [
+      "Snipper de ajuin. Snijd de look in stukjes.",
+      "Doe olijfolie in een grote pot op halfhoog vuur. Laat de ajuin en de look erin stoven.",
+      "Schil de wortel en de selder en snijd in stukjes, zo fijn als het je kan schelen. Kap bij de ajuin in de pot.",
+      "Duw na een minuutje of vijf de groentjes naar de zijkant van de pot. Voeg nog wat olijfolie toe, zet het vuur hoger, verkruimel het gehakt en bak het mee in de pot.",
+      "Kruid met peper en zout.",
+      "Roer na een minuutje of zo de groenten en het vlees door elkaar. Blijf bakken (en af en toe roeren) tot al het gehakt bruin ziet.",
+      "Kap de tomaten en het sap (of de passata) erbij. Roer alles eens goed door elkaar. Zet het vuur laag en laat een halfuurtje pruttelen.",
+      "Als het nog wat te waterig oogt, haal je het deksel er even af om de saus te laten inkoken. Is het ok\u00e9, dan laat je het deksel erop. Bijkruiden mag ook nu.",
+      "Roer er aan het eind nog een beetje olijfolie door.",
+      "Kook de pasta in ruim gezouten water volgens de aanwijzingen op de verpakking. Maar blijf er wel bij. Soms moet het wat langer, soms korter. Echt weet je dat nooit. Geregeld proeven is het enige dat echt helpt om te weten wanneer de pasta klaar is. En als hij klaar is, giet je hem meteen af! Platte pasta is een ramp!",
+      "Doe pasta, saus en eventueel kaas in een bord: klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 22,
+    name: "Spaghetti carbonara",
+    category: "pasta",
+    time: "25 min",
+    servings: 4,
+    difficulty: "gemiddeld",
+    image: "🍝",
+    description: "Supermakkelijk, supersnel klaar en zoooooooo lekker. Maar ook niet mager.",
+    ingredients: [
+      "400 g guanciale (of pancetta als je dat niet vindt)",
+      "500 g spaghetti",
+      "3 eieren",
+      "6 eierdooiers",
+      "90 g parmezaan",
+      "90 g pecorino",
+      "peper en zout"
+    ],
+    steps: [
+      "Snijd de guanciale in blokjes.",
+      "Rasp de parmezaan en de pecorino. Meng in een kom met de eieren, de dooiers en goed veel vers gemalen zwarte peper.",
+      "Vul een grote pot met gezouten water en breng aan de kook.",
+      "Als het water kookt, doe je de pasta erin. Kook zoals op de verpakking staat. Maar zoals altijd: proeven!",
+      "Zet een grote pan op hoog vuur en bak de guanciale erin. Daar moet je geen boter of olijfolie bij doen, dat is al vet genoeg van zijn eigen. Doe er als ze gebakken zijn, een of twee lepels van het kookvocht van de pasta bij.",
+      "Als de pasta klaar is, is het tijd voor de magie. Giet hem natuurlijk eerst af. Kap dan de pasta mee in de pan bij de guanciale en roer door elkaar. Kap het eierkaasmengsel erover en roer alles nog eens door elkaar. (Als dat niet lukt in de pan, wegens te klein, doe het dan in een grote serveerschotel.)",
+      "Klaar. Echt waar, meer is er niet aan."
+    ],
+    tip: "Supermakkelijk, supersnel klaar en zoooooooo lekker. Maar ook niet mager en zooooooo moeilijk om er geen tweede, derde of vierde bord van te nemen\u2026 Soms mag dat, maar nu ook niet elke dag."
+  },
+  {
+    id: 23,
+    name: "Macaroni met ham en kaassaus",
+    category: "pasta",
+    time: "30 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🧀",
+    description: "Proficiat, je kan nu b\u00e9chamel maken. Ook bekend als de witte saus voor op bloemkool of dat witte laagje in de lasagne.",
+    ingredients: [
+      "250 g macaroni",
+      "1/2 l melk",
+      "150 g hamblokjes",
+      "2 handjes gemalen kaas",
+      "30 g boter",
+      "30 g bloem",
+      "peper en zout"
+    ],
+    steps: [
+      "Breng in een pot water met wat zout aan de kook. Doe de macaroni erin en kook zoals op de verpakking staat. Blijf in de buurt, want platgekookt is echt niet lekker. De pasta moet nog beet hebben.",
+      "Weeg de boter en de bloem af. Belangrijk: dat moet evenveel zijn. Doe ze samen in een pot op halfhoog vuur. Blijf roeren in een 8-vorm tot je een brij krijgt die wat weg heeft van koekjesdeeg. Alle bloem moet opgenomen zijn door de boter.",
+      "Giet de melk er voorzichtig bij en blijf roeren. Voeg ook wat peper en zout toe.",
+      "Als de lijnen van je klopper even in de saus blijven staan, is de saus klaar. Die moet zeker niet te dik zijn. Is ze dat wel, dan roer je er best nog wat melk door. Proficiat, je kan nu b\u00e9chamel maken. Ook bekend als de witte saus voor op bloemkool of dat witte laagje in de lasagne.",
+      "Roer de hamblokjes en de gemalen kaas erdoor. En meteen daarna ook nog de macaroni. Klaar!"
+    ],
+    tip: "Over porties: natuurlijk mag je verhoudingsgewijs alles aanpassen, maar in dit boek hou ik de porties bewust niet te groot. De reden: koken voor veel volk is een stuk moeilijker dan koken voor weinig. De eerste keer test je de recepten dus altijd best uit voor een kleiner gezelschap. Bovendien: je moet niet van tafel rollen, natuurlijk \u2013 hoe verleidelijk dat soms ook kan zijn\u2026"
+  },
+  {
+    id: 24,
+    name: "Snelle pasta met harissa, kerstomaten en mozzarella",
+    category: "pasta",
+    time: "30 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🍝",
+    description: "Zo snel en zo simpel is het. Harissa, kerstomaten, kappertjes en mozzarella. Klaar.",
+    ingredients: [
+      "250 g pasta (of wat meer)",
+      "1 ajuin",
+      "3 eetlepels rozenharissa",
+      "400 g kerstomaten",
+      "20 g fijne kappertjes",
+      "basilicum",
+      "olijfolie",
+      "zout",
+      "een bol mozzarella"
+    ],
+    steps: [
+      "Kook de pasta zoals op de verpakking staat, zoals altijd in gezouten water.",
+      "Snijd de ajuin in plakken. Halveer de tomaatjes.",
+      "Giet een scheut olijfolie in een pan/pot met deksel. Zet het vuur hoog. Bak de ajuin er enkele minuten in tot hij een beetje bruin kleurt.",
+      "Kap de harissa, tomaatjes, kappertjes en een snuif zout in de pan en laat een paar minuten fruiten, zoals dat heet. Of gewoon bakken, want meer is het niet. Roer regelmatig en duw zelfs wat op de tomaten, die mogen een beetje uiteenvallen.",
+      "Roer er een klein glas water door en breng de saus aan de kook.",
+      "Draai dan het vuur lager, zet het deksel op de pot en laat 10 minuten pruttelen.",
+      "Haal het deksel weer van de pan en laat nog 5 minuten pruttelen, zodat de saus wat dikker wordt.",
+      "Kap de pasta bij de saus en roer alles door elkaar.",
+      "Schep op de borden en leg er nog enkele plakjes mozzarella en wat blaadjes basilicum op.",
+      "Zo snel en zo simpel is het. Klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 25,
+    name: "Zotte eenpans-orecchiette",
+    category: "pasta",
+    time: "30 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🍝",
+    description: "Alles in \u00e9\u00e9n pot. Kikkererwten, kappertjes, kerstomaten en orecchiette. Voor de latinisten: bijna een puttanesca.",
+    ingredients: [
+      "olijfolie",
+      "6 tenen look",
+      "400 g kikkererwten",
+      "2 theelepels paprikapoeder",
+      "2 theelepels gemalen komijn",
+      "1 eetlepel tomatenpuree",
+      "1 handvol peterselie",
+      "1 citroen",
+      "3 eetlepels kappertjes",
+      "250 g kerstomaatjes",
+      "1 eetlepel kristalsuiker",
+      "250 g orecchiette",
+      "700 ml groente- of kippenbouillon",
+      "zout en peper"
+    ],
+    steps: [
+      "Smelt olijfolie in een grote pot op een hoog vuur.",
+      "Pers de look en gooi hem in de pot samen met de kikkererwten, het paprikapoeder, de komijn, de tomatenpuree en een snuifje zout. Bak alles een minuutje of tien, terwijl je regelmatig roert.",
+      "Snijd de peterselie grof, hak de kappertjes en rasp de zeste (de schil) van de citroen. Gooi mee in de pot, samen met de kerstomaatjes en roer alles goed door elkaar. Laat nog een minuutje of twee meebakken.",
+      "Voeg de pasta en de bouillon toe en breng aan de kook met het deksel op de pot. Als alles kookt, haal je het deksel eraf, zet je het vuur halfhoog en laat je de pasta nog 12 \u00e0 14 minuten \u2013 check de verpakking en proef! \u2013 koken tot hij al dente is.",
+      "Giet er nog een scheut olijfolie over en royaal versgemalen zwarte peper, en klaar!"
+    ],
+    tip: "(N)olijf? Voor de liefhebbers (waartoe ik mezelf absoluut niet reken) kan het lekker zijn om bij stap 3 ook 100 g ontpitte en gehalveerde olijven toe te voegen. Dan kom je ook dichter bij de smaak van een traditionele pasta puttanesca \u2013 voor de latinisten onder ons: inderdaad, hoerenpasta."
+  },
+  {
+    id: 26,
+    name: "Pasta alla Norma",
+    category: "pasta",
+    time: "50 min",
+    servings: 4,
+    difficulty: "gemiddeld",
+    image: "🍆",
+    description: "Geroosterde aubergine met tomatensaus, basilicum en pecorino. Zoals ze in Rome zeggen: bon app\u00e9tit!",
+    ingredients: [
+      "2 aubergines",
+      "2 blikken van 400 g tomaten in blokjes",
+      "350 g pasta",
+      "basilicum",
+      "pecorino",
+      "olijfolie",
+      "5 tenen look",
+      "1 rode peper",
+      "oregano",
+      "zout en peper",
+      "witte kristalsuiker"
+    ],
+    steps: [
+      "Verwarm de oven voor op 220\u00b0.",
+      "Snijd de aubergines in plakken van 1 cm dik. Leg ze in een kom met een stevige scheut olijfolie, een handje zout en goed wat peper. Meng alles.",
+      "Leg de aubergineschijfjes op een met bakpapier beklede bakplaat. Steek de aubergine zo\u2019n 30 minuten in de oven. Tot ze goed bruin zien. Zien ze helemaal zwart, dan heb je ze er te lang in gelaten \u2013 heb ik tot mijn scha en schande moeten leren.",
+      "Snijd de look in fijne plakjes. Verwijder de pitjes van de rode peper en snijd fijn.",
+      "Giet wat olijfolie in een grote pan, zet op halfhoog vuur. Doe de look en de peper in de pan. Laat twee minuten bakken, tot de look lichtjes bruin kleurt.",
+      "Kap dan de tomaten, wat oregano (een paar takjes of anders wat gemalen uit een potje), een lepeltje suiker en een handje zout in de pan en roer alles door elkaar.",
+      "Laat 10 minuten zachtjes pruttelen, tot de saus wat dikker geworden is. Roer dan de aubergines erdoor.",
+      "Kook de pasta al dente, zoals op de verpakking staat aangegeven (maar vooral: proeven).",
+      "Doe alles samen in een kom. Doe er wat verse blaadjes basilicum bij en rasp er wat (veel!) pecorino over.",
+      "Klaar! Zoals ze in Rome zeggen: bon app\u00e9tit!"
+    ],
+    tip: null
+  },
+  {
+    id: 27,
+    name: "Pasta met pancetta en kerstomaatjes",
+    category: "pasta",
+    time: "25 min",
+    servings: 2,
+    difficulty: "makkelijk",
+    image: "🍝",
+    description: "Spaghetti met pancetta, kerstomaatjes, rucola en basilicum. Parmezaan erover en klaar.",
+    ingredients: [
+      "350 g spaghetti",
+      "4 sneetjes pancetta van een halve cm dik",
+      "1 sjalotje",
+      "1 teentje look",
+      "400 g kerstomaatjes",
+      "rucola",
+      "basilicum",
+      "parmezaan",
+      "olijfolie",
+      "peper"
+    ],
+    steps: [
+      "Snipper de sjalot en de look. Snijd pancetta in blokjes. Halveer de kerstomaatjes.",
+      "Zet een grote pot water op hoog vuur voor de pasta. Als het water kookt, doe je er een goeie hand zout in en kap je de pasta erbij, die je dan ineens beetgaar kookt. Check de verpakking en proef om te weten hoelang dat moet.",
+      "Doe wat olijfolie in een pannetje, zet het vuur halfhoog en stoof de look en de sjalot tot die glazig is.",
+      "Zet het vuur wat hoger en bak de pancettablokjes erbij.",
+      "Gooi de tomatenblokjes mee in de pan en laat even meestoven, niet te lang.",
+      "Ik gok dat het nu stilaan tijd is om de pasta af te gieten.",
+      "Doe de pasta in een grote kom. Kap het pancetta-tomatenmengsel erover. Roer er een handvol rucola en een handvol basilicum door. Kruid met wat peper van de molen.",
+      "Rasp er ten slotte nog stevig wat parmezaan over. En klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 28,
+    name: "Echte tomatensaus",
+    category: "pasta",
+    time: "150 min",
+    servings: 6,
+    difficulty: "makkelijk",
+    image: "🍅",
+    description: "Het grote \u2018geheim\u2019: geduld. Anderhalf uur \u00e0 twee uur laten pruttelen. Dat is alles.",
+    ingredients: [
+      "geduld",
+      "1 ajuin",
+      "1 rode peper (of 0/meer)",
+      "500 g kerstomaatjes",
+      "2 blikken tomaten in blokjes of een fles passata (van een goed merk)",
+      "olijfolie",
+      "peper en zout",
+      "suiker"
+    ],
+    steps: [
+      "Snipper de ajuin. Doe wat olijfolie in een pot en laat de ajuin stoven op een zacht vuur.",
+      "Verwijder de steel en de pitjes van de rode peper en snijd in heel fijne blokjes. Gooi die bij de ajuin om mee te stoven. Of niet als je echt niet van een beetje pikant houdt. Of meerder pepers (pitjes en al voor extra) als je net w\u00e9l van pikant houdt.",
+      "Halveer de kerstomaatjes.",
+      "Als de ajuin al wat glazig is, gooi je ze mee in de pot. Doe er ook nog wat extra olijfolie bij. Duw met de achterkant van de lepel tegen de tomaatjes, zodat ze hier en daar wat openbarsten.",
+      "Giet de tomaten in blik mee in de pot. Kruid met peper en zout. En doe er ook een lepeltje suiker bij, om het zurige van de tomaten wat te counteren. Roer alles goed door elkaar.",
+      "En dan nu het grote \u2018geheim\u2019: zet het vuur laag, doe het deksel op de pot en laat anderhalf uur \u00e0 twee uur pruttelen.",
+      "Proef of er nog zout, peper\u2026 bij moet. Gooi er eventueel nog wat blaadjes basilicum bij, en klaar!"
+    ],
+    tip: null
   }
 ];
 
@@ -561,5 +888,6 @@ const recipes = [
 const categories = [
   { id: "stoemp", name: "Stoemp", icon: "🥔", color: "#ea580c" },
   { id: "soepen", name: "Soepen", icon: "🥣", color: "#ca8a04" },
-  { id: "doordeweeks", name: "Doordeweeks", icon: "🍽️", color: "#16a34a" }
+  { id: "doordeweeks", name: "Doordeweeks", icon: "🍽️", color: "#16a34a" },
+  { id: "pasta", name: "Pasta", icon: "🍝", color: "#dc2626" }
 ];
