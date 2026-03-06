@@ -50,7 +50,7 @@ def get_client(verify=None):
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY is niet ingesteld in .env")
     v = verify if verify is not None else _ssl_verify
-    http_client = httpx.Client(verify=v, timeout=60.0)
+    http_client = httpx.Client(verify=v, timeout=180.0)
     return Anthropic(api_key=api_key, http_client=http_client)
 
 
