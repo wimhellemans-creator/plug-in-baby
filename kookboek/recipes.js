@@ -275,6 +275,134 @@ const recipes = [
       "Giet over de bloemkool, en klaar!"
     ],
     tip: "Hier gaan we niet moeilijk over doen. Bloemkool met witte saus is met gekookte patatjes en een worstje. Ik wil er niks meer over horen."
+  },
+  {
+    id: 10,
+    name: "Ballekes in tomatensaus",
+    category: "doordeweeks",
+    time: "60 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🍖",
+    description: "Gehaktballetjes in een rijke tomatensaus. Lekker met gekookte patatjes en prinsessenboontjes, maar er zijn ook barbaren die dat liever met pasta eten.",
+    ingredients: [
+      "2 (oude) boterhammen",
+      "een kletske melk",
+      "500 g gehakt",
+      "bakboter",
+      "2 blikken van 400 g tomaten in blokjes (Elvea als het er is) of 1 fles passata",
+      "peper",
+      "zout"
+    ],
+    steps: [
+      "Scheur het brood (niet de korsten) in kleine stukjes in een kom. Doe er het kletske melk bij, meng met het brood. (Het kan ook zonder brood en melk, maar het is lekkerder m\u00e9t.)",
+      "Doe het gehakt bij het brood, kruid met peper en zout. Goed mengen.",
+      "Pak een apart bord. Rol balletjes (kies zelf maar hoe groot) en leg ze op het bord.",
+      "Smelt wat bakboter in een tefalpan. Zet het vuur hoog.",
+      "Bak de balletjes tot ze helemaal rondom bruin zien. Dat wil dus ook zeggen: geregeld eens omdraaien. En wat \u2018spelen\u2019 met het vuur: als ze te rap bruinen, wat stiller zetten en zo. Dat moet je wat aanvoelen.",
+      "Doe de tomaten of de passata bij de balletjes. Wellicht kan de saus ook nog wat peper en zout gebruiken, maar niet overdrijven in het begin: je kan altijd nog toevoegen \u2013 wegnemen is moeilijker.",
+      "Zet het vuur wat lager en laat een halfuurtje pruttelen of zo. Klaar!"
+    ],
+    tip: "De juiste manier: lekker met gekookte patatjes en prinsessenboontjes, maar er zijn ook barbaren die dat liever met pasta, rijst of zelfs puree eten\u2026 Je doet al op, maar weet wat ik ervan denk."
+  },
+  {
+    id: 11,
+    name: "Valse barbecue met couscous",
+    category: "doordeweeks",
+    time: "45 min",
+    servings: 4,
+    difficulty: "gemiddeld",
+    image: "🔥",
+    description: "Gegrilde groenten en vlees van de grillpan, met couscous en sla. Voor als het buiten regent maar je toch zin hebt in barbecue.",
+    ingredients: [
+      "BBQ-vleesjes (of kipfilet)",
+      "1 pollepel couscous",
+      "2 paprika\u2019s",
+      "1/2 courgette",
+      "1/2 aubergine",
+      "pakje sla",
+      "citroen",
+      "olijfolie",
+      "peper en zout",
+      "kippenkruiden/paprika"
+    ],
+    steps: [
+      "Schil de paprika, snijd het \u2018hoedje\u2019 eraf, verwijder de zaadjes. En snijd in grove stukken. Snijd de courgette en aubergine in dunne schijfjes.",
+      "Laat een grillpan op het vuur eerst goed warm worden, en grill de groentjes dan. Wellicht moet dat in een keer of drie, want elk stukje moet de bodem van de pan raken, zodat je die mooie, zwarte strepen krijgt.",
+      "Doe de gegrilde groenten samen in \u00e9\u00e9n kom en kruid met (genoeg) peper en zout.",
+      "Als de vleesjes al gemarineerd zijn: goed zo. Indien niet: kruid met peper, zout, eventueel kippenkruiden of paprika en wrijf in met olijfolie.",
+      "Bak alles in de grillpan, maar zorg dat ze niet overvol ligt (bak dan in twee of drie keer). H\u00e9t voordeel tegenover \u00e9chte barbecue: je kan \u2018spelen\u2019 met het vuur, het zachter zetten voor de worstjes bijvoorbeeld, zodat voor \u00e9\u00e9n keer niet alles verbrandt\u2026",
+      "Breng een goeie pollepel water aan de kook, dat mag in een waterkoker. Doe de couscous in een kommetje. Giet het kokende water erover en wat zout, zet er een deksel (of een bord) op en laat enkele minuten wellen.",
+      "Doe de sla in een kom met wat peper en zout. Pers de citroen erover uit en giet er (eventueel, maar niet per se \u2013 denk aan de kilo\u2019s) een goeie scheut olijfolie over. Hussel alles goed door elkaar. En klaar!"
+    ],
+    tip: "Sausje vs. ketchup: Annelies maakt hier altijd een lekker yoghurtsausje bij. Ze mengt daarvoor yoghurt, olijfolie en lookpoeder en ras el hanout. Maar persoonlijk vind ik gewoon ketchup uit de fles of samoerai net zo goed."
+  },
+  {
+    id: 12,
+    name: "Fishcakes met salsa en geroosterde krielpatatjes",
+    category: "doordeweeks",
+    time: "60 min",
+    servings: 4,
+    difficulty: "gemiddeld",
+    image: "🐟",
+    description: "Zelfgemaakte viskoekjes met verse salsa en krielpatatjes uit de oven. Dit is allicht mijn favoriete manier om patatjes te maken \u2013 past bij \u00e1lles.",
+    ingredients: [
+      "500 g krielpatatjes",
+      "1 zalmfilet",
+      "1 wittevisfilet",
+      "1 citroen",
+      "panko (of ander broodkruim)",
+      "bladpeterselie",
+      "1 rode peper",
+      "2 lente-uien",
+      "2 tomaten",
+      "5 cm komkommer",
+      "1 paprika",
+      "1 limoen",
+      "basilicum",
+      "olijfolie",
+      "wijnazijn",
+      "peper en zout"
+    ],
+    steps: [
+      "Doe de patatjes in een pot met water en laat koken tot je erin kan prikken, maar ze nog niet uiteenvallen. Nog net niet gaar is ideaal.",
+      "Zet de oven op 220\u00b0.",
+      "Zet de patatjes nog een minuutje of 20 bovenaan in de oven, tot ze mooi bruin kleuren. Haal uit de oven en strooi er wat zout over. Dit is allicht mijn favoriete manier om patatjes te maken \u2013 past bij \u00e1lles.",
+      "Snijd de zalm en de witte vis in grove stukken. Snijd een handvol peterselie grof. Rasp de zeste van de citroen. Doe alles samen met het sap van een halve citroen, een stevige hand panko en wat peper en zout in een keukenrobot en mix tot een grof mengsel.",
+      "Rol balletjes van het vismengsel, die je dan plat duwt tot koekjes.",
+      "Doe olijfolie in een pan, bak de viskoekjes langs beide kanten, eerst op hoog vuur om ze dicht te \u2018schroeien\u2019, dan op lager vuur om ze ook vanbinnen te laten garen. Alles bijeen duurt dat een kwartiertje of zo.",
+      "Verwijder de zaadjes uit de rode peper. Schil de paprika. Snijd de rode peper, lente-ui, tomaten, komkommer en paprika fijn (of laat de keukenrobot dat doen, al krijg je dan meer een moesje). Meng in een kommetje met het sap van de limoen, een handvol basilicum, een scheut olijfolie, een scheut azijn en peper en zout naar smaak."
+    ],
+    tip: null
+  },
+  {
+    id: 13,
+    name: "Makkelijke mosselen",
+    category: "doordeweeks",
+    time: "20 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🦪",
+    description: "Mosselen met look, peterselie en verder niks. Simpeler wordt het niet.",
+    ingredients: [
+      "1 kg mosselen",
+      "4 teentjes look",
+      "1/2 bussel peterselie",
+      "zout en peper",
+      "olijfolie"
+    ],
+    steps: [
+      "Spoel de mosselen grondig in koud water. Haal alle \u2018harige\u2019 dingen, andere schelpjes\u2026 eraf. Laat het water weglopen en spoel nog eens in koud water.",
+      "Pel de look en snijd in plakjes.",
+      "Snij de peterselie fijn.",
+      "Doe wat olijfolie in een pot met een deksel, zet het vuur halfhoog en bak de look er een minuutje of zo in.",
+      "Kap de mosselen en de peterselie erbij. Kruid met genoeg peper en zout.",
+      "Zet het deksel op de pot, neem met een keukenhanddoek de handvaten van de pot en het deksel vast en schud alles een paar keer door elkaar.",
+      "Zet het vuur volle bak nu.",
+      "Als de mosselen allemaal open zijn, zijn ze gaar. Schud alles nog eens goed door elkaar. En klaar!",
+      "Serveer in een mooi kommetje of als je een echte mosselpot hebt, daarin dan. Zet ook altijd een kommetje klaar om de schelpen in te gooien."
+    ],
+    tip: "Dit is genoeg voor een aperitiefhapje voor een man of vier pakt. Als je mosselen als hoofdgerecht wil, moet je rekenen op zo \u00e9\u00e9n portie per persoon (en er verse mayonaise \u2013 recept: zie tong \u2013 bij serveren)."
   }
 ];
 
