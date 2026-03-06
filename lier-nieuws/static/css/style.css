@@ -73,7 +73,7 @@ body {
 }
 
 .municipality-name {
-    color: var(--hln-white);
+    color: var(--hln-white) !important;
 }
 
 .municipality-arrow {
