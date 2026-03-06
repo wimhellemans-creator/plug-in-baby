@@ -246,16 +246,24 @@ def _extract_article_data(element, base_url):
 
 
 def search_google_news_lier():
-    """Search Google News RSS for recent news mentioning Lier (Belgium).
+    """Legacy wrapper — calls search_google_news with Lier defaults."""
+    return search_google_news(
+        queries=["Lier+België", "Lier+Antwerpen", "Koningshooikt"],
+        municipality_name="Lier",
+        sub_areas=["Koningshooikt", "Lisp"],
+    )
+
+
+def search_google_news(queries=None, municipality_name="Lier", sub_areas=None):
+    """Search Google News RSS for recent news mentioning a municipality.
 
     Returns content in the same format as extract_page_content() so it can
     be fed directly into the AI analysis pipeline.
     """
-    queries = [
-        "Lier+België",
-        "Lier+Antwerpen",
-        "Koningshooikt",
-    ]
+    if queries is None:
+        queries = ["Lier+België", "Lier+Antwerpen", "Koningshooikt"]
+    if sub_areas is None:
+        sub_areas = []
     all_articles = []
     seen_urls = set()
 
@@ -334,11 +342,12 @@ def search_google_news_lier():
     if not all_articles:
         return None
 
+    areas_label = " / ".join([municipality_name] + sub_areas) if sub_areas else municipality_name
     logger.info(f"  [Google News] Totaal: {len(all_articles)} unieke items")
     return {
         "source": {
             "category": "Web Search",
-            "description": "Google News (Lier / Koningshooikt)",
+            "description": f"Google News ({areas_label})",
             "url": "https://news.google.com/",
         },
         "articles": all_articles,

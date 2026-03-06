@@ -16,7 +16,7 @@ except ImportError:
 
 from database import init_db, get_all_sources, add_source, update_source, delete_source as db_delete_source
 from database import get_articles, get_article, add_article, delete_article as db_delete_article, get_existing_urls
-from scraper import scrape_all_sources, search_google_news_lier
+from scraper import scrape_all_sources, search_google_news
 from ai_filter import filter_and_summarize, generate_hln_article
 
 # Load environment variables
@@ -32,86 +32,174 @@ app = Flask(__name__)
 init_db()
 
 
+# ---- Municipality configuration ----
+
+MUNICIPALITIES = {
+    "lier": {
+        "name": "Lier",
+        "sub_areas": ["Koningshooikt", "Lisp"],
+        "google_news_queries": ["Lier+België", "Lier+Antwerpen", "Koningshooikt"],
+    },
+    "nijlen": {
+        "name": "Nijlen",
+        "sub_areas": ["Kessel", "Bevel"],
+        "google_news_queries": ["Nijlen+België", "Nijlen+Antwerpen", "Kessel+Nijlen", "Bevel+Nijlen"],
+    },
+}
+
+
 def _seed_sources():
-    """Import the default Lier sources if the database is empty."""
-    sources = get_all_sources()
-    if sources:
-        return
+    """Import the default sources if the database is empty for a municipality."""
 
-    logger.info("Seeding default sources...")
-    default_sources = [
-        # --- Stad & Bestuur ---
-        ("Stad & Bestuur", "Stad Lier Algemeen Nieuws", "https://www.lier.be/"),
-        ("Stad & Bestuur", "Agenda Gemeente- en OCMW-raad", "https://lier.be/agenda-gemeente-en-ocmw-raad"),
-        ("Stad & Bestuur", "Verslagen Gemeenteraad", "https://lier.meetingburger.net/?AlleVergaderingen=False"),
-        ("Stad & Bestuur", "Werken & Verkeersberichten Lier", "https://lier.be/verkeersberichten"),
-        # --- Veiligheid ---
-        ("Veiligheid", "Lokale Politie Lier Nieuws", "https://www.politie.be/5360/nieuws"),
-        ("Veiligheid", "Brandweerzone Rivierenland", "https://rivierenland.hulpverleningszone.be/"),
-        # --- Justitie ---
-        ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten"),
-        ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen"),
-        # --- Economie ---
-        ("Economie", "Made in Mechelen (regio Lier)", "https://www.made-in.be/regio/mechelen/"),
-        ("Economie", "Shoppen in Lier", "https://visitlier.be/nl/home-shoppen-in-lier"),
-        ("Economie", "Lier.be - Nieuws voor Ondernemers", "https://www.lier.be/ondernemen/nieuws-voor-ondernemers"),
-        # --- Zorg ---
-        ("Zorg & Welzijn", "Heilig Hartziekenhuis Nieuws", "https://www.heilighartlier.be/nieuws/"),
-        # --- Sport (hoofdclubs) ---
-        ("Sport", "Lierse SK (Kempenzonen)", "https://www.lierse.com/"),
-        ("Sport", "K. Lyra-Lierse", "https://lyralierse.be/"),
-        ("Sport", "Royal Herakles HC (Hockey)", "https://herakles.be/"),
-        ("Sport", "KVK Hooikt (Voetbal Koningshooikt)", "https://kvkhooikt.be/"),
-        # --- Cultuur ---
-        ("Cultuur & Vrije Tijd", "CC De Mol Programmatie", "https://www.lierscultuurcentrum.be/nl/programma"),
-        ("Cultuur & Vrije Tijd", "UiT in Lier (Kalender)", "https://ikorganiseerinlier.uitinlier.be/kalender"),
-        ("Cultuur & Vrije Tijd", "UiT in Lier (Breed)", "https://www.uitinlier.be/"),
-        ("Cultuur & Theater", "Teater Lier (Den Bril)", "https://denbril.be/"),
-        # --- Erfgoed & Feesten ---
-        ("Erfgoed & Traditie", "Zimmertoren & Zimmermuseum", "https://zimmertoren.be/"),
-        ("Erfgoed & Traditie", "Lier Feest", "https://lierfeest.be/"),
-        # --- Lokale Politiek ---
-        ("Lokale Politiek", "N-VA Lier (Nieuws)", "https://lier.n-va.be/nieuws"),
-        ("Lokale Politiek", "Missie2500 (CD&V Lier)", "https://missie2500.be/nieuws/"),
-        ("Lokale Politiek", "Vooruit Lier", "https://nieuws.vooruit.org/lier"),
-        # --- Media & Concurrentie ---
-        ("Media & Concurrentie", "RTV Lier", "https://www.rtv.be/regio/lier"),
-        ("Media & Concurrentie", "Lier Belicht", "https://www.lierbelicht.be/"),
-        ("Media & Concurrentie", "Nnieuws Brandweer Rivierenland", "https://nnieuws.be/tags/brandweer-rivierenland"),
-        ("Media & Concurrentie", "Het Nieuwsblad Lier", "https://www.nieuwsblad.be/regio/lier"),
-        ("Media & Concurrentie", "Gazet van Antwerpen Lier", "https://www.gva.be/regio/lier"),
-        # --- Onderwijs ---
-        ("Onderwijs", "Sint-Gummaruscollege (SGC) Kalender", "https://www.sgclier.be/kalender.php"),
-        ("Onderwijs", "Campus Sint-Ursula", "https://campussintursula.be/"),
-        ("Onderwijs", "Atheneum Lier", "https://www.atheneumlier.be/"),
-        # --- Jeugdverenigingen ---
-        ("Jeugdverenigingen", "Chiro Lips Lier", "https://www.chirolips.be/"),
-        ("Jeugdverenigingen", "Chiro Lier", "https://www.chirolier.be/"),
-        ("Jeugdverenigingen", "Chiro Jut Lier", "https://www.chirojut.be/"),
-        ("Jeugdverenigingen", "Scouting Lier", "https://scoutinglier.be/"),
-        ("Jeugdverenigingen", "Scouts Lier", "https://scoutslier.be/"),
-        ("Jeugdverenigingen", "KSA Lier", "https://ksalier.weebly.com/"),
-        ("Jeugdverenigingen", "KLJ Lier-Noord", "https://www.kljliernoord.be/"),
-        ("Jeugdverenigingen", "KLJ Lier-Zuid", "https://www.kljlierzuid.be/"),
-        # --- Kleine clubs ---
-        ("Kleine Clubs", "Mister 100 Biljartzaal Lier", "https://mister100-salledeau.be/biljardzaal-mister-100-lier/"),
-        ("Kleine Clubs", "Chesslooks Schaakclub Lier", "https://www.chesslooks-lier.be/"),
-        ("Kleine Clubs", "Pallieter Jogging Lier", "https://www.pallieterjogging.be/"),
-        # --- Serviceclubs, kerk & senioren ---
-        ("Serviceclubs & Verenigingen", "Lions Club Lier", "https://lionslier.be/onze-evenementen/"),
-        ("Serviceclubs & Verenigingen", "Kiwanis Lier Twee Neten", "https://kiwanisliertweeneten.be/acties-en-nieuws/"),
-        ("Serviceclubs & Verenigingen", "Rotary Lier", "https://www.rotarylier.be/"),
-        ("Serviceclubs & Verenigingen", "Okra Lier-Lisp (Senioren)", "https://okra.be/antwerpen/lier-lisp/"),
-        ("Serviceclubs & Verenigingen", "Neos Lier (Senioren)", "https://neosvzw.be/lier/agenda-activiteiten/"),
-        ("Serviceclubs & Verenigingen", "Parochie H. Gummarus Lier", "https://www.kerknet.be/pastorale-eenheid-h-gummarus-z-beatrijs-lier/artikel/parochieblad"),
-        ("Serviceclubs & Verenigingen", "Liers Genootschap", "https://www.liersgenootschap.be/"),
-        ("Serviceclubs & Verenigingen", "Heren van Lier", "https://www.herenvanlier.be/"),
-    ]
+    # Check if Lier sources exist
+    lier_sources = get_all_sources(municipality="lier")
+    if not lier_sources:
+        logger.info("Seeding default Lier sources...")
+        for cat, desc, url in _LIER_DEFAULT_SOURCES:
+            add_source(cat, desc, url, municipality="lier")
+        logger.info(f"Seeded {len(_LIER_DEFAULT_SOURCES)} Lier sources.")
 
-    for cat, desc, url in default_sources:
-        add_source(cat, desc, url)
+    # Check if Nijlen sources exist
+    nijlen_sources = get_all_sources(municipality="nijlen")
+    if not nijlen_sources:
+        logger.info("Seeding default Nijlen sources...")
+        for cat, desc, url in _NIJLEN_DEFAULT_SOURCES:
+            add_source(cat, desc, url, municipality="nijlen")
+        logger.info(f"Seeded {len(_NIJLEN_DEFAULT_SOURCES)} Nijlen sources.")
 
-    logger.info(f"Seeded {len(default_sources)} default sources.")
+
+_LIER_DEFAULT_SOURCES = [
+    # --- Stad & Bestuur ---
+    ("Stad & Bestuur", "Stad Lier Algemeen Nieuws", "https://www.lier.be/"),
+    ("Stad & Bestuur", "Agenda Gemeente- en OCMW-raad", "https://lier.be/agenda-gemeente-en-ocmw-raad"),
+    ("Stad & Bestuur", "Verslagen Gemeenteraad", "https://lier.meetingburger.net/?AlleVergaderingen=False"),
+    ("Stad & Bestuur", "Werken & Verkeersberichten Lier", "https://lier.be/verkeersberichten"),
+    # --- Veiligheid ---
+    ("Veiligheid", "Lokale Politie Lier Nieuws", "https://www.politie.be/5360/nieuws"),
+    ("Veiligheid", "Brandweerzone Rivierenland", "https://rivierenland.hulpverleningszone.be/"),
+    # --- Justitie ---
+    ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten"),
+    ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen"),
+    # --- Economie ---
+    ("Economie", "Made in Mechelen (regio Lier)", "https://www.made-in.be/regio/mechelen/"),
+    ("Economie", "Shoppen in Lier", "https://visitlier.be/nl/home-shoppen-in-lier"),
+    ("Economie", "Lier.be - Nieuws voor Ondernemers", "https://www.lier.be/ondernemen/nieuws-voor-ondernemers"),
+    # --- Zorg ---
+    ("Zorg & Welzijn", "Heilig Hartziekenhuis Nieuws", "https://www.heilighartlier.be/nieuws/"),
+    # --- Sport (hoofdclubs) ---
+    ("Sport", "Lierse SK (Kempenzonen)", "https://www.lierse.com/"),
+    ("Sport", "K. Lyra-Lierse", "https://lyralierse.be/"),
+    ("Sport", "Royal Herakles HC (Hockey)", "https://herakles.be/"),
+    ("Sport", "KVK Hooikt (Voetbal Koningshooikt)", "https://kvkhooikt.be/"),
+    # --- Cultuur ---
+    ("Cultuur & Vrije Tijd", "CC De Mol Programmatie", "https://www.lierscultuurcentrum.be/nl/programma"),
+    ("Cultuur & Vrije Tijd", "UiT in Lier (Kalender)", "https://ikorganiseerinlier.uitinlier.be/kalender"),
+    ("Cultuur & Vrije Tijd", "UiT in Lier (Breed)", "https://www.uitinlier.be/"),
+    ("Cultuur & Theater", "Teater Lier (Den Bril)", "https://denbril.be/"),
+    # --- Erfgoed & Feesten ---
+    ("Erfgoed & Traditie", "Zimmertoren & Zimmermuseum", "https://zimmertoren.be/"),
+    ("Erfgoed & Traditie", "Lier Feest", "https://lierfeest.be/"),
+    # --- Lokale Politiek ---
+    ("Lokale Politiek", "N-VA Lier (Nieuws)", "https://lier.n-va.be/nieuws"),
+    ("Lokale Politiek", "Missie2500 (CD&V Lier)", "https://missie2500.be/nieuws/"),
+    ("Lokale Politiek", "Vooruit Lier", "https://nieuws.vooruit.org/lier"),
+    # --- Media & Concurrentie ---
+    ("Media & Concurrentie", "RTV Lier", "https://www.rtv.be/regio/lier"),
+    ("Media & Concurrentie", "Lier Belicht", "https://www.lierbelicht.be/"),
+    ("Media & Concurrentie", "Nnieuws Brandweer Rivierenland", "https://nnieuws.be/tags/brandweer-rivierenland"),
+    ("Media & Concurrentie", "Het Nieuwsblad Lier", "https://www.nieuwsblad.be/regio/lier"),
+    ("Media & Concurrentie", "Gazet van Antwerpen Lier", "https://www.gva.be/regio/lier"),
+    # --- Onderwijs ---
+    ("Onderwijs", "Sint-Gummaruscollege (SGC) Kalender", "https://www.sgclier.be/kalender.php"),
+    ("Onderwijs", "Campus Sint-Ursula", "https://campussintursula.be/"),
+    ("Onderwijs", "Atheneum Lier", "https://www.atheneumlier.be/"),
+    # --- Jeugdverenigingen ---
+    ("Jeugdverenigingen", "Chiro Lips Lier", "https://www.chirolips.be/"),
+    ("Jeugdverenigingen", "Chiro Lier", "https://www.chirolier.be/"),
+    ("Jeugdverenigingen", "Chiro Jut Lier", "https://www.chirojut.be/"),
+    ("Jeugdverenigingen", "Scouting Lier", "https://scoutinglier.be/"),
+    ("Jeugdverenigingen", "Scouts Lier", "https://scoutslier.be/"),
+    ("Jeugdverenigingen", "KSA Lier", "https://ksalier.weebly.com/"),
+    ("Jeugdverenigingen", "KLJ Lier-Noord", "https://www.kljliernoord.be/"),
+    ("Jeugdverenigingen", "KLJ Lier-Zuid", "https://www.kljlierzuid.be/"),
+    # --- Kleine clubs ---
+    ("Kleine Clubs", "Mister 100 Biljartzaal Lier", "https://mister100-salledeau.be/biljardzaal-mister-100-lier/"),
+    ("Kleine Clubs", "Chesslooks Schaakclub Lier", "https://www.chesslooks-lier.be/"),
+    ("Kleine Clubs", "Pallieter Jogging Lier", "https://www.pallieterjogging.be/"),
+    # --- Serviceclubs, kerk & senioren ---
+    ("Serviceclubs & Verenigingen", "Lions Club Lier", "https://lionslier.be/onze-evenementen/"),
+    ("Serviceclubs & Verenigingen", "Kiwanis Lier Twee Neten", "https://kiwanisliertweeneten.be/acties-en-nieuws/"),
+    ("Serviceclubs & Verenigingen", "Rotary Lier", "https://www.rotarylier.be/"),
+    ("Serviceclubs & Verenigingen", "Okra Lier-Lisp (Senioren)", "https://okra.be/antwerpen/lier-lisp/"),
+    ("Serviceclubs & Verenigingen", "Neos Lier (Senioren)", "https://neosvzw.be/lier/agenda-activiteiten/"),
+    ("Serviceclubs & Verenigingen", "Parochie H. Gummarus Lier", "https://www.kerknet.be/pastorale-eenheid-h-gummarus-z-beatrijs-lier/artikel/parochieblad"),
+    ("Serviceclubs & Verenigingen", "Liers Genootschap", "https://www.liersgenootschap.be/"),
+    ("Serviceclubs & Verenigingen", "Heren van Lier", "https://www.herenvanlier.be/"),
+]
+
+_NIJLEN_DEFAULT_SOURCES = [
+    # --- Stad & Bestuur ---
+    ("Stad & Bestuur", "Gemeente Nijlen Nieuws", "https://nijlen.be/nieuws"),
+    ("Stad & Bestuur", "Agenda & Verslagen Gemeenteraad", "https://nijlen.be/bestuur-en-beleid/gemeenteraad-en-ocmw-raad"),
+    ("Stad & Bestuur", "Verslagen Gemeenteraad (Smart Cities)", "https://raadpleeg-nijlen.onlinesmartcities.be"),
+    ("Stad & Bestuur", "Werken & Verkeershinder Nijlen", "https://nijlen.be/verkeersberichten"),
+    # --- Veiligheid ---
+    ("Veiligheid", "Lokale Politie Berlaar-Nijlen", "https://www.politie.be/5361/nieuws"),
+    ("Veiligheid", "Brandweer Nijlen (Vrijwilligers)", "https://brandweernijlen.be"),
+    # --- Justitie ---
+    ("Justitie", "Parket Antwerpen (Persberichten)", "https://www.om-mp.be/nl/uw-om/parketten-procureur-konings/antwerpen/persberichten-nijlen"),
+    ("Justitie", "Rechtbank Eerste Aanleg Mechelen", "https://www.rechtbanken-tribunaux.be/nl/rechtbank-eerste-aanleg-antwerpen-afdeling-mechelen-nijlen"),
+    # --- Economie ---
+    ("Economie", "Bekend in Nijlen", "https://bekendinnijlen.be"),
+    ("Economie", "Ondernemen in Nijlen", "https://nijlen.be/ondernemen/nieuws-voor-ondernemers"),
+    ("Economie", "Made in Mechelen (Regio Nijlen)", "https://www.made-in.be/regio/mechelen-nijlen/"),
+    # --- Zorg ---
+    ("Zorg & Welzijn", "Sociaal Huis Nijlen", "https://nijlen.be/sociaal-huis"),
+    # --- Sport ---
+    ("Sport", "KFC Nijlen (Voetbal)", "https://nijlen.voetbalassist.be"),
+    ("Sport", "KFC Bevel (Voetbal)", "https://kfcbevel.be"),
+    ("Sport", "FH Nijlen (Volleybal)", "https://fhnijlen.be"),
+    ("Sport", "VC Nijlen (Volleybal)", "https://vcnijlen.be"),
+    # --- Cultuur & Vrije Tijd ---
+    ("Cultuur & Vrije Tijd", "GC 't Dorp (Gemeenschapscentrum)", "https://nijlen.be/gc-t-dorp-2"),
+    ("Cultuur & Vrije Tijd", "Evenementen Nijlen", "https://nijlen.be/vrije_tijd/cultuur/evenementen"),
+    ("Cultuur & Vrije Tijd", "UiT in Nijlen (Kalender)", "https://uitinvlaanderen.be/agenda/l/nijlen/2560"),
+    ("Cultuur & Vrije Tijd", "Vrije Tijd Gemeente Nijlen", "https://nijlen.be/vrije-tijd"),
+    ("Cultuur & Vrije Tijd", "Jeugdhuis Kroenkel", "https://kroenkel.be"),
+    # --- Jeugd ---
+    ("Jeugd", "Jeugd Nijlen (Overkoepelend)", "https://jeugdnijlen.be/jeugd-in-nijlen/jeugdwerk"),
+    # --- Erfgoed & Traditie ---
+    ("Erfgoed & Traditie", "Kempens Diamantcentrum", "https://briljante-kempen.be"),
+    ("Erfgoed & Traditie", "Kempens Karakter (Erfgoedcel)", "https://kempenskarakter.be"),
+    # --- Lokale Politiek ---
+    ("Lokale Politiek", "N-VA Nijlen (Nieuws)", "https://nijlen.n-va.be/nieuws"),
+    ("Lokale Politiek", "Nieuw Nijlen (Meerderheid)", "https://nieuwnijlen.be/nieuws"),
+    ("Lokale Politiek", "CD&V Nijlen", "https://nijlen.cdenv.be"),
+    ("Lokale Politiek", "Groen Nijlen", "https://groennijlen.be"),
+    ("Lokale Politiek", "Vooruit Nijlen", "https://nieuws.vooruit.org/nijlen"),
+    # --- Media & Concurrentie ---
+    ("Media & Concurrentie", "RTV Nijlen", "https://www.rtv.be/regio/nijlen"),
+    ("Media & Concurrentie", "NNieuws Nijlen Regio", "https://nnieuws.be/uw-gemeente/nijlen-regio"),
+    ("Media & Concurrentie", "Het Nieuwsblad Nijlen", "https://www.nieuwsblad.be/regio/nijlen"),
+    ("Media & Concurrentie", "Gazet van Antwerpen Nijlen", "https://www.gva.be/regio/nijlen"),
+    ("Media & Concurrentie", "Brandweerzone Rivierenland (Nieuws)", "https://rivierenland.hulpverleningszone.be/nijlen"),
+    # --- Onderwijs ---
+    ("Onderwijs", "githo Nijlen (Secundair)", "https://githonijlen.be"),
+    ("Onderwijs", "Sint-Calasanzinstituut (Secundair)", "https://sintcalasanzinstituut.be"),
+    ("Onderwijs", "VBS Sint-Calasanz (Basisschool)", "https://basisschool-calasanz.be"),
+    ("Onderwijs", "Overzicht Scholen Nijlen", "https://nijlen.be/leven/scholen/kleuter-en-lager-onderwijs"),
+    # --- Jeugdverenigingen ---
+    ("Jeugdverenigingen", "Chiro Pako Nijlen", "https://chiropako.be"),
+    ("Jeugdverenigingen", "Chiro Elckerlyc & Jong Leven Nijlen", "https://chiroelckerlycenjongleven.be"),
+    ("Jeugdverenigingen", "Chiro Gust & Nele (Kessel)", "https://chiro-gustnele.be"),
+    ("Jeugdverenigingen", "Chiro Bevel", "https://chirobevel.be"),
+    ("Jeugdverenigingen", "Scouts & Gidsen Sparlekijn Nijlen", "https://scoutsnijlen.be"),
+    ("Jeugdverenigingen", "KLJ Nijlen", "https://kljnijlen.be"),
+    # --- Religie ---
+    ("Religie", "Pastorale Eenheid Sint-Salvator", "https://pe-sint-salvator.be"),
+    # --- Extra ---
+    ("Extra", "Nijlen Mee Maken (Buurtpunten)", "https://nijlenmeemaken.be"),
+]
 
 
 # New sources to add to existing databases (won't duplicate thanks to UNIQUE constraint)
@@ -283,7 +371,18 @@ _reactivate_sources()
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", municipalities=MUNICIPALITIES)
+
+
+# ---- API: Municipalities ----
+
+@app.route("/api/municipalities")
+def api_get_municipalities():
+    """Return available municipalities."""
+    result = []
+    for key, config in MUNICIPALITIES.items():
+        result.append({"id": key, "name": config["name"]})
+    return jsonify(result)
 
 
 # ---- API: Articles ----
@@ -292,7 +391,8 @@ def index():
 def api_get_articles():
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 20, type=int)
-    articles, total = get_articles(page, per_page)
+    municipality = request.args.get("municipality", "lier")
+    articles, total = get_articles(page, per_page, municipality=municipality)
     total_pages = max(1, (total + per_page - 1) // per_page)
     return jsonify({
         "articles": articles,
@@ -352,7 +452,8 @@ def api_generate_article(article_id):
 
 @app.route("/api/sources")
 def api_get_sources():
-    sources = get_all_sources()
+    municipality = request.args.get("municipality", "lier")
+    sources = get_all_sources(municipality=municipality)
     return jsonify(sources)
 
 
@@ -362,7 +463,8 @@ def api_add_source():
     if not data or not all(k in data for k in ("category", "description", "url")):
         return jsonify({"error": "Vul categorie, beschrijving en URL in"}), 400
 
-    ok = add_source(data["category"], data["description"], data["url"])
+    municipality = data.get("municipality", "lier")
+    ok = add_source(data["category"], data["description"], data["url"], municipality=municipality)
     if not ok:
         return jsonify({"error": "Deze URL bestaat al in de bronnen"}), 409
     return jsonify({"ok": True}), 201
@@ -392,6 +494,8 @@ def api_delete_source(source_id):
 @app.route("/api/diagnose")
 def api_diagnose():
     """Run diagnostics to check if everything is configured correctly."""
+    municipality = request.args.get("municipality", "lier")
+    muni_config = MUNICIPALITIES.get(municipality, MUNICIPALITIES["lier"])
     results = []
 
     # 1. Check .env / API key
@@ -406,11 +510,11 @@ def api_diagnose():
         results.append({"step": "API Key", "status": "ok", "message": f"API key gevonden (begint met {api_key[:12]}...)"})
 
     # 2. Check active sources
-    sources = get_all_sources(active_only=True)
+    sources = get_all_sources(active_only=True, municipality=municipality)
     if not sources:
-        results.append({"step": "Bronnen", "status": "fail", "message": "Geen actieve bronnen gevonden. Ga naar 'Bronnen beheren' en voeg bronnen toe."})
+        results.append({"step": f"Bronnen ({muni_config['name']})", "status": "fail", "message": f"Geen actieve bronnen gevonden voor {muni_config['name']}. Ga naar 'Bronnen beheren' en voeg bronnen toe."})
     else:
-        results.append({"step": "Bronnen", "status": "ok", "message": f"{len(sources)} actieve bronnen gevonden."})
+        results.append({"step": f"Bronnen ({muni_config['name']})", "status": "ok", "message": f"{len(sources)} actieve bronnen gevonden voor {muni_config['name']}."})
 
     # 3. Test scraping with first source
     if sources:
@@ -515,19 +619,18 @@ def api_save_apikey():
 @app.route("/api/search", methods=["POST"])
 def api_search():
     """Start a news search. Uses Server-Sent Events to stream progress."""
+    municipality = request.args.get("municipality", "lier")
+    muni_config = MUNICIPALITIES.get(municipality, MUNICIPALITIES["lier"])
+
     def generate():
         try:
-            # 1. Get active sources
-            sources = get_all_sources(active_only=True)
+            # 1. Get active sources for this municipality
+            sources = get_all_sources(active_only=True, municipality=municipality)
             if not sources:
-                yield _sse({"type": "error", "message": "Geen actieve bronnen gevonden. Voeg bronnen toe via 'Bronnen beheren'."})
+                yield _sse({"type": "error", "message": f"Geen actieve bronnen gevonden voor {muni_config['name']}. Voeg bronnen toe via 'Bronnen beheren'."})
                 return
 
             # 2. Scrape all sources
-            def progress_cb(current, total, source_name):
-                # We can't yield from inside a callback, so we store progress
-                pass
-
             scraped_content = []
             total = len(sources)
             scrape_ok = 0
@@ -551,10 +654,14 @@ def api_search():
 
             logger.info(f"Scraping klaar: {scrape_ok} bronnen met content, {scrape_fail} lege bronnen")
 
-            # 2b. Google News search for Lier (catches national media coverage)
-            yield _sse({"type": "progress", "current": total, "total": total, "source": "Google News zoeken..."})
+            # 2b. Google News search for this municipality
+            yield _sse({"type": "progress", "current": total, "total": total, "source": f"Google News zoeken ({muni_config['name']})..."})
             try:
-                news_results = search_google_news_lier()
+                news_results = search_google_news(
+                    queries=muni_config["google_news_queries"],
+                    municipality_name=muni_config["name"],
+                    sub_areas=muni_config["sub_areas"],
+                )
                 if news_results and news_results["articles"]:
                     scraped_content.append(news_results)
                     logger.info(f"  OK: Google News -> {len(news_results['articles'])} items")
@@ -569,12 +676,17 @@ def api_search():
                 return
 
             # 3. Get existing URLs for deduplication
-            existing_urls = get_existing_urls()
+            existing_urls = get_existing_urls(municipality=municipality)
 
             # 4. AI analysis
             yield _sse({"type": "analyzing"})
             logger.info(f"AI-analyse gestart met {len(scraped_content)} bronnen en {len(existing_urls)} bestaande URLs...")
-            articles = filter_and_summarize(scraped_content, existing_urls)
+            articles = filter_and_summarize(
+                scraped_content, existing_urls,
+                municipality=municipality,
+                municipality_name=muni_config["name"],
+                sub_areas=muni_config["sub_areas"],
+            )
             logger.info(f"AI-analyse klaar: {len(articles)} leads gevonden")
 
             if not articles:
@@ -598,6 +710,7 @@ def api_search():
                     original_url=art.get("original_url", ""),
                     original_date=art.get("original_date", "onbekend"),
                     label=label,
+                    municipality=municipality,
                 )
                 if ok:
                     new_count += 1

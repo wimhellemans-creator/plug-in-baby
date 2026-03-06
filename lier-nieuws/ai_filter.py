@@ -55,16 +55,16 @@ def get_client(verify=None):
 
 
 FILTER_PROMPT = """Je bent een ervaren regiojournalist die werkt voor HLN, de populairste nieuwssite van Vlaanderen.
-Je focust op de gemeente LIER en omgeving (inclusief Koningshooikt en Lisp).
+Je focust op de gemeente {municipality_name} en omgeving (inclusief {sub_areas_text}).
 
 Je krijgt een verzameling gescrapete webpagina's van lokale bronnen. Jouw taak:
 
-1. SELECTEER alleen de items die nieuwswaardig zijn voor een regionaal publiek in Lier.
+1. SELECTEER alleen de items die nieuwswaardig zijn voor een regionaal publiek in {municipality_name}.
    Nieuwswaardig betekent:
    - Hard nieuws (ongelukken, criminaliteit, politieke beslissingen, ...)
    - Aankondigingen van evenementen, braderijen, festivals
    - Werken in de straat, mobiliteit, verkeer
-   - Bijzondere verhalen van mensen uit Lier
+   - Bijzondere verhalen van mensen uit {municipality_name}
    - Sport: wedstrijdresultaten, transfers, bijzondere prestaties
    - Openingen/sluitingen van winkels, horeca, bedrijven
    - Culturele evenementen, tentoonstellingen, voorstellingen
@@ -83,7 +83,7 @@ Je krijgt een verzameling gescrapete webpagina's van lokale bronnen. Jouw taak:
    - summary: een samenvatting in 1 zin
    - bullets: exact 3 bullet points die het verhaal duiden of pitchen voor de journalist
    - label: een van deze drie categorieën (kies de best passende):
-       * "Nieuws" — hard nieuws uit Lier: ongelukken, criminaliteit, politiek, infrastructuur, verkeer, wegenwerken, veiligheid
+       * "Nieuws" — hard nieuws uit {municipality_name}: ongelukken, criminaliteit, politiek, infrastructuur, verkeer, wegenwerken, veiligheid
        * "Mensen" — menselijke verhalen: portretten, handel/horeca, onderwijs, jeugd, sport, wijknieuws, vrijwilligers, verenigingen
        * "Agenda" — aankondigingen: evenementen, feesten, concerten, tentoonstellingen, culturele programmatie, markten
    - original_url: de exacte URL van het bronartikel (NIET de homepage van de bron)
@@ -194,8 +194,10 @@ Bronsite: {article_data.get('source_url', '')}"""
     return response.content[0].text
 
 
-def filter_and_summarize(scraped_content, existing_urls):
+def filter_and_summarize(scraped_content, existing_urls, municipality="lier", municipality_name="Lier", sub_areas=None):
     """Use Claude to filter and summarize scraped content into news leads."""
+    if sub_areas is None:
+        sub_areas = ["Koningshooikt", "Lisp"]
     client = get_client()
     today = datetime.now().strftime("%Y-%m-%d")
 
@@ -226,7 +228,13 @@ def filter_and_summarize(scraped_content, existing_urls):
 
     existing_urls_text = "\n".join(f"- {url}" for url in existing_urls) if existing_urls else "(geen bestaande artikelen)"
 
-    prompt = FILTER_PROMPT.format(today=today, existing_urls=existing_urls_text)
+    sub_areas_text = " en ".join(sub_areas) if sub_areas else ""
+    prompt = FILTER_PROMPT.format(
+        today=today,
+        existing_urls=existing_urls_text,
+        municipality_name=municipality_name,
+        sub_areas_text=sub_areas_text,
+    )
 
     messages = [
         {

@@ -47,10 +47,74 @@ body {
     font-size: 24px;
     font-weight: 800;
     letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .logo span {
     color: var(--hln-red);
+}
+
+/* Municipality switcher */
+.municipality-switcher {
+    position: relative;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px 2px 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.municipality-switcher:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.municipality-name {
+    color: var(--hln-white);
+}
+
+.municipality-arrow {
+    font-size: 12px;
+    color: #aaa;
+    transition: transform 0.2s;
+}
+
+.municipality-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--hln-white);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    min-width: 160px;
+    z-index: 200;
+    overflow: hidden;
+}
+
+.municipality-dropdown.active {
+    display: block;
+}
+
+.municipality-option {
+    padding: 10px 16px;
+    color: var(--hln-text);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.municipality-option:hover {
+    background: var(--hln-gray);
+}
+
+.municipality-option.active {
+    color: var(--hln-red);
+    background: #fef2f2;
 }
 
 .header-subtitle {

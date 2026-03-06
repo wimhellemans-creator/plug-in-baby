@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lier Nieuws Radar - HLN Regiodesk</title>
+    <title>Nieuws Radar - HLN Regiodesk</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -11,7 +11,18 @@
     <!-- Header -->
     <div class="header">
         <div class="header-left">
-            <div class="logo">Lier <span>Nieuws Radar</span></div>
+            <div class="logo">
+                <div class="municipality-switcher" id="municipalitySwitcher">
+                    <span class="municipality-name" id="municipalityName">Lier</span>
+                    <span class="municipality-arrow">&#9662;</span>
+                    <div class="municipality-dropdown" id="municipalityDropdown">
+                        {% for key, muni in municipalities.items() %}
+                        <div class="municipality-option" data-id="{{ key }}">{{ muni.name }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <span>Nieuws Radar</span>
+            </div>
             <span class="header-subtitle">HLN Regiodesk</span>
         </div>
         <div class="header-actions">

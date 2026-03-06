@@ -2,6 +2,7 @@
 let currentPage = 1;
 let totalPages = 1;
 let isSearching = false;
+let currentMunicipality = localStorage.getItem("municipality") || "lier";
 
 // DOM Elements
 const searchBtn = document.getElementById("searchBtn");
@@ -34,8 +35,14 @@ const toggleKeyVisibility = document.getElementById("toggleKeyVisibility");
 const apiKeyStatus = document.getElementById("apiKeyStatus");
 const apiKeyMessage = document.getElementById("apiKeyMessage");
 
+// Municipality switcher elements
+const municipalitySwitcher = document.getElementById("municipalitySwitcher");
+const municipalityName = document.getElementById("municipalityName");
+const municipalityDropdown = document.getElementById("municipalityDropdown");
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
+    setMunicipalityDisplay();
     loadArticles();
     loadSourceCount();
 });
@@ -65,10 +72,49 @@ modalOverlay.addEventListener("click", (e) => {
 });
 addSourceForm.addEventListener("submit", addSource);
 
+// Municipality switcher
+municipalitySwitcher.addEventListener("click", (e) => {
+    e.stopPropagation();
+    municipalityDropdown.classList.toggle("active");
+});
+
+document.addEventListener("click", () => {
+    municipalityDropdown.classList.remove("active");
+});
+
+document.querySelectorAll(".municipality-option").forEach((option) => {
+    option.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const newMunicipality = option.dataset.id;
+        if (newMunicipality !== currentMunicipality) {
+            currentMunicipality = newMunicipality;
+            localStorage.setItem("municipality", currentMunicipality);
+            setMunicipalityDisplay();
+            currentPage = 1;
+            loadArticles();
+            loadSourceCount();
+        }
+        municipalityDropdown.classList.remove("active");
+    });
+});
+
+function setMunicipalityDisplay() {
+    const option = document.querySelector(`.municipality-option[data-id="${currentMunicipality}"]`);
+    if (option) {
+        municipalityName.textContent = option.textContent;
+    }
+    // Update page title
+    document.title = `${municipalityName.textContent} Nieuws Radar - HLN Regiodesk`;
+    // Highlight active option
+    document.querySelectorAll(".municipality-option").forEach((opt) => {
+        opt.classList.toggle("active", opt.dataset.id === currentMunicipality);
+    });
+}
+
 // Load articles
 async function loadArticles(page = 1) {
     try {
-        const resp = await fetch(`/api/articles?page=${page}`);
+        const resp = await fetch(`/api/articles?page=${page}&municipality=${currentMunicipality}`);
         const data = await resp.json();
 
         currentPage = page;
@@ -177,7 +223,7 @@ async function startSearch() {
     progressText.textContent = "Zoekactie wordt gestart...";
 
     try {
-        const resp = await fetch("/api/search", { method: "POST" });
+        const resp = await fetch(`/api/search?municipality=${currentMunicipality}`, { method: "POST" });
         const reader = resp.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
@@ -276,7 +322,7 @@ function closeSourcesModal() {
 
 async function loadSources() {
     try {
-        const resp = await fetch("/api/sources");
+        const resp = await fetch(`/api/sources?municipality=${currentMunicipality}`);
         const sources = await resp.json();
         renderSources(sources);
     } catch (err) {
@@ -314,6 +360,7 @@ async function addSource(e) {
         category: formData.get("category"),
         description: formData.get("description"),
         url: formData.get("url"),
+        municipality: currentMunicipality,
     };
 
     if (!data.category || !data.description || !data.url) {
@@ -365,7 +412,7 @@ async function deleteSource(id) {
 
 async function loadSourceCount() {
     try {
-        const resp = await fetch("/api/sources");
+        const resp = await fetch(`/api/sources?municipality=${currentMunicipality}`);
         const sources = await resp.json();
         sourceCount.textContent = sources.filter((s) => s.active).length;
     } catch {}
@@ -380,7 +427,7 @@ async function runDiagnose() {
     progressText.textContent = "Diagnose wordt uitgevoerd...";
 
     try {
-        const resp = await fetch("/api/diagnose");
+        const resp = await fetch(`/api/diagnose?municipality=${currentMunicipality}`);
         const results = await resp.json();
 
         progressBar.style.width = "100%";
