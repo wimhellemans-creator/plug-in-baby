@@ -172,6 +172,8 @@ function openRecipe(id) {
     <ol class="steps-list">
       ${recipe.steps.map(step => `<li>${step}</li>`).join('')}
     </ol>
+
+    ${recipe.tip ? `<div class="recipe-tip"><strong>💡 Tip</strong><p>${recipe.tip.replace(/\n\n/g, '</p><p>')}</p></div>` : ''}
   `;
 
   modalOverlay.classList.add('open');

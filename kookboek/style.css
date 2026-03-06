@@ -528,6 +528,33 @@ body {
   border-bottom: none;
 }
 
+/* === RECIPE TIP === */
+.recipe-tip {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--orange-50), #fff7ed);
+  border-left: 4px solid var(--orange-500);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.recipe-tip strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--orange-700);
+  margin-bottom: 8px;
+}
+
+.recipe-tip p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--gray-600);
+  margin: 0 0 8px 0;
+}
+
+.recipe-tip p:last-child {
+  margin-bottom: 0;
+}
+
 /* === BOTTOM NAV === */
 .bottom-nav {
   position: fixed;
