@@ -637,6 +637,34 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
+/* === INTRO SECTION === */
+.intro-section {
+  margin: 16px 20px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #fff, var(--orange-50));
+  border-radius: var(--radius);
+  border: 1px solid var(--orange-100);
+}
+
+.intro-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--gray-800);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.intro-text p {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--gray-600);
+  margin-bottom: 10px;
+}
+
+.intro-text p:last-child {
+  margin-bottom: 0;
+}
+
 /* === INSTALL BANNER === */
 .install-banner {
   display: none;

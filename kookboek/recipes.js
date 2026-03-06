@@ -119,6 +119,137 @@ const recipes = [
   },
   {
     id: 5,
+    name: "Donderdagse pannenkoeken",
+    category: "doordeweeks",
+    time: "30 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🥞",
+    description: "Pannenkoeken. Op donderdag. Punt. Anders is onze Warre niet content.",
+    ingredients: [
+      "1/2 liter melk",
+      "2 eieren",
+      "200 g patisseriebloem",
+      "een beetje zout",
+      "bakboter"
+    ],
+    steps: [
+      "Neem een grote mengkom en doe de melk, de eieren, een beetje zout en de bloem erin.",
+      "Klop alles tot \u00e9\u00e9n geheel.",
+      "Smelt een klontje boter in een tefalpan.",
+      "Roer de gesmolten boter door het deeg.",
+      "En dan bakken! Zorg dat de pan goed warm is, zodat het vooruitgaat.",
+      "Doe telkens een klein beetje boter in de pan en giet er dan met een pollepel een dun laagje deeg in.",
+      "Even geduld.",
+      "Draai de pannenkoek om met een spatel en bak ook de andere kant.",
+      "En dat herhaal je dan tot al het deeg op is en je een mooi stapeltje pannenkoeken hebt."
+    ],
+    tip: "Heilige Donderdag: er zijn mensen die denken dat je pannenkoeken op eender welke dag kan eten, en dat kan dan misschien ook wel zo zijn\u2026 Maar het mo\u00e9t op donderdag, anders is onze Warre niet content. En dat geldt ook als je al pannenkoeken gegeten hebt op woensdag."
+  },
+
+  // === SOEPEN ===
+  {
+    id: 6,
+    name: "Tomatensoep",
+    category: "soepen",
+    time: "45 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🍅",
+    description: "Verse tomatensoep. Met een thee-eitje voor de kruiden. Vergeet het er niet uit te vissen.",
+    ingredients: [
+      "1 kg tomaten",
+      "1 ajuin",
+      "1 teentje look",
+      "2 stengels selder",
+      "groentebouillon",
+      "peper en zout",
+      "tijm en laurier",
+      "70 g tomatenpuree"
+    ],
+    steps: [
+      "Breng in een pot ongeveer een liter water aan de kook.",
+      "Doe het \u2018kroontje\u2019 van de tomaten en maak onderaan, aan de \u2018punt\u2019, twee kleine insnijdingen, zodat je een kruisje hebt gekerfd.",
+      "Leg de tomaten in het kokende water. Wacht een minuutje of zo tot het vel van de tomaten vanzelf loskomt. Giet de tomaten in een vergiet en droog de pot af.",
+      "Schil en snijd de ajuin, de look en de selder - dat moet zeker niet fijn!",
+      "Zet het vuur halfhoog. Giet wat olijfolie in de pot en doe de ajuin, de look en de selder erbij. Laat die even stoven.",
+      "Doe wat takjes tijm en een blaadje laurier in een thee-ei, en gooi dat ook mee in de pot - extra bonuspunten als je scoort vanop een afstandje. En een beetje peper en zout mag er ook al bij.",
+      "Neem een potje voor het afval dat je nu gaat cre\u00ebren\u2026 Ontvel de tomaten, snijd het midden eruit en duw de pitjes en dat harde stuk in het midden eruit.",
+      "Gooi de \u2018goede\u2019 stukken tomaat in de pot.",
+      "Giet er een liter water en twee bouillonketeltjes van Knorr bij en breng aan de kook.",
+      "Doe er ook nog een potje tomatenpuree bij.",
+      "Na een kwartiertje of zo is het tijd om te mixen. Pas op! Vergeet het thee-eitje er niet eerst uit te vissen. Mix dan met een staafmixer tot alle brokken weg zijn.",
+      "Laat na het mixen nog een minuutje of vijf doorkoken.",
+      "Proef of er nog peper of zout bij moet (tip: wellicht wel) en klaar!"
+    ],
+    tip: null
+  },
+  {
+    id: 7,
+    name: "Pompoensoep",
+    category: "soepen",
+    time: "45 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🎃",
+    description: "Met appel, bleekselder en een Easter egg van Donald Trump. Serieus.",
+    ingredients: [
+      "1 geen te grote flespompoen (butternut)",
+      "1 ajuin",
+      "1 teentje look",
+      "1 appel",
+      "2 stengels bleekselder",
+      "1 l groentebouillon",
+      "tijm en laurier",
+      "peper en zout",
+      "olijfolie"
+    ],
+    steps: [
+      "Pel de ajuin en de look en snijd grof. Schil de selder en snijd grof. Schil de appel en snijd het klokhuis eruit.",
+      "Doe een beetje olijfolie in een pot, zet het vuur zacht en laat de ajuin, look, selder en appel enkele minuten stoven. Doe er ook al een beetje peper en zout bij.",
+      "Doe twee blaadjes laurier en wat takjes tijm in een thee-ei. Of doe zoals de \u2018echten\u2019 en bind ze samen met wat touw \u2013 maar wie heeft er nu touw in huis? Behalve MacGyver dan? Serieus? \u2013 en gooi dat al mee in de pot.",
+      "Snijd de pompoen in twee: het dunne bovenste deel en het dikke onderste deel. Bij het dunne deel \u2013 daarin zitten g\u00e9\u00e9n pitjes, hoera! \u2013 moet je enkel de schil wegsnijden, en dan alles in grove blokjes. Gooi die al mee in de pot.",
+      "Dilemma: wat te doen met de onderkant? Heb je veel energie en geen zin om perfect eten te verspillen? Snijd die dan in vier stukken, snijd de schil weg, verwijder de pitjes en snijd het vruchtvlees weer in dikke blokjes die je in de pan gooit. Vind je dat veel werk en is het wel goed geweest, dan smijt je dit deel gewoon in de vuilbak.",
+      "Giet een liter bouillon (een liter water en twee bouillonblokjes dus, je moet niks liggen trekken) in de pan en laat een kwartiertje koken.",
+      "Haal van het vuur. Verwijder het thee-ei (of het bouquet garni voor de uitslovers), en mix alles glad met een staafmixer. Easter egg: als het goed zit, zie je nu de oranje kop met geel haar van Donald Trump in de pot.",
+      "Laat nog even doorkoken op hoog vuur. Klaar. Ook lekker met wat geitenkaas erin, voor wie dat graag eet."
+    ],
+    tip: null
+  },
+
+  {
+    id: 8,
+    name: "Knolseldersoep",
+    category: "soepen",
+    time: "40 min",
+    servings: 4,
+    difficulty: "makkelijk",
+    image: "🥣",
+    description: "Beige soep in een beige kom. Maar dan wel hemels lekker. Serveer in een donker potje voor het wow-effect.",
+    ingredients: [
+      "1/2 knolselder",
+      "1 ajuin",
+      "1 patat",
+      "1 l groentebouillon",
+      "1 teentje look",
+      "tijm en laurier",
+      "peper en zout",
+      "olijfolie"
+    ],
+    steps: [
+      "Schil de patat, pel de ajuin en de look en snijd alles grof.",
+      "Zet een pot op een zacht vuur. Doe er wat olijfolie in. En laat de patat, ajuin en look een paar minuten stoven.",
+      "Doe twee blaadjes laurier en wat takjes tijm in een thee-ei (dat zou je tegen nu al wel in huis moeten hebben) en leg dat mee in de pot.",
+      "Snijd de pel van de knolselder en snijd in grove blokjes. Kap de blokjes mee in de pot en laat een paar minuten meestoven.",
+      "Kap de bouillon (1 l water en twee bouillonblokjes) mee in de pot. Zet het vuur hoog en laat alles een 20 minuten koken.",
+      "Haal de pot van het vuur en mix alles tot een gladde soep.",
+      "Kruid met peper en zout naar smaak. Klaar!"
+    ],
+    tip: "Soms is de soep te dik. Dan kan je twee dingen doen. Ofwel ga je daar een beetje over liggen wenen, ofwel roer je er nog een glas (of twee) water door tot ze de gewenste dikte heeft.\n\nHet ziet er saai uit. Dat is gewoon zo, knolseldersoep is beige en beige is\u2026 behang. Dus: serveer de soep sowieso al in een donkerder potje, dat geeft contrast. Doe er eventueel wat garnaaltjes in, wat peterselie of zelfs gewoon wat rood paprikapoeder bij het serveren voor een \u2013 nou nou, niet overdrijven \u2013 wow-effect."
+  },
+
+  {
+    id: 9,
     name: "Bloemkool met witte saus",
     category: "doordeweeks",
     time: "30 min",
@@ -150,5 +281,6 @@ const recipes = [
 // Categorie metadata
 const categories = [
   { id: "stoemp", name: "Stoemp", icon: "🥔", color: "#ea580c" },
+  { id: "soepen", name: "Soepen", icon: "🥣", color: "#ca8a04" },
   { id: "doordeweeks", name: "Doordeweeks", icon: "🍽️", color: "#16a34a" }
 ];

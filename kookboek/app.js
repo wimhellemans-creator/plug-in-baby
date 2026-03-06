@@ -314,13 +314,16 @@ function setupEventListeners() {
       $$('.category-chip')[0].classList.add('active');
 
       // Show/hide elements per view
+      const introSection = $('#introSection');
       if (currentView === 'favorites') {
         randomBtn.classList.add('hidden');
         categoriesScroll.classList.add('hidden');
         installBanner.classList.remove('visible');
+        if (introSection) introSection.classList.add('hidden');
       } else {
         randomBtn.classList.remove('hidden');
         categoriesScroll.classList.remove('hidden');
+        if (introSection) introSection.classList.remove('hidden');
       }
 
       renderRecipes();
