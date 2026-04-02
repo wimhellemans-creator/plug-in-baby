@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "$(dirname "$0")/news-monitor"
+cd "$(dirname "$0")"
 echo ""
 echo "  HLN Nieuwsmonitor wordt gestart..."
 echo "  Open je browser op: http://localhost:3000"

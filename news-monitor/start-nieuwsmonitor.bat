@@ -1,5 +1,5 @@
 @echo off
-cd /d "%~dp0\news-monitor"
+cd /d "%~dp0"
 echo.
 echo   HLN Nieuwsmonitor wordt gestart...
 echo   Open je browser op: http://localhost:3000
