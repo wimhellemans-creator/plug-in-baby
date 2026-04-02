@@ -3,12 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nieuwsmonitor</title>
+    <title>HLN Nieuwsmonitor</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Nieuwsmonitor</h1>
-    <p>Dashboard in opbouw...</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1 class="logo">NIEUWS<span>MONITOR</span></h1>
+        </div>
+        <div class="header-right">
+            <button id="btn-settings" class="btn-icon" title="Sites beheren">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Settings Panel (slide-in) -->
+    <div id="settings-overlay" class="settings-overlay hidden"></div>
+    <aside id="settings-panel" class="settings-panel hidden">
+        <div class="settings-header">
+            <h2>Sites beheren</h2>
+            <button id="btn-close-settings" class="btn-icon" title="Sluiten">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="settings-body">
+            <h3>Nieuwssites</h3>
+            <div id="default-sites-list" class="sites-checklist"></div>
+
+            <h3>Eigen sites</h3>
+            <div id="custom-sites-list" class="sites-checklist"></div>
+            <div class="add-site-form">
+                <input type="text" id="input-site-name" placeholder="Naam (bv. Reuters)" />
+                <input type="url" id="input-site-url" placeholder="URL (bv. https://reuters.com)" />
+                <button id="btn-add-site" class="btn-primary">Toevoegen</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content: Grid View -->
+    <main id="view-grid" class="main-grid">
+        <!-- Tiles worden dynamisch gegenereerd -->
+    </main>
+
+    <!-- Main Content: Expanded View -->
+    <div id="view-expanded" class="main-expanded hidden">
+        <div class="expanded-content">
+            <div class="expanded-toolbar">
+                <button id="btn-back" class="btn-toolbar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Terug naar overzicht
+                </button>
+                <span id="expanded-site-name" class="expanded-site-name"></span>
+                <button id="btn-open-external" class="btn-toolbar btn-external">
+                    Ga naar de site
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </button>
+            </div>
+            <iframe id="expanded-iframe" class="expanded-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        </div>
+        <aside class="expanded-sidebar">
+            <h3>Andere sites</h3>
+            <div id="sidebar-tiles" class="sidebar-tiles"></div>
+        </aside>
+    </div>
+
     <script src="js/app.js"></script>
 </body>
 </html>
