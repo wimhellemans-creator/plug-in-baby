@@ -13,7 +13,7 @@ import time
 import hashlib
 from urllib.error import URLError, HTTPError
 
-PORT = 3000
+PORT = int(os.environ.get('PORT', 3000))
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 CACHE_DIR = os.path.join(DIRECTORY, '.cache')
 CACHE_MAX_AGE = 300  # 5 minuten
@@ -282,7 +282,9 @@ if __name__ == '__main__':
     print('  Druk Ctrl+C om te stoppen.')
     print()
 
-    threading.Thread(target=open_browser, daemon=True).start()
+    # Open browser alleen lokaal, niet in cloud
+    if 'RENDER' not in os.environ and 'RAILWAY' not in os.environ:
+        threading.Thread(target=open_browser, daemon=True).start()
 
     try:
         server = http.server.HTTPServer(('', PORT), NieuwsmonitorHandler)
