@@ -6,19 +6,33 @@ echo   HLN Nieuwsmonitor
 echo   ====================================
 echo.
 
-:: Check of Python geinstalleerd is
-where python >nul 2>nul
-if %errorlevel% neq 0 (
-    echo   FOUT: Python is niet geinstalleerd.
-    echo   Download het op: https://python.org
-    echo.
-    pause
-    exit /b 1
+:: Probeer eerst 'py' (Windows Python Launcher), dan 'python'
+where py >nul 2>nul
+if %errorlevel% equ 0 (
+    py server.py
+    goto :done
 )
 
-python server.py
+where python >nul 2>nul
+if %errorlevel% equ 0 (
+    python server.py
+    goto :done
+)
 
-:: Als de server stopt of crasht, blijft het venster open
+where python3 >nul 2>nul
+if %errorlevel% equ 0 (
+    python3 server.py
+    goto :done
+)
+
+echo   FOUT: Python is niet gevonden.
+echo   Python staat wel op je pc? Probeer dan:
+echo     py server.py
+echo   of:
+echo     python server.py
+echo   handmatig in een command prompt in deze map.
+
+:done
 echo.
 echo   Server is gestopt.
 pause
