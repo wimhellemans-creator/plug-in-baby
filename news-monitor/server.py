@@ -285,10 +285,10 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
         body = strip_scripts(body)
         body = make_snapshot(body)
 
-        # Detect broken pages (Next.js error, empty content, etc.)
-        html_text = body.decode('utf-8', errors='replace').lower()
-        if 'application error' in html_text or 'client-side exception' in html_text:
-            print(f'  [snapshot] JS-only site detected: {url} -> using fallback')
+        # Detect Next.js error page (very specific match)
+        html_text = body.decode('utf-8', errors='replace')
+        if 'application error: a client-side exception has occurred' in html_text.lower():
+            print(f'  [snapshot] Next.js error detected: {url} -> using fallback')
             body = make_fallback_card(url)
 
         save_cache(url, body)
