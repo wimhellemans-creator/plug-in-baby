@@ -58,16 +58,11 @@ def fetch_url(target_url):
     return body, content_type
 
 
-def inject_head_tags(body, target_url):
-    """Inject <base> tag and Content-Security-Policy to block ALL JavaScript."""
+def inject_base_tag(body, target_url):
+    """Inject <base> tag so relative URLs resolve correctly."""
     parsed = urllib.parse.urlparse(target_url)
     base_url = f'{parsed.scheme}://{parsed.netloc}/'
-    tags = (
-        f'<base href="{base_url}">'
-        # CSP that blocks all script execution - more reliable than stripping
-        '<meta http-equiv="Content-Security-Policy" '
-        f'content="script-src \'none\'; default-src * data: blob:; style-src * \'unsafe-inline\'; img-src * data: blob:; font-src * data:;">'
-    ).encode('utf-8')
+    base_tag = f'<base href="{base_url}">'.encode('utf-8')
 
     lower = body.lower()
     pos = lower.find(b'<head')
@@ -75,8 +70,8 @@ def inject_head_tags(body, target_url):
         end = body.find(b'>', pos)
         if end != -1:
             insert = end + 1
-            return body[:insert] + tags + body[insert:]
-    return tags + body
+            return body[:insert] + base_tag + body[insert:]
+    return base_tag + body
 
 
 def strip_scripts(html_bytes):
@@ -266,6 +261,15 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
             self.respond_html(b'<html><body><p>Missing url parameter</p></body></html>')
             return
 
+        # Sites die puur op JavaScript draaien -> direct fallback card
+        JS_ONLY_DOMAINS = ['demorgen.be']
+        parsed_url = urllib.parse.urlparse(url)
+        if any(d in parsed_url.netloc for d in JS_ONLY_DOMAINS):
+            print(f'  [snapshot] JS-only site: {url} -> fallback card')
+            self.respond_html(make_fallback_card(url))
+            return
+
+        # Check cache
         cached = get_cached(url)
         if cached:
             print(f'  [snapshot] Serving cached: {url}')
@@ -281,15 +285,9 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
             self.respond_html(f'<html><body style="font-family:sans-serif;padding:20px"><h3>Kon niet laden</h3><p>{url}</p><p style="color:red">{e}</p></body></html>'.encode('utf-8'))
             return
 
-        body = inject_head_tags(body, url)
+        body = inject_base_tag(body, url)
         body = strip_scripts(body)
         body = make_snapshot(body)
-
-        # Detect Next.js error page (very specific match)
-        html_text = body.decode('utf-8', errors='replace')
-        if 'application error: a client-side exception has occurred' in html_text.lower():
-            print(f'  [snapshot] Next.js error detected: {url} -> using fallback')
-            body = make_fallback_card(url)
 
         save_cache(url, body)
         self.respond_html(body)
@@ -311,7 +309,7 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
             return
 
         if 'text/html' in ct:
-            body = inject_head_tags(body, url)
+            body = inject_base_tag(body, url)
 
         self.send_response(200)
         self.send_header('Content-Type', ct)
