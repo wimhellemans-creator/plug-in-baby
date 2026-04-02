@@ -1,0 +1,12 @@
+{
+    "name": "hln-nieuwsmonitor",
+    "version": "1.0.0",
+    "description": "Nieuwsmonitor dashboard voor HLN reporters",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.21.0"
+    }
+}
