@@ -19,12 +19,23 @@
         { id: 'humo', name: 'Humo', url: 'https://www.humo.be/' },
     ];
 
+    // ---- Screenshot Service ----
+    // thum.io generates live screenshots of websites - free, no API key needed
+    const SCREENSHOT_WIDTH = 1280;
+    const REFRESH_INTERVAL = 5 * 60 * 1000; // Refresh screenshots every 5 minutes
+
+    function getScreenshotUrl(siteUrl) {
+        return `https://image.thum.io/get/width/${SCREENSHOT_WIDTH}/crop/800/noanimate/${siteUrl}`;
+    }
+
     // ---- State ----
     let state = {
         selectedSiteIds: [],  // IDs of sites shown on dashboard
         customSites: [],      // { id, name, url }
         expandedSiteId: null, // Currently expanded site, or null
     };
+
+    let refreshTimer = null;
 
     // ---- LocalStorage ----
     const STORAGE_KEY = 'hln-newsmonitor-state';
@@ -76,6 +87,11 @@
         return 'custom-' + name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Date.now();
     }
 
+    // Cache-bust parameter for refreshing screenshots
+    function cacheBuster() {
+        return Math.floor(Date.now() / 60000); // Changes every minute
+    }
+
     // ---- DOM References ----
     const viewGrid = document.getElementById('view-grid');
     const viewExpanded = document.getElementById('view-expanded');
@@ -93,6 +109,8 @@
     const expandedIframe = document.getElementById('expanded-iframe');
     const expandedSiteName = document.getElementById('expanded-site-name');
     const sidebarTiles = document.getElementById('sidebar-tiles');
+    const btnRefresh = document.getElementById('btn-refresh');
+    const refreshStatus = document.getElementById('refresh-status');
 
     // ---- Settings Panel ----
     function openSettings() {
@@ -225,25 +243,22 @@
             return;
         }
 
+        const cb = cacheBuster();
         viewGrid.innerHTML = sites.map(site => `
-            <div class="tile" data-site-id="${site.id}" title="${site.name}">
+            <div class="tile" data-site-id="${site.id}" title="${site.name} - Klik om te vergroten">
                 <div class="tile-header">
                     <img class="tile-favicon" src="${getFaviconUrl(site.url)}" alt="" onerror="this.style.display='none'" />
                     <span class="tile-name">${site.name}</span>
                     <span class="tile-live-dot"></span>
                 </div>
                 <div class="tile-body">
-                    <div class="tile-iframe-wrapper">
-                        <iframe src="${site.url}" sandbox="allow-scripts allow-same-origin" loading="lazy" tabindex="-1"></iframe>
-                    </div>
-                    <div class="tile-fallback">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                            <line x1="8" y1="21" x2="16" y2="21"></line>
-                            <line x1="12" y1="17" x2="12" y2="21"></line>
-                        </svg>
-                        <span>${site.name}</span>
-                        <span style="font-size: 11px;">Klik om te openen</span>
+                    <img class="tile-screenshot"
+                         src="${getScreenshotUrl(site.url)}&cb=${cb}"
+                         alt="Screenshot van ${site.name}"
+                         loading="lazy" />
+                    <div class="tile-loading">
+                        <div class="spinner"></div>
+                        <span>Laden...</span>
                     </div>
                 </div>
             </div>
@@ -252,37 +267,71 @@
         // Add click listeners to tiles
         viewGrid.querySelectorAll('.tile').forEach(tile => {
             tile.addEventListener('click', () => {
-                const siteId = tile.dataset.siteId;
-                expandSite(siteId);
+                expandSite(tile.dataset.siteId);
             });
         });
 
-        // Detect iframe load failures
-        viewGrid.querySelectorAll('.tile-body iframe').forEach(iframe => {
-            iframe.addEventListener('load', () => {
-                // Try to detect if blocked (limited detection capability)
-                try {
-                    // This will throw if cross-origin and blocked
-                    const doc = iframe.contentDocument;
-                    if (doc && doc.body && doc.body.innerHTML === '') {
-                        showFallback(iframe);
-                    }
-                } catch {
-                    // Cross-origin is expected, iframe might still render
+        // Handle screenshot load/error
+        viewGrid.querySelectorAll('.tile-screenshot').forEach(img => {
+            img.addEventListener('load', () => {
+                img.classList.add('loaded');
+                const loader = img.closest('.tile-body').querySelector('.tile-loading');
+                if (loader) loader.style.display = 'none';
+            });
+            img.addEventListener('error', () => {
+                img.classList.add('error');
+                const loader = img.closest('.tile-body').querySelector('.tile-loading');
+                if (loader) {
+                    loader.innerHTML = '<span>Screenshot niet beschikbaar</span>';
                 }
             });
-
-            iframe.addEventListener('error', () => {
-                showFallback(iframe);
-            });
         });
+
+        updateRefreshStatus();
+        startAutoRefresh();
     }
 
-    function showFallback(iframe) {
-        const fallback = iframe.closest('.tile-body').querySelector('.tile-fallback');
-        if (fallback) {
-            fallback.classList.add('active');
+    // ---- Auto Refresh ----
+    function startAutoRefresh() {
+        if (refreshTimer) clearInterval(refreshTimer);
+        refreshTimer = setInterval(() => {
+            if (!state.expandedSiteId) {
+                refreshScreenshots();
+            }
+        }, REFRESH_INTERVAL);
+    }
+
+    function refreshScreenshots() {
+        const cb = cacheBuster();
+        viewGrid.querySelectorAll('.tile-screenshot').forEach(img => {
+            const tile = img.closest('.tile');
+            const siteId = tile.dataset.siteId;
+            const site = getAllSites().find(s => s.id === siteId);
+            if (site) {
+                img.classList.remove('loaded');
+                const loader = img.closest('.tile-body').querySelector('.tile-loading');
+                if (loader) {
+                    loader.style.display = '';
+                    loader.innerHTML = '<div class="spinner"></div><span>Vernieuwen...</span>';
+                }
+                img.src = `${getScreenshotUrl(site.url)}&cb=${cb}&r=${Math.random()}`;
+            }
+        });
+        updateRefreshStatus();
+    }
+
+    function updateRefreshStatus() {
+        if (refreshStatus) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' });
+            refreshStatus.textContent = `Laatst vernieuwd: ${timeStr}`;
         }
+    }
+
+    if (btnRefresh) {
+        btnRefresh.addEventListener('click', () => {
+            refreshScreenshots();
+        });
     }
 
     // ---- Expanded View ----
@@ -296,17 +345,45 @@
         viewGrid.classList.add('hidden');
         viewExpanded.classList.remove('hidden');
 
-        // Set main iframe
+        // Set main iframe - try loading the actual site
         expandedSiteName.textContent = site.name;
         expandedIframe.src = site.url;
+
+        // Show fallback screenshot behind iframe in case iframe is blocked
+        const expandedFallback = document.getElementById('expanded-fallback');
+        if (expandedFallback) {
+            expandedFallback.style.backgroundImage = `url(${getScreenshotUrl(site.url)})`;
+            expandedFallback.querySelector('.fallback-site-name').textContent = site.name;
+        }
+
+        // Detect if iframe fails to load content
+        expandedIframe.onload = () => {
+            try {
+                const doc = expandedIframe.contentDocument;
+                // If we can access it and it's empty, show fallback
+                if (doc && doc.body && doc.body.innerHTML === '') {
+                    showExpandedFallback();
+                } else {
+                    hideExpandedFallback();
+                }
+            } catch {
+                // Cross-origin: iframe might still render fine
+                hideExpandedFallback();
+            }
+        };
+
+        expandedIframe.onerror = () => {
+            showExpandedFallback();
+        };
 
         // Set external link
         btnOpenExternal.onclick = () => {
             window.open(site.url, '_blank');
         };
 
-        // Render sidebar with other selected sites
+        // Render sidebar with other selected sites (using screenshots)
         const otherSites = getSelectedSites().filter(s => s.id !== siteId);
+        const cb = cacheBuster();
         sidebarTiles.innerHTML = otherSites.map(s => `
             <div class="sidebar-tile" data-site-id="${s.id}" title="${s.name}">
                 <div class="sidebar-tile-header">
@@ -314,9 +391,10 @@
                     <span>${s.name}</span>
                 </div>
                 <div class="sidebar-tile-body">
-                    <div class="tile-iframe-wrapper">
-                        <iframe src="${s.url}" sandbox="allow-scripts allow-same-origin" loading="lazy" tabindex="-1"></iframe>
-                    </div>
+                    <img class="sidebar-screenshot"
+                         src="${getScreenshotUrl(s.url)}&cb=${cb}"
+                         alt="${s.name}"
+                         loading="lazy" />
                 </div>
             </div>
         `).join('');
@@ -327,6 +405,18 @@
                 expandSite(tile.dataset.siteId);
             });
         });
+    }
+
+    function showExpandedFallback() {
+        const fb = document.getElementById('expanded-fallback');
+        if (fb) fb.classList.add('active');
+        expandedIframe.style.display = 'none';
+    }
+
+    function hideExpandedFallback() {
+        const fb = document.getElementById('expanded-fallback');
+        if (fb) fb.classList.remove('active');
+        expandedIframe.style.display = '';
     }
 
     function collapseView() {
@@ -340,7 +430,7 @@
         viewExpanded.classList.add('hidden');
         viewGrid.classList.remove('hidden');
 
-        // Re-render grid to refresh iframes
+        // Re-render grid to refresh
         renderGrid();
     }
 
