@@ -35,6 +35,9 @@ REQUEST_HEADERS = {
     'Upgrade-Insecure-Requests': '1',
 }
 
+# Sites die puur op JavaScript draaien (Next.js etc.) - snapshot werkt niet
+JS_ONLY_DOMAINS = ['demorgen.be']
+
 # --- URL Opener met systeem-proxy ---
 _proxy = urllib.request.ProxyHandler()
 _https = urllib.request.HTTPSHandler(context=SSL_CTX)
@@ -59,11 +62,9 @@ def fetch_url(target_url):
 
 
 def inject_base_tag(body, target_url):
-    """Inject <base> tag so relative URLs resolve correctly."""
     parsed = urllib.parse.urlparse(target_url)
     base_url = f'{parsed.scheme}://{parsed.netloc}/'
     base_tag = f'<base href="{base_url}">'.encode('utf-8')
-
     lower = body.lower()
     pos = lower.find(b'<head')
     if pos != -1:
@@ -76,24 +77,17 @@ def inject_base_tag(body, target_url):
 
 def strip_scripts(html_bytes):
     html = html_bytes.decode('utf-8', errors='replace')
-    # Remove <script>...</script> tags
     html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
     html = re.sub(r'<script[^>]*/>', '', html, flags=re.IGNORECASE)
-    # Remove script preload/modulepreload links (prevents JS from loading via <link>)
-    html = re.sub(r'<link[^>]*\brel\s*=\s*["\']modulepreload["\'][^>]*/?\s*>', '', html, flags=re.IGNORECASE)
-    html = re.sub(r'<link[^>]*\bas\s*=\s*["\']script["\'][^>]*/?\s*>', '', html, flags=re.IGNORECASE)
-    # Unwrap <noscript> content
     html = re.sub(r'</?noscript[^>]*>', '', html, flags=re.IGNORECASE)
-    # Remove inline event handlers
     html = re.sub(r'\s+on\w+\s*=\s*"[^"]*"', '', html)
     html = re.sub(r"\s+on\w+\s*=\s*'[^']*'", '', html)
     return html.encode('utf-8')
 
 
-SNAPSHOT_CSS = b'''<style>
+COOKIE_HIDE_CSS = b'''<style>
 *{pointer-events:none!important;cursor:default!important}
 body{overflow:hidden!important}
-/* Cookie/consent banners */
 [class*="cookie" i],[class*="consent" i],[class*="gdpr" i],
 [class*="overlay" i],[class*="popup" i],[class*="modal" i],
 [id*="cookie" i],[id*="consent" i],[id*="gdpr" i],
@@ -107,13 +101,6 @@ body{overflow:hidden!important}
 div[data-testid*="consent" i],div[data-testid*="cookie" i]{
 display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important}
 body>div[style*="position: fixed"],body>div[style*="position:fixed"]{display:none!important}
-/* Next.js / React error overlays */
-#__next-build-watcher,nextjs-portal{display:none!important}
-/* Hide Next.js "Application error" page - show actual content behind it */
-body>div#__next>div[style*="font-family"]{display:none!important}
-body>div#__next>div>div>h2{display:none!important}
-/* Generic framework error screens */
-[data-nextjs-dialog],[data-nextjs-dialog-overlay]{display:none!important}
 </style>'''
 
 
@@ -121,8 +108,36 @@ def make_snapshot(body):
     lower = body.lower()
     idx = lower.find(b'</head>')
     if idx != -1:
-        return body[:idx] + SNAPSHOT_CSS + body[idx:]
-    return SNAPSHOT_CSS + body
+        return body[:idx] + COOKIE_HIDE_CSS + body[idx:]
+    return COOKIE_HIDE_CSS + body
+
+
+def make_fallback_card(url):
+    """Mooie fallback-kaart voor sites die JavaScript nodig hebben."""
+    parsed = urllib.parse.urlparse(url)
+    domain = parsed.netloc.replace('www.', '')
+    favicon = f'https://www.google.com/s2/favicons?domain={parsed.netloc}&sz=64'
+    return f'''<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);
+color:#fff;height:100vh;display:flex;align-items:center;justify-content:center;
+text-align:center}}
+.card{{padding:40px}}
+.card img{{width:48px;height:48px;margin-bottom:16px;border-radius:8px}}
+.card h2{{font-size:20px;margin-bottom:8px;font-weight:600}}
+.card p{{font-size:13px;color:#888;line-height:1.5}}
+.badge{{display:inline-block;margin-top:16px;padding:6px 16px;
+background:rgba(226,13,13,0.15);color:#E20D0D;border-radius:20px;
+font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase}}
+</style></head>
+<body><div class="card">
+<img src="{favicon}" alt="">
+<h2>{domain}</h2>
+<p>Deze site vereist JavaScript en kan niet<br>als snapshot worden weergegeven.</p>
+<span class="badge">Klik om te openen</span>
+</div></body></html>'''.encode('utf-8')
 
 
 def get_cache_path(url):
@@ -161,36 +176,6 @@ def serve_static_file(handler, file_path):
     handler.send_header('Content-Length', len(content))
     handler.end_headers()
     handler.wfile.write(content)
-
-
-def make_fallback_card(url):
-    """Mooie fallback-kaart voor sites die JavaScript nodig hebben."""
-    parsed = urllib.parse.urlparse(url)
-    domain = parsed.netloc.replace('www.', '')
-    favicon = f'https://www.google.com/s2/favicons?domain={parsed.netloc}&sz=64'
-    return f'''<!DOCTYPE html>
-<html><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'none'">
-<style>
-*{{margin:0;padding:0;box-sizing:border-box}}
-body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);
-color:#fff;height:100vh;display:flex;align-items:center;justify-content:center;
-text-align:center}}
-.card{{padding:40px}}
-.card img{{width:48px;height:48px;margin-bottom:16px;border-radius:8px}}
-.card h2{{font-size:20px;margin-bottom:8px;font-weight:600}}
-.card p{{font-size:13px;color:#888;line-height:1.5}}
-.badge{{display:inline-block;margin-top:16px;padding:6px 16px;
-background:rgba(226,13,13,0.15);color:#E20D0D;border-radius:20px;
-font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase}}
-</style></head>
-<body><div class="card">
-<img src="{favicon}" alt="">
-<h2>{domain}</h2>
-<p>Deze site vereist JavaScript en kan niet<br>als snapshot worden weergegeven.</p>
-<span class="badge">Klik om te openen</span>
-</div></body></html>'''.encode('utf-8')
 
 
 class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
@@ -241,11 +226,9 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
 
     def serve_static(self, path):
         """Serve statische bestanden uit de news-monitor map."""
-        # Default naar index.html
         if path == '/' or path == '':
             path = '/index.html'
 
-        # Beveilig tegen path traversal
         safe_path = os.path.normpath(path.lstrip('/'))
         if safe_path.startswith('..'):
             self.send_error(403, 'Forbidden')
@@ -261,8 +244,7 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
             self.respond_html(b'<html><body><p>Missing url parameter</p></body></html>')
             return
 
-        # Sites die puur op JavaScript draaien -> direct fallback card
-        JS_ONLY_DOMAINS = ['demorgen.be']
+        # JS-only sites (Next.js) -> fallback card
         parsed_url = urllib.parse.urlparse(url)
         if any(d in parsed_url.netloc for d in JS_ONLY_DOMAINS):
             print(f'  [snapshot] JS-only site: {url} -> fallback card')
@@ -333,7 +315,8 @@ if __name__ == '__main__':
     print('  HLN Nieuwsmonitor')
     print('  ====================================')
     print()
-    # Cache legen bij opstarten (zodat code-wijzigingen effect hebben)
+
+    # Cache legen bij opstarten
     if os.path.exists(CACHE_DIR):
         for f in os.listdir(CACHE_DIR):
             os.remove(os.path.join(CACHE_DIR, f))
@@ -343,7 +326,7 @@ if __name__ == '__main__':
     print('  Druk Ctrl+C om te stoppen.')
     print()
 
-    # Open browser alleen lokaal, niet in cloud
+    # Open browser alleen lokaal
     if 'RENDER' not in os.environ and 'RAILWAY' not in os.environ:
         threading.Thread(target=open_browser, daemon=True).start()
 
