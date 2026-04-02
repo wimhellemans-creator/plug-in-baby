@@ -58,18 +58,25 @@ def fetch_url(target_url):
     return body, content_type
 
 
-def inject_base_tag(body, target_url):
+def inject_head_tags(body, target_url):
+    """Inject <base> tag and Content-Security-Policy to block ALL JavaScript."""
     parsed = urllib.parse.urlparse(target_url)
     base_url = f'{parsed.scheme}://{parsed.netloc}/'
-    base_tag = f'<base href="{base_url}">'.encode('utf-8')
+    tags = (
+        f'<base href="{base_url}">'
+        # CSP that blocks all script execution - more reliable than stripping
+        '<meta http-equiv="Content-Security-Policy" '
+        f'content="script-src \'none\'; default-src * data: blob:; style-src * \'unsafe-inline\'; img-src * data: blob:; font-src * data:;">'
+    ).encode('utf-8')
+
     lower = body.lower()
     pos = lower.find(b'<head')
     if pos != -1:
         end = body.find(b'>', pos)
         if end != -1:
             insert = end + 1
-            return body[:insert] + base_tag + body[insert:]
-    return base_tag + body
+            return body[:insert] + tags + body[insert:]
+    return tags + body
 
 
 def strip_scripts(html_bytes):
@@ -106,8 +113,12 @@ div[data-testid*="consent" i],div[data-testid*="cookie" i]{
 display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important}
 body>div[style*="position: fixed"],body>div[style*="position:fixed"]{display:none!important}
 /* Next.js / React error overlays */
-#__next-build-watcher,nextjs-portal,
-body>div[id="__next"]>div[style*="color:"][style*="padding:"]{display:none!important}
+#__next-build-watcher,nextjs-portal{display:none!important}
+/* Hide Next.js "Application error" page - show actual content behind it */
+body>div#__next>div[style*="font-family"]{display:none!important}
+body>div#__next>div>div>h2{display:none!important}
+/* Generic framework error screens */
+[data-nextjs-dialog],[data-nextjs-dialog-overlay]{display:none!important}
 </style>'''
 
 
@@ -240,7 +251,7 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
             self.respond_html(f'<html><body style="font-family:sans-serif;padding:20px"><h3>Kon niet laden</h3><p>{url}</p><p style="color:red">{e}</p></body></html>'.encode('utf-8'))
             return
 
-        body = inject_base_tag(body, url)
+        body = inject_head_tags(body, url)
         body = strip_scripts(body)
         body = make_snapshot(body)
 
@@ -264,7 +275,7 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
             return
 
         if 'text/html' in ct:
-            body = inject_base_tag(body, url)
+            body = inject_head_tags(body, url)
 
         self.send_response(200)
         self.send_header('Content-Type', ct)
@@ -288,6 +299,12 @@ if __name__ == '__main__':
     print('  HLN Nieuwsmonitor')
     print('  ====================================')
     print()
+    # Cache legen bij opstarten (zodat code-wijzigingen effect hebben)
+    if os.path.exists(CACHE_DIR):
+        for f in os.listdir(CACHE_DIR):
+            os.remove(os.path.join(CACHE_DIR, f))
+        print('  Cache geleegd.')
+
     print(f'  Server draait op http://localhost:{PORT}')
     print('  Druk Ctrl+C om te stoppen.')
     print()
