@@ -53,15 +53,25 @@
         return `/proxy?url=${encodeURIComponent(siteUrl)}`;
     }
 
-    // Get the best iframe src for a site
-    function getIframeSrc(site) {
+    // Get the best iframe src for a site in the GRID (thumbnail)
+    // Only use direct iframes for sites that natively allow it
+    function getGridIframeSrc(site) {
+        if (site.iframeDirect) {
+            return site.url;
+        }
+        return null; // Use screenshot in grid
+    }
+
+    // Get the best iframe src for the EXPANDED view (full interactive)
+    // Try proxy for blocked sites so users can scroll/interact
+    function getExpandedIframeSrc(site) {
         if (site.iframeDirect) {
             return site.url;
         }
         if (proxyAvailable) {
             return getProxyUrl(site.url);
         }
-        return null; // No iframe possible, use screenshot
+        return null; // No iframe possible
     }
 
     function updateProxyBadge() {
@@ -70,7 +80,7 @@
             if (proxyAvailable) {
                 badge.textContent = 'LIVE';
                 badge.className = 'proxy-badge live';
-                badge.title = 'Proxy actief - alle sites laden als live pagina\'s';
+                badge.title = 'Proxy actief - klik op een site voor live weergave';
             } else {
                 badge.textContent = 'SCREENSHOTS';
                 badge.className = 'proxy-badge screenshots';
@@ -280,7 +290,7 @@
 
         const cb = cacheBuster();
         viewGrid.innerHTML = sites.map(site => {
-            const iframeSrc = getIframeSrc(site);
+            const iframeSrc = getGridIframeSrc(site);
 
             if (iframeSrc) {
                 // Render as live iframe (scaled down)
@@ -407,7 +417,7 @@
         expandedSiteName.textContent = site.name;
 
         // Use the best available source for the expanded iframe
-        const iframeSrc = getIframeSrc(site);
+        const iframeSrc = getExpandedIframeSrc(site);
         const expandedFallback = document.getElementById('expanded-fallback');
 
         if (iframeSrc) {
@@ -430,42 +440,23 @@
             window.open(site.url, '_blank');
         };
 
-        // Sidebar thumbnails
+        // Sidebar thumbnails - always use screenshots (lightweight)
         const otherSites = getSelectedSites().filter(s => s.id !== siteId);
         const cb = cacheBuster();
-        sidebarTiles.innerHTML = otherSites.map(s => {
-            const sidebarSrc = getIframeSrc(s);
-            if (sidebarSrc) {
-                return `
-                    <div class="sidebar-tile" data-site-id="${s.id}" title="${s.name}">
-                        <div class="sidebar-tile-header">
-                            <img class="tile-favicon" src="${getFaviconUrl(s.url)}" alt="" onerror="this.style.display='none'" />
-                            <span>${s.name}</span>
-                        </div>
-                        <div class="sidebar-tile-body sidebar-tile-body-iframe">
-                            <div class="tile-iframe-wrapper">
-                                <iframe src="${sidebarSrc}" sandbox="allow-scripts allow-same-origin" loading="lazy" tabindex="-1"></iframe>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                return `
-                    <div class="sidebar-tile" data-site-id="${s.id}" title="${s.name}">
-                        <div class="sidebar-tile-header">
-                            <img class="tile-favicon" src="${getFaviconUrl(s.url)}" alt="" onerror="this.style.display='none'" />
-                            <span>${s.name}</span>
-                        </div>
-                        <div class="sidebar-tile-body">
-                            <img class="sidebar-screenshot"
-                                 src="${getScreenshotUrl(s.url)}&cb=${cb}"
-                                 alt="${s.name}"
-                                 loading="lazy" />
-                        </div>
-                    </div>
-                `;
-            }
-        }).join('');
+        sidebarTiles.innerHTML = otherSites.map(s => `
+            <div class="sidebar-tile" data-site-id="${s.id}" title="${s.name}">
+                <div class="sidebar-tile-header">
+                    <img class="tile-favicon" src="${getFaviconUrl(s.url)}" alt="" onerror="this.style.display='none'" />
+                    <span>${s.name}</span>
+                </div>
+                <div class="sidebar-tile-body">
+                    <img class="sidebar-screenshot"
+                         src="${getScreenshotUrl(s.url)}&cb=${cb}"
+                         alt="${s.name}"
+                         loading="lazy" />
+                </div>
+            </div>
+        `).join('');
 
         sidebarTiles.querySelectorAll('.sidebar-tile').forEach(tile => {
             tile.addEventListener('click', () => {
