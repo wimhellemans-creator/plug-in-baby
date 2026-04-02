@@ -74,17 +74,24 @@ def inject_base_tag(body, target_url):
 
 def strip_scripts(html_bytes):
     html = html_bytes.decode('utf-8', errors='replace')
+    # Remove <script>...</script> tags
     html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
     html = re.sub(r'<script[^>]*/>', '', html, flags=re.IGNORECASE)
+    # Remove script preload/modulepreload links (prevents JS from loading via <link>)
+    html = re.sub(r'<link[^>]*\brel\s*=\s*["\']modulepreload["\'][^>]*/?\s*>', '', html, flags=re.IGNORECASE)
+    html = re.sub(r'<link[^>]*\bas\s*=\s*["\']script["\'][^>]*/?\s*>', '', html, flags=re.IGNORECASE)
+    # Unwrap <noscript> content
     html = re.sub(r'</?noscript[^>]*>', '', html, flags=re.IGNORECASE)
+    # Remove inline event handlers
     html = re.sub(r'\s+on\w+\s*=\s*"[^"]*"', '', html)
     html = re.sub(r"\s+on\w+\s*=\s*'[^']*'", '', html)
     return html.encode('utf-8')
 
 
-COOKIE_HIDE_CSS = b'''<style>
+SNAPSHOT_CSS = b'''<style>
 *{pointer-events:none!important;cursor:default!important}
 body{overflow:hidden!important}
+/* Cookie/consent banners */
 [class*="cookie" i],[class*="consent" i],[class*="gdpr" i],
 [class*="overlay" i],[class*="popup" i],[class*="modal" i],
 [id*="cookie" i],[id*="consent" i],[id*="gdpr" i],
@@ -98,6 +105,9 @@ body{overflow:hidden!important}
 div[data-testid*="consent" i],div[data-testid*="cookie" i]{
 display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important}
 body>div[style*="position: fixed"],body>div[style*="position:fixed"]{display:none!important}
+/* Next.js / React error overlays */
+#__next-build-watcher,nextjs-portal,
+body>div[id="__next"]>div[style*="color:"][style*="padding:"]{display:none!important}
 </style>'''
 
 
@@ -105,8 +115,8 @@ def make_snapshot(body):
     lower = body.lower()
     idx = lower.find(b'</head>')
     if idx != -1:
-        return body[:idx] + COOKIE_HIDE_CSS + body[idx:]
-    return COOKIE_HIDE_CSS + body
+        return body[:idx] + SNAPSHOT_CSS + body[idx:]
+    return SNAPSHOT_CSS + body
 
 
 def get_cache_path(url):
