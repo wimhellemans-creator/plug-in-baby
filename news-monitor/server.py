@@ -168,6 +168,36 @@ def serve_static_file(handler, file_path):
     handler.wfile.write(content)
 
 
+def make_fallback_card(url):
+    """Mooie fallback-kaart voor sites die JavaScript nodig hebben."""
+    parsed = urllib.parse.urlparse(url)
+    domain = parsed.netloc.replace('www.', '')
+    favicon = f'https://www.google.com/s2/favicons?domain={parsed.netloc}&sz=64'
+    return f'''<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="script-src 'none'">
+<style>
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);
+color:#fff;height:100vh;display:flex;align-items:center;justify-content:center;
+text-align:center}}
+.card{{padding:40px}}
+.card img{{width:48px;height:48px;margin-bottom:16px;border-radius:8px}}
+.card h2{{font-size:20px;margin-bottom:8px;font-weight:600}}
+.card p{{font-size:13px;color:#888;line-height:1.5}}
+.badge{{display:inline-block;margin-top:16px;padding:6px 16px;
+background:rgba(226,13,13,0.15);color:#E20D0D;border-radius:20px;
+font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase}}
+</style></head>
+<body><div class="card">
+<img src="{favicon}" alt="">
+<h2>{domain}</h2>
+<p>Deze site vereist JavaScript en kan niet<br>als snapshot worden weergegeven.</p>
+<span class="badge">Klik om te openen</span>
+</div></body></html>'''.encode('utf-8')
+
+
 class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
     """Custom HTTP handler - geen SimpleHTTPRequestHandler meer."""
 
@@ -254,6 +284,12 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
         body = inject_head_tags(body, url)
         body = strip_scripts(body)
         body = make_snapshot(body)
+
+        # Detect broken pages (Next.js error, empty content, etc.)
+        html_text = body.decode('utf-8', errors='replace').lower()
+        if 'application error' in html_text or 'client-side exception' in html_text:
+            print(f'  [snapshot] JS-only site detected: {url} -> using fallback')
+            body = make_fallback_card(url)
 
         save_cache(url, body)
         self.respond_html(body)
