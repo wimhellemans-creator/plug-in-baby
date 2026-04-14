@@ -3,13 +3,10 @@ services:
     name: hln-nieuwsmonitor
     runtime: python
     plan: free
-    rootDir: news-monitor
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python server.py"
+    buildCommand: "pip install -r news-monitor/requirements.txt"
+    startCommand: "python news-monitor/server.py"
     envVars:
       - key: NIEUWSMONITOR_USER
         value: hln
       - key: NIEUWSMONITOR_PASSWORD
         sync: false
-      - key: PYTHON_VERSION
-        value: 3.11.9
