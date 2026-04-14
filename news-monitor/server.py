@@ -6,6 +6,7 @@ import os
 import json
 import re
 import gzip
+import base64
 import mimetypes
 import webbrowser
 import threading
@@ -17,6 +18,12 @@ PORT = int(os.environ.get('PORT', 3000))
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 CACHE_DIR = os.path.join(DIRECTORY, '.cache')
 CACHE_MAX_AGE = 300  # 5 minuten
+
+# Optionele Basic Auth: alleen actief als NIEUWSMONITOR_PASSWORD env var gezet is.
+# Lokaal (zonder env var) blijft alles werken zonder login.
+AUTH_PASSWORD = os.environ.get('NIEUWSMONITOR_PASSWORD', '').strip()
+AUTH_USER = os.environ.get('NIEUWSMONITOR_USER', 'hln').strip()
+AUTH_ENABLED = bool(AUTH_PASSWORD)
 
 # SSL context
 SSL_CTX = ssl.create_default_context()
@@ -185,6 +192,15 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
         # Log elke request voor debugging
         print(f'  [GET] {self.path}')
 
+        # Basic Auth check (alleen als wachtwoord ingesteld via env var)
+        if AUTH_ENABLED and not self.check_auth():
+            self.send_response(401)
+            self.send_header('WWW-Authenticate', 'Basic realm="HLN Nieuwsmonitor"')
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(b'<html><body style="font-family:sans-serif;padding:40px"><h2>Toegang geweigerd</h2><p>Login vereist.</p></body></html>')
+            return
+
         # Splits path en query string
         if '?' in self.path:
             path, query = self.path.split('?', 1)
@@ -204,6 +220,18 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
         # --- Static Files ---
         else:
             self.serve_static(path)
+
+    def check_auth(self):
+        """Controleer Basic Auth header tegen de env var credentials."""
+        header = self.headers.get('Authorization', '')
+        if not header.startswith('Basic '):
+            return False
+        try:
+            decoded = base64.b64decode(header[6:]).decode('utf-8', errors='replace')
+            user, _, pw = decoded.partition(':')
+            return user == AUTH_USER and pw == AUTH_PASSWORD
+        except Exception:
+            return False
 
     def respond_json(self, data):
         body = json.dumps(data).encode('utf-8')
@@ -323,6 +351,10 @@ if __name__ == '__main__':
         print('  Cache geleegd.')
 
     print(f'  Server draait op http://localhost:{PORT}')
+    if AUTH_ENABLED:
+        print(f'  Basic Auth AAN  (gebruiker: {AUTH_USER})')
+    else:
+        print('  Basic Auth UIT  (lokaal gebruik)')
     print('  Druk Ctrl+C om te stoppen.')
     print()
 

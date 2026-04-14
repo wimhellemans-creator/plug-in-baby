@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hln-nieuwsmonitor
+    runtime: python
+    plan: free
+    rootDir: news-monitor
+    buildCommand: "echo 'Geen build nodig - pure Python stdlib'"
+    startCommand: "python server.py"
+    envVars:
+      - key: NIEUWSMONITOR_USER
+        value: hln
+      - key: NIEUWSMONITOR_PASSWORD
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.9
