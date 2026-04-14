@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: free
     rootDir: news-monitor
-    buildCommand: "echo 'Geen build nodig - pure Python stdlib'"
+    buildCommand: "pip install -r requirements.txt"
     startCommand: "python server.py"
     envVars:
       - key: NIEUWSMONITOR_USER
