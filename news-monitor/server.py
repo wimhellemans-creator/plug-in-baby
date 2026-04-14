@@ -30,15 +30,21 @@ SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
 SSL_CTX.verify_mode = ssl.CERT_NONE
 
-# Request headers
+# Request headers - geoptimaliseerd om op echte Chrome-browser te lijken
 REQUEST_HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-    'Accept-Language': 'nl-BE,nl;q=0.9,en-US;q=0.8,en;q=0.7',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'nl-BE,nl;q=0.9,en;q=0.8',
     'Accept-Encoding': 'gzip, deflate',
+    'Cache-Control': 'max-age=0',
+    'DNT': '1',
+    'Sec-Ch-Ua': '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+    'Sec-Ch-Ua-Mobile': '?0',
+    'Sec-Ch-Ua-Platform': '"Windows"',
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
 }
 
@@ -54,7 +60,10 @@ _opener = urllib.request.build_opener(_proxy, _https, _cookies)
 
 def fetch_url(target_url):
     """Fetch een URL, volgt redirects, returnt (body_bytes, content_type)."""
-    req = urllib.request.Request(target_url, headers=REQUEST_HEADERS)
+    headers = dict(REQUEST_HEADERS)
+    # Voeg een Belgische Google-referer toe → ziet eruit als organisch verkeer
+    headers['Referer'] = 'https://www.google.be/'
+    req = urllib.request.Request(target_url, headers=headers)
     response = _opener.open(req, timeout=15)
     body = response.read()
 
@@ -291,8 +300,9 @@ class NieuwsmonitorHandler(http.server.BaseHTTPRequestHandler):
             body, ct = fetch_url(url)
             print(f'  [snapshot] OK: {len(body)} bytes from {url}')
         except Exception as e:
-            print(f'  [snapshot] FOUT: {url} -> {e}')
-            self.respond_html(f'<html><body style="font-family:sans-serif;padding:20px"><h3>Kon niet laden</h3><p>{url}</p><p style="color:red">{e}</p></body></html>'.encode('utf-8'))
+            print(f'  [snapshot] FOUT: {url} -> {e} -> fallback card')
+            # Site blokkeert of is onbereikbaar -> mooie fallback ipv lelijke fout
+            self.respond_html(make_fallback_card(url))
             return
 
         body = inject_base_tag(body, url)

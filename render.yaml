@@ -3,6 +3,7 @@ services:
     name: hln-nieuwsmonitor
     runtime: python
     plan: free
+    region: frankfurt
     buildCommand: "pip install -r news-monitor/requirements.txt"
     startCommand: "python news-monitor/server.py"
     envVars:
